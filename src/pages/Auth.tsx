@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BsTwitterX } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
@@ -22,6 +22,12 @@ import useLoginModal from "../hooks/useLoginModal";
 const Home = () => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
+
+  useEffect(() => {
+    if (localStorage.getItem("auth")) {
+      localStorage.removeItem("auth");
+    }
+  }, []);
 
   return (
     <div className="flex flex-col items-center h-full w-fit mx-auto lg:w-full lg:flex-row">
@@ -67,6 +73,7 @@ const Home = () => {
               className="block"
             >
               <Button
+                onClick={() => localStorage.setItem("auth", "true")}
                 icon={FcGoogle}
                 bgColor={bgWhite}
                 textColor={textBlack}
@@ -79,6 +86,7 @@ const Home = () => {
               className="block"
             >
               <Button
+                onClick={() => localStorage.setItem("auth", "true")}
                 icon={AiOutlineGithub}
                 bgColor={bgWhite}
                 textColor={textBlack}

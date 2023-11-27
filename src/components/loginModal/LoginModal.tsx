@@ -10,7 +10,6 @@ import toast from "react-hot-toast";
 
 import useLoginModal from "../../hooks/useLoginModal";
 import useRegisterModal from "../../hooks/useRegisterModal";
-import useLoggedInUser from "../../hooks/useLoggedInUser";
 import { bgWhite, hoverGray, textBlack } from "../../constants/colors";
 
 import Modal from "../Modal";
@@ -27,7 +26,6 @@ const LoginModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const loginModal = useLoginModal();
   const registerModal = useRegisterModal();
-  const user = useLoggedInUser();
 
   const {
     register,
@@ -44,8 +42,8 @@ const LoginModal = () => {
     try {
       setIsLoading(true);
 
-      const response = await axios.post("/auth/login", { data });
-      user.onLoggedIn(response.data);
+      await axios.post("/auth/login", { data });
+      localStorage.setItem("auth", "true");
       loginModal.onClose();
       navigate("/");
     } catch (error: unknown) {
@@ -65,6 +63,7 @@ const LoginModal = () => {
         <div className="space-y-3 mb-3">
           <Link to={`${axios.defaults.baseURL}/auth/google`} className="block">
             <Button
+              onClick={() => localStorage.setItem("auth", "true")}
               icon={FcGoogle}
               bgColor={bgWhite}
               textColor={textBlack}
@@ -74,6 +73,7 @@ const LoginModal = () => {
           </Link>
           <Link to={`${axios.defaults.baseURL}/auth/github`} className="block">
             <Button
+              onClick={() => localStorage.setItem("auth", "true")}
               icon={AiOutlineGithub}
               bgColor={bgWhite}
               textColor={textBlack}

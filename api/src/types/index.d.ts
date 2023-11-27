@@ -4,6 +4,6 @@ declare module "express-session" {
   export interface SessionData {
     code: string;
     expiration: number;
-    user: { id: string };
+    user: { id: string } | null;
   }
 }

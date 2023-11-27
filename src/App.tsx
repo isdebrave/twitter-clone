@@ -2,6 +2,7 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import PrivateRoute from "./utils/PrivateRoute";
+import PublicRoute from "./utils/PublicRoute";
 
 import Root from "./pages/Root";
 import Auth from "./pages/Auth";
@@ -13,14 +14,12 @@ const router = createBrowserRouter([
     children: [
       {
         element: <PrivateRoute />,
-        children: [
-          {
-            path: "/",
-            element: <Home />,
-          },
-        ],
+        children: [{ path: "/", element: <Home /> }],
       },
-      { path: "/auth", element: <Auth /> },
+      {
+        element: <PublicRoute />,
+        children: [{ path: "/auth", element: <Auth /> }],
+      },
     ],
   },
 ]);

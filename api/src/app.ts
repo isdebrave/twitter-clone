@@ -4,6 +4,7 @@ import session from "express-session";
 import dotenv from "dotenv";
 
 import authRouter from "./routes/auth";
+import userRouter from "./routes/user";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(
 );
 
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json(err.message);

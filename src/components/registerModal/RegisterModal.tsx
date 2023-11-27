@@ -9,7 +9,6 @@ import { toast } from "react-hot-toast";
 import Modal from "../Modal";
 import useRegisterModal from "../../hooks/useRegisterModal";
 import useLoginModal from "../../hooks/useLoginModal";
-import useLoggedInUser from "../../hooks/useLoggedInUser";
 
 import FirstBody from "./FirstBody";
 import SecondBody from "./SecondBody";
@@ -32,7 +31,6 @@ const RegisterModal = () => {
   const [step, setStep] = useState(STEPS.FIRST);
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
-  const user = useLoggedInUser();
 
   const {
     register,
@@ -92,8 +90,8 @@ const RegisterModal = () => {
     try {
       setIsLoading(true);
 
-      const response = await axios.post("/auth/register", { data });
-      user.onLoggedIn(response.data);
+      await axios.post("/auth/register", { data });
+      localStorage.setItem("auth", "true");
       registerModal.onClose();
       navigate("/");
     } catch (error: unknown) {

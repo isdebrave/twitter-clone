@@ -8,16 +8,6 @@ import prisma from "../libs/prismadb";
 
 dotenv.config();
 
-export const user = (req: Request, res: Response) => {
-  const loggedInUser = req.session.user;
-
-  if (loggedInUser) {
-    return res.status(200).json(loggedInUser);
-  } else {
-    return res.status(200).json();
-  }
-};
-
 export const email = async (
   req: Request,
   res: Response,
@@ -139,7 +129,7 @@ export const register = async (
     } = user;
     req.session.user = userObj;
 
-    return res.status(201).json(userObj);
+    return res.status(201).json();
   } catch (error) {
     console.log(error);
     next(error);
@@ -299,7 +289,7 @@ export const githubCallback = async (req: Request, res: Response) => {
 
     req.session.user = user;
 
-    return res.redirect("http://localhost:3000/");
+    return res.redirect("http://localhost:3000");
   } else {
     return res.redirect("http://localhost:3000/auth");
   }
@@ -331,9 +321,14 @@ export const login = async (
     const { hashedPassword, name, birth, ...userObj } = user;
     req.session.user = userObj;
 
-    return res.status(200).json(userObj);
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
     next(error);
   }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  req.session.user = null;
+  return res.redirect("http://localhost:3000/auth");
 };

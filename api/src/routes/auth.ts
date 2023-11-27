@@ -1,7 +1,6 @@
 import express from "express";
 
 import {
-  user,
   email,
   phone,
   code,
@@ -12,11 +11,10 @@ import {
   github,
   githubCallback,
   login,
+  logout,
 } from "../controllers/auth";
 
 const authRouter = express.Router();
-
-authRouter.get("/user", user);
 
 authRouter.post("/email", email);
 authRouter.post("/email/code", code);
@@ -31,5 +29,6 @@ authRouter.get("/github", github);
 authRouter.get("/github/callback", githubCallback);
 
 authRouter.post("/login", login);
+authRouter.get("/logout", logout);
 
 export default authRouter;

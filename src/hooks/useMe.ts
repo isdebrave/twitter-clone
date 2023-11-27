@@ -13,14 +13,14 @@ interface LoggedInUserProps {
   followingIds: string[];
 }
 
-interface LoggedInUserStore {
+interface MeStore {
   value: LoggedInUserProps | null;
-  onLoggedIn: (data: LoggedInUserProps) => void;
+  onValue: (data: LoggedInUserProps) => void;
 }
 
-const useLoggedInUser = create<LoggedInUserStore>((set) => ({
+const useMe = create<MeStore>((set) => ({
   value: null,
-  onLoggedIn: (data) => set({ value: data }),
+  onValue: (data) => set({ value: data }),
 }));
 
-export default useLoggedInUser;
+export default useMe;
