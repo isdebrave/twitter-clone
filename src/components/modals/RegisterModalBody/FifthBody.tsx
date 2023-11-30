@@ -1,8 +1,8 @@
 import React from "react";
 import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 
-import Heading from "../Heading";
-import Input from "../Input";
+import Heading from "../../Heading";
+import Input from "../../Input";
 
 interface FifthBodyProps {
   disabled: boolean;

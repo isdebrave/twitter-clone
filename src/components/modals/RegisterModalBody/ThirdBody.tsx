@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { UseFormRegister, FieldValues } from "react-hook-form";
 
-import Heading from "../Heading";
-import Input from "../Input";
+import Heading from "../../Heading";
+import Input from "../../Input";
 
 interface ThirdBodyProps {
   disabled: boolean;

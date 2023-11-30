@@ -2,69 +2,50 @@ import React, { useCallback } from "react";
 import { IconType } from "react-icons";
 import { UseFormReset, FieldValues } from "react-hook-form";
 
-import {
-  bgBlack,
-  bgBlue,
-  hoverDarkBlue,
-  hoverLightWhite,
-  textWhite,
-} from "../constants/colors";
-import Button from "./Button";
-
 interface ModalProps {
   disabled: boolean;
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: () => void;
   step?: number;
-  title: string | IconType;
+  title?: string | IconType;
   body: React.ReactElement;
-  footer?: React.ReactElement;
+  footer: React.ReactElement;
   icon: IconType;
   reset?: UseFormReset<FieldValues>;
-  label: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
   disabled,
   isOpen,
   onClose,
-  onSubmit,
   step,
   title: Title,
   body,
   footer,
   icon: Icon,
   reset,
-  label,
 }) => {
   const closeHandler = useCallback(() => {
     if (disabled) {
       return;
     }
 
-    if (step && step === 1 && reset) {
-      reset();
+    if (reset) {
+      if (step) {
+        if (step === 1) {
+          reset();
+        }
+      } else {
+        reset();
+      }
     }
 
     onClose();
   }, [step, disabled, reset, onClose]);
 
-  const submitHandler = useCallback(() => {
-    if (disabled) {
-      return;
-    }
-
-    onSubmit();
-  }, [disabled, onSubmit]);
-
   if (!isOpen) {
     return null;
   }
-
-  const bgColor = label === "가입" ? bgBlue : bgBlack;
-  const textColor = textWhite;
-  const hoverColor = label === "가입" ? hoverDarkBlue : hoverLightWhite;
 
   return (
     <div
@@ -110,31 +91,19 @@ const Modal: React.FC<ModalProps> = ({
             >
               <Icon size={22} />
             </button>
-            {typeof Title === "string" ? (
-              <h4 className="text-xl font-bold">{Title}</h4>
-            ) : (
-              <h4 className="text-xl font-bold absolute w-full flex justify-center">
-                <Title size={30} />
-              </h4>
-            )}
+            {Title ? (
+              typeof Title === "string" ? (
+                <h4 className="text-xl font-bold">{Title}</h4>
+              ) : (
+                <h4 className="text-xl font-bold absolute w-full flex justify-center">
+                  <Title size={30} />
+                </h4>
+              )
+            ) : null}
           </div>
 
-          {/* body */}
-          <div className="px-10 lg:px-20">{body}</div>
-
-          {/* footer */}
-          <div className="px-10 lg:px-20">
-            <Button
-              onClick={submitHandler}
-              bgColor={bgColor}
-              textColor={textColor}
-              hoverColor={hoverColor}
-              label={label}
-              large
-              bold
-            />
-            {footer}
-          </div>
+          {body}
+          {footer}
         </div>
       </div>
     </div>

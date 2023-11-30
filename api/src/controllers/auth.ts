@@ -212,7 +212,7 @@ export const googleCallback = async (
 
       req.session.user = user;
 
-      return res.redirect("http://localhost:3000/");
+      return res.redirect("http://localhost:3000/home");
     } else {
       return res.redirect("http://localhost:3000/auth");
     }
@@ -289,7 +289,7 @@ export const githubCallback = async (req: Request, res: Response) => {
 
     req.session.user = user;
 
-    return res.redirect("http://localhost:3000");
+    return res.redirect("http://localhost:3000/home");
   } else {
     return res.redirect("http://localhost:3000/auth");
   }

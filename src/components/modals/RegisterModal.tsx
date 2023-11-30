@@ -6,15 +6,23 @@ import { IoMdArrowBack } from "react-icons/io";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 
-import Modal from "../Modal";
+import Modal from "./Modal";
+import Button from "../Button";
 import useRegisterModal from "../../hooks/useRegisterModal";
 import useLoginModal from "../../hooks/useLoginModal";
 
-import FirstBody from "./FirstBody";
-import SecondBody from "./SecondBody";
-import ThirdBody from "./ThirdBody";
-import FourthBody from "./FourthBody";
-import FifthBody from "./FifthBody";
+import FirstBody from "./RegisterModalBody/FirstBody";
+import SecondBody from "./RegisterModalBody/SecondBody";
+import ThirdBody from "./RegisterModalBody/ThirdBody";
+import FourthBody from "./RegisterModalBody/FourthBody";
+import FifthBody from "./RegisterModalBody/FifthBody";
+import {
+  bgBlack,
+  bgBlue,
+  hoverDarkBlue,
+  hoverLightWhite,
+  textWhite,
+} from "../../constants/colors";
 
 enum STEPS {
   FIRST = 1,
@@ -93,7 +101,7 @@ const RegisterModal = () => {
       await axios.post("/auth/register", { data });
       localStorage.setItem("auth", "true");
       registerModal.onClose();
-      navigate("/");
+      navigate("/home");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         console.log(error);
@@ -107,63 +115,73 @@ const RegisterModal = () => {
   let bodyContent = <></>;
   if (step === STEPS.FIRST) {
     bodyContent = (
-      <FirstBody
-        disabled={isLoading}
-        isEmail={isEmail}
-        onEmail={() => setIsEmail((cur) => !cur)}
-        name={name}
-        id={id}
-        month={month}
-        day={day}
-        year={year}
-        register={register}
-        errors={errors}
-        setError={setError}
-        clearErrors={clearErrors}
-      />
+      <div className="px-10 lg:px-20">
+        <FirstBody
+          disabled={isLoading}
+          isEmail={isEmail}
+          onEmail={() => setIsEmail((cur) => !cur)}
+          name={name}
+          id={id}
+          month={month}
+          day={day}
+          year={year}
+          register={register}
+          errors={errors}
+          setError={setError}
+          clearErrors={clearErrors}
+        />
+      </div>
     );
   }
 
   if (step === STEPS.SECOND) {
     bodyContent = (
-      <SecondBody setValue={setValue} year={year} month={month} day={day} />
+      <div className="px-10 lg:px-20">
+        <SecondBody setValue={setValue} year={year} month={month} day={day} />
+      </div>
     );
   }
 
   if (step === STEPS.THIRD) {
     bodyContent = (
-      <ThirdBody
-        disabled={isLoading}
-        isEmail={isEmail}
-        name={name}
-        id={id}
-        birth={birth}
-        register={register}
-        onClick={() => setStep(STEPS.FIRST)}
-      />
+      <div className="px-10 lg:px-20">
+        <ThirdBody
+          disabled={isLoading}
+          isEmail={isEmail}
+          name={name}
+          id={id}
+          birth={birth}
+          register={register}
+          onClick={() => setStep(STEPS.FIRST)}
+        />
+      </div>
     );
   }
 
   if (step === STEPS.FOURTH) {
     bodyContent = (
-      <FourthBody
-        id={id}
-        disabled={isLoading}
-        register={register}
-        isEmail={isEmail}
-        errors={errors}
-      />
+      <div className="px-10 lg:px-20">
+        <FourthBody
+          id={id}
+          disabled={isLoading}
+          register={register}
+          isEmail={isEmail}
+          errors={errors}
+        />
+      </div>
     );
   }
 
   if (step === STEPS.FIFTH) {
     bodyContent = (
-      <FifthBody
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        password={password}
-      />
+      <div className="px-10 lg:px-20">
+        <FifthBody
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          password={password}
+        />
+      </div>
     );
   }
 
@@ -175,12 +193,23 @@ const RegisterModal = () => {
   }, [loginModal, registerModal, reset]);
 
   const footerContent = (
-    <p className="mt-3 text-center">
-      이미 계정이 있으신가요?{" "}
-      <button onClick={clickHandler} className="text-sky-500 hover:underline">
-        로그인
-      </button>
-    </p>
+    <div className="px-10 lg:px-20">
+      <Button
+        onClick={handleSubmit(onSubmit)}
+        bgColor={step !== STEPS.THIRD ? bgBlack : bgBlue}
+        textColor={textWhite}
+        hoverColor={step !== STEPS.THIRD ? hoverLightWhite : hoverDarkBlue}
+        label={step !== STEPS.THIRD ? "다음" : "가입"}
+        large
+        bold
+      />
+      <p className="mt-3 text-center">
+        이미 계정이 있으신가요?{" "}
+        <button onClick={clickHandler} className="text-sky-500 hover:underline">
+          로그인
+        </button>
+      </p>
+    </div>
   );
 
   return (
@@ -188,13 +217,11 @@ const RegisterModal = () => {
       disabled={isLoading}
       isOpen={registerModal.isOpen}
       onClose={step === STEPS.FIRST ? registerModal.onClose : onBack}
-      onSubmit={handleSubmit(onSubmit)}
-      step={step}
       icon={step === STEPS.FIRST ? IoClose : IoMdArrowBack}
+      step={step}
       title={`5단계 중 ${step}단계`}
       body={bodyContent}
       footer={footerContent}
-      label={step !== STEPS.THIRD ? "다음" : "가입"}
       reset={reset}
     />
   );

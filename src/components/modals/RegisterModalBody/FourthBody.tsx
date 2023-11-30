@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { UseFormRegister, FieldValues, FieldErrors } from "react-hook-form";
 import axios from "axios";
 
-import Heading from "../Heading";
-import Input from "../Input";
+import Heading from "../../Heading";
+import Input from "../../Input";
 
 interface FourthBodyProps {
   disabled: boolean;

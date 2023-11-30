@@ -29,5 +29,9 @@ module.exports = {
     "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "no-var": "off",
+    "jsx-a11y/label-has-associated-control": [
+      2,
+      { labelAttributes: ["htmlFor"] },
+    ],
   },
 };

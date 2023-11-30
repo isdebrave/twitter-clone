@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { UseFormSetValue, FieldValues } from "react-hook-form";
 import { Link } from "react-router-dom";
 
-import Heading from "../Heading";
+import Heading from "../../Heading";
 
 interface SecondBodyProps {
   setValue: UseFormSetValue<FieldValues>;

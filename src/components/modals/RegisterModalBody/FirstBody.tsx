@@ -8,9 +8,9 @@ import {
 } from "react-hook-form";
 import axios, { AxiosError } from "axios";
 
-import Heading from "../Heading";
-import Input from "../Input";
-import Select from "../Select";
+import Heading from "../../Heading";
+import Input from "../../Input";
+import Select from "../../Select";
 
 const months: string[] = [];
 for (let i = 1; i <= 12; i++) {

@@ -7,3 +7,11 @@ html,
 body {
   height: 100%;
 }
+
+textarea {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+textarea::-webkit-scrollbar {
+  display: none;
+}

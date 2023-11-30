@@ -11,6 +11,7 @@ interface ButtonProps {
   hoverColor: string;
   large?: boolean;
   disabled?: boolean;
+  fit?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -23,6 +24,7 @@ const Button: React.FC<ButtonProps> = ({
   hoverColor,
   large,
   disabled,
+  fit,
 }) => {
   return (
     <button
@@ -37,7 +39,7 @@ const Button: React.FC<ButtonProps> = ({
         items-center 
         border-2
         rounded-full 
-        w-full
+        ${fit ? "w-fit" : "w-full"}
         transition
         ${bgColor}
         ${textColor}
