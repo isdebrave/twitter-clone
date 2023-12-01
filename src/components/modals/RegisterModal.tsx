@@ -98,7 +98,7 @@ const RegisterModal = () => {
     try {
       setIsLoading(true);
 
-      await axios.post("/auth/register", { data });
+      await axios.post("/auth/register", data);
       localStorage.setItem("auth", "true");
       registerModal.onClose();
       navigate("/home");

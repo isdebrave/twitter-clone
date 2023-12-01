@@ -106,7 +106,7 @@ export const register = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { name, id: email, birth, password } = req.body.data;
+  const { name, id: email, birth, password } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -300,7 +300,7 @@ export const login = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id: email, password } = req.body.data;
+  const { id: email, password } = req.body;
 
   try {
     const user = await prisma.user.findUnique({ where: { email } });

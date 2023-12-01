@@ -2,7 +2,7 @@ import React from "react";
 import { IconType } from "react-icons";
 
 interface ButtonProps {
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   label: string;
   bold?: boolean;
   icon?: IconType;
@@ -32,7 +32,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       className={`
         ${large ? "py-3" : "py-2"}
-        px-10 
+        px-5 
         flex 
         flex-row 
         justify-center

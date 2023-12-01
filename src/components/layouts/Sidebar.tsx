@@ -45,7 +45,7 @@ const Sidebar = () => {
   return (
     <div
       className="
-        col-span-1 
+        col-span-1
         justify-self-end
         flex 
         flex-col 

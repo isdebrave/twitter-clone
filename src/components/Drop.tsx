@@ -8,15 +8,6 @@ interface DropProps {
   top?: boolean;
 }
 
-// borderTop: "15px solid white",
-// borderLeft: "10px solid transparent",
-// borderRight: "10px solid transparent",
-// borderBottom: "0px solid transparent",
-// position: "absolute",
-// bottom: "-10px",
-// left: "22px",
-// filter: "drop-shadow(0 6px 4px rgba(0, 0, 0, 0.1))",
-
 const Drop: React.FC<DropProps> = ({ top }) => {
   const me = useMe();
 

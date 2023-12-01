@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import session from "express-session";
 import dotenv from "dotenv";
+import MongoStore from "connect-mongo";
 
 import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
@@ -18,6 +19,7 @@ app.use(
     secret: process.env.SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
     // cookie: { httpOnly: true, secure: true },
   })
 );

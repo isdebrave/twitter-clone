@@ -45,7 +45,7 @@ const LoginModal = () => {
     try {
       setIsLoading(true);
 
-      await axios.post("/auth/login", { data });
+      await axios.post("/auth/login", data);
       localStorage.setItem("auth", "true");
       loginModal.onClose();
       navigate("/home");

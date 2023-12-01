@@ -8,6 +8,7 @@ import MobileProfile from "./mobile/MobileProfile";
 import MobileLogo from "./mobile/MobileLogo";
 import MobilePostButton from "./mobile/MobilePostButton";
 import MobileNavbar from "./mobile/MobileNavbar";
+import Followbar from "./Followbar";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         if (res.data) {
           me.onValue(res.data);
         } else {
+          localStorage.removeItem("auth");
           navigate("/auth");
         }
       })
@@ -35,7 +37,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div className="grid grid-cols-3 lg:grid-cols-4 h-full lg:px-24">
           <Sidebar />
           <div className="col-span-2 border-r">{children}</div>
-          <div className="col-span-1 hidden lg:block">3</div>
+          <Followbar />
         </div>
       </div>
 
