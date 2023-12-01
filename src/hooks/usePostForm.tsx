@@ -61,7 +61,7 @@ const usePostForm = (
         <textarea
           placeholder="What is happening?!"
           {...register("body", { required: true })}
-          rows={3}
+          rows={2}
           className="
             flex-auto 
             resize-none 
