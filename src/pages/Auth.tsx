@@ -4,8 +4,8 @@ import { BsTwitterX } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import { AiOutlineGithub } from "react-icons/ai";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 
-import Button from "../components/Button";
 import {
   bgBlue,
   bgWhite,
@@ -16,12 +16,14 @@ import {
   hoverGray,
   hoverLightBlue,
 } from "../constants/colors";
-import useRegisterModal from "../hooks/useRegisterModal";
-import useLoginModal from "../hooks/useLoginModal";
 
-const Home = () => {
-  const registerModal = useRegisterModal();
-  const loginModal = useLoginModal();
+import Button from "../components/Button";
+
+import { onLoginModalOpen } from "../redux/reducers/loginModal";
+import { onRegisterModalOpen } from "../redux/reducers/registerModal";
+
+const Auth = () => {
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (localStorage.getItem("auth")) {
@@ -107,7 +109,7 @@ const Home = () => {
 
           <div className="mb-3">
             <Button
-              onClick={registerModal.onOpen}
+              onClick={() => dispatch(onRegisterModalOpen())}
               bgColor={bgBlue}
               textColor={textWhite}
               hoverColor={hoverDarkBlue}
@@ -136,7 +138,7 @@ const Home = () => {
             이미 트위터에 가입하셨나요?
           </h4>
           <Button
-            onClick={loginModal.onOpen}
+            onClick={() => dispatch(onLoginModalOpen())}
             bgColor={bgWhite}
             textColor={textBlue}
             hoverColor={hoverLightBlue}
@@ -149,4 +151,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Auth;

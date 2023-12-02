@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 
-export const me = (req: Request, res: Response) => {
-  const loggedInUser = req.session.user;
+export const me = async (req: Request, res: Response) => {
+  if (req.session.user) {
+    const me = await prisma.user.findUnique({
+      where: { id: req.session.user.id },
+      include: { posts: true },
+    });
 
-  if (loggedInUser) {
-    return res.status(200).json(loggedInUser);
+    return res.status(200).json(me);
   } else {
     return res.status(200).json();
   }

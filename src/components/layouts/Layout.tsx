@@ -1,25 +1,28 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 
-import useMe from "../../hooks/useMe";
 import Sidebar from "./Sidebar";
+import Followbar from "./Followbar";
+
 import MobileProfile from "./mobile/MobileProfile";
 import MobileLogo from "./mobile/MobileLogo";
 import MobilePostButton from "./mobile/MobilePostButton";
 import MobileNavbar from "./mobile/MobileNavbar";
-import Followbar from "./Followbar";
+
+import { onMeSave } from "../../redux/reducers/me";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
-  const me = useMe();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     axios
-      .get("/user")
+      .get("/user/me")
       .then((res) => {
         if (res.data) {
-          me.onValue(res.data);
+          dispatch(onMeSave(res.data));
         } else {
           localStorage.removeItem("auth");
           navigate("/auth");
@@ -28,28 +31,26 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [dispatch, navigate]);
 
   return (
     <>
-      {/* desktop */}
-      <div className="hidden sm:block h-full">
-        <div className="grid grid-cols-3 lg:grid-cols-4 h-full lg:px-24">
+      <div className="h-full sm:grid sm:grid-cols-3 lg:grid-cols-4 lg:px-24 relative">
+        <div className="hidden h-full sm:block sm:col-span-1 sm:justify-self-end lg:w-[300px]">
           <Sidebar />
-          <div className="col-span-2 border-r">{children}</div>
-          <Followbar />
         </div>
-      </div>
-
-      {/* mobile */}
-      <div className="sm:hidden h-full relative">
-        <div className="flex items-center py-3 px-6 relative">
+        <div className="sm:hidden flex items-center py-3 px-6 relative">
           <MobileProfile />
           <MobileLogo />
         </div>
-        {children}
-        <MobilePostButton />
-        <MobileNavbar />
+        <div className="sm:col-span-2 sm:border-r">{children}</div>
+        <div className="hidden lg:block lg:col-span-1 w-[350px]">
+          <Followbar />
+        </div>
+        <div className="sm:hidden">
+          <MobilePostButton />
+          <MobileNavbar />
+        </div>
       </div>
     </>
   );

@@ -1,59 +1,37 @@
-import React, { useCallback, useState } from "react";
-import { FieldValues, SubmitHandler } from "react-hook-form";
-import axios, { AxiosError } from "axios";
-import toast from "react-hot-toast";
+import React, { useEffect, useState } from "react";
 
-import usePostForm from "../hooks/usePostForm";
+import Post from "../components/Post";
+import Feed from "../components/feeds/Feed";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { onPostsSave } from "../redux/reducers/posts";
+import { RootState } from "../redux/store";
 
 const Home = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const showDivision = false;
+  const dispatch = useDispatch();
+  const posts = useSelector((state: RootState) => state.posts);
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    try {
-      setIsLoading(true);
-
-      const formData = new FormData();
-      for (const file of imageFiles) {
-        formData.append("bodyImages", file);
-      }
-      formData.append("body", data.body);
-
-      const response = await axios.post("/post", formData);
-      console.log(response.data);
-      resetAll();
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast.error(error?.response?.data);
-      }
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    if (posts.length === 0) {
+      axios
+        .get("/post")
+        .then((res) => {
+          dispatch(onPostsSave(res.data));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-  };
-
-  const {
-    reset,
-    imagesPreview,
-    setImagesPreview,
-    imageFiles,
-    setImageFiles,
-    bodyContent,
-    footerContent,
-  } = usePostForm(onSubmit, showDivision);
-
-  const resetAll = useCallback(() => {
-    reset();
-    setImagesPreview([]);
-    setImageFiles([]);
-  }, [reset, setImagesPreview, setImageFiles]);
+  }, [posts.length, dispatch]);
 
   return (
-    <div className="mt-4">
-      {bodyContent}
-      {footerContent}
-      <hr className="my-3" />
-    </div>
+    <>
+      <div className="mt-4">
+        <Post />
+        <hr className="my-3" />
+      </div>
+      <Feed />
+    </>
   );
 };
 

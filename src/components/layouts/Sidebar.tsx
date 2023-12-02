@@ -45,15 +45,13 @@ const Sidebar = () => {
   return (
     <div
       className="
-        col-span-1
-        justify-self-end
+        h-full
         flex 
         flex-col 
         justify-between 
         border-r 
         px-3
         py-2 
-        lg:w-[300px]
       "
     >
       <div className="lg:pr-8 space-y-2">

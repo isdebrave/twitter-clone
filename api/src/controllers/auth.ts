@@ -210,7 +210,8 @@ export const googleCallback = async (
         });
       }
 
-      req.session.user = user;
+      const { hashedPassword, name, birth, ...userObj } = user;
+      req.session.user = userObj;
 
       return res.redirect("http://localhost:3000/home");
     } else {
@@ -287,7 +288,8 @@ export const githubCallback = async (req: Request, res: Response) => {
       });
     }
 
-    req.session.user = user;
+    const { hashedPassword, name, birth, ...userObj } = user;
+    req.session.user = userObj;
 
     return res.redirect("http://localhost:3000/home");
   } else {

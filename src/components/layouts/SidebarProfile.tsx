@@ -1,12 +1,14 @@
 import React, { useCallback, useState } from "react";
 import { IoEllipsisHorizontal } from "react-icons/io5";
+import { useSelector } from "react-redux";
 
-import useMe from "../../hooks/useMe";
 import Drop from "../Drop";
+
+import { RootState } from "../../redux/store";
 
 const SidebarProfile = () => {
   const [showDrop, setShowDrop] = useState(false);
-  const me = useMe();
+  const me = useSelector((state: RootState) => state.me);
 
   const clickHandler = useCallback(() => {
     setShowDrop((cur) => !cur);
@@ -33,7 +35,7 @@ const SidebarProfile = () => {
       >
         <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
           <img
-            src={me.value?.profileImage || "./images/anonymous.jpg"}
+            src={me?.profileImage || ""}
             alt="ProfileImage"
             referrerPolicy="no-referrer"
             className="w-full"
@@ -41,8 +43,8 @@ const SidebarProfile = () => {
         </div>
 
         <div className="hidden lg:flex flex-col items-start">
-          <span className="font-bold">{me.value?.username}</span>
-          <span className="text-gray-500">@{me.value?.username}</span>
+          <span className="font-bold">{me?.username}</span>
+          <span className="text-gray-500">@{me?.username}</span>
         </div>
 
         <div className="hidden lg:block ml-auto">

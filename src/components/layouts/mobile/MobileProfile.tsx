@@ -1,11 +1,13 @@
 import React, { useCallback, useState } from "react";
+import { useSelector } from "react-redux";
 
-import useMe from "../../../hooks/useMe";
 import Drop from "../../Drop";
+
+import { RootState } from "../../../redux/store";
 
 const MobileProfile = () => {
   const [showDrop, setShowDrop] = useState(false);
-  const me = useMe();
+  const me = useSelector((state: RootState) => state.me);
 
   const clickHandler = useCallback(() => {
     setShowDrop((cur) => !cur);
@@ -19,7 +21,7 @@ const MobileProfile = () => {
         className="w-[36px] h-[36px] rounded-full overflow-hidden"
       >
         <img
-          src={me.value?.profileImage || "./images/anonymous.jpg"}
+          src={me?.profileImage || ""}
           alt="ProfileImage"
           className="w-full"
         />

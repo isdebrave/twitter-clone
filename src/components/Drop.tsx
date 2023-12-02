@@ -1,15 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
-import useMe from "../hooks/useMe";
+import { RootState } from "../redux/store";
 
 interface DropProps {
   top?: boolean;
 }
 
 const Drop: React.FC<DropProps> = ({ top }) => {
-  const me = useMe();
+  const me = useSelector((state: RootState) => state.me);
 
   return (
     <div
@@ -48,7 +49,7 @@ const Drop: React.FC<DropProps> = ({ top }) => {
           to={`${axios.defaults.baseURL}/auth/logout`}
           className="block p-2 hover:bg-neutral-300/40 px-3"
         >
-          <span className="font-bold">Log out @{me.value?.username}</span>
+          <span className="font-bold">Log out @{me?.username}</span>
         </Link>
       </button>
     </div>

@@ -2,10 +2,13 @@ import React, { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
-import useMe from "./useMe";
-import Button from "../components/Button";
 import { bgBlue, hoverDarkBlue, textWhite } from "../constants/colors";
+
+import Button from "../components/Button";
+
+import { RootState } from "../redux/store";
 
 const usePostForm = (
   onSubmit: SubmitHandler<FieldValues>,
@@ -13,7 +16,7 @@ const usePostForm = (
 ) => {
   const [imagesPreview, setImagesPreview] = useState<string[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const me = useMe();
+  const me = useSelector((state: RootState) => state.me);
 
   const { register, reset, handleSubmit } = useForm<FieldValues>({
     defaultValues: { body: "" },
@@ -51,11 +54,11 @@ const usePostForm = (
     []
   );
 
-  const profileImage = me.value?.profileImage || "./images/anonymous.jpg";
+  const profileImage = me?.profileImage || "";
   const bodyContent = (
     <div className="px-6">
       <div className="flex gap-3 mb-4">
-        <div className="w-[44px] h-[44px] rounded-full overflow-hidden">
+        <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
           <img src={profileImage} alt="ProfileImage" className="w-full" />
         </div>
         <textarea

@@ -5,17 +5,17 @@ import { IoClose } from "react-icons/io5";
 import { IoMdArrowBack } from "react-icons/io";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
 import Modal from "./Modal";
 import Button from "../Button";
-import useRegisterModal from "../../hooks/useRegisterModal";
-import useLoginModal from "../../hooks/useLoginModal";
 
 import FirstBody from "./RegisterModalBody/FirstBody";
 import SecondBody from "./RegisterModalBody/SecondBody";
 import ThirdBody from "./RegisterModalBody/ThirdBody";
 import FourthBody from "./RegisterModalBody/FourthBody";
 import FifthBody from "./RegisterModalBody/FifthBody";
+
 import {
   bgBlack,
   bgBlue,
@@ -23,6 +23,10 @@ import {
   hoverLightWhite,
   textWhite,
 } from "../../constants/colors";
+
+import { RootState } from "../../redux/store";
+import { onRegisterModalClose } from "../../redux/reducers/registerModal";
+import { onLoginModalOpen } from "../../redux/reducers/loginModal";
 
 enum STEPS {
   FIRST = 1,
@@ -37,8 +41,8 @@ const RegisterModal = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(STEPS.FIRST);
-  const registerModal = useRegisterModal();
-  const loginModal = useLoginModal();
+  const dispatch = useDispatch();
+  const registerModal = useSelector((state: RootState) => state.registerModal);
 
   const {
     register,
@@ -100,7 +104,7 @@ const RegisterModal = () => {
 
       await axios.post("/auth/register", data);
       localStorage.setItem("auth", "true");
-      registerModal.onClose();
+      dispatch(onRegisterModalClose());
       navigate("/home");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -186,11 +190,11 @@ const RegisterModal = () => {
   }
 
   const clickHandler = useCallback(() => {
-    registerModal.onClose();
-    loginModal.onOpen();
+    dispatch(onRegisterModalClose());
+    dispatch(onLoginModalOpen());
     setStep(STEPS.FIRST);
     reset();
-  }, [loginModal, registerModal, reset]);
+  }, [dispatch, reset]);
 
   const footerContent = (
     <div className="px-10 lg:px-20">
@@ -216,7 +220,9 @@ const RegisterModal = () => {
     <Modal
       disabled={isLoading}
       isOpen={registerModal.isOpen}
-      onClose={step === STEPS.FIRST ? registerModal.onClose : onBack}
+      onClose={
+        step === STEPS.FIRST ? () => dispatch(onRegisterModalClose()) : onBack
+      }
       icon={step === STEPS.FIRST ? IoClose : IoMdArrowBack}
       step={step}
       title={`5단계 중 ${step}단계`}

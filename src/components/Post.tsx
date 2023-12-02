@@ -1,20 +1,13 @@
+import axios, { AxiosError } from "axios";
 import React, { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
-import axios, { AxiosError } from "axios";
-import { IoClose } from "react-icons/io5";
 import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
 
-import Modal from "./Modal";
-import usePostForm from "../../hooks/usePostForm";
-import { RootState } from "../../redux/store";
-import { onPostModalClose } from "../../redux/reducers/postModal";
+import usePostForm from "../hooks/usePostForm";
 
-const PostModal = () => {
+const Form = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const showDivision = true;
-  const dispatch = useDispatch();
-  const postModal = useSelector((state: RootState) => state.postModal);
+  const showDivision = false;
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -28,7 +21,6 @@ const PostModal = () => {
 
       const response = await axios.post("/post", formData);
       console.log(response.data);
-      dispatch(onPostModalClose());
       resetAll();
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -57,16 +49,11 @@ const PostModal = () => {
   }, [reset, setImagesPreview, setImageFiles]);
 
   return (
-    <Modal
-      disabled={isLoading}
-      isOpen={postModal.isOpen}
-      onClose={() => dispatch(onPostModalClose())}
-      icon={IoClose}
-      body={bodyContent}
-      footer={footerContent}
-      reset={resetAll}
-    />
+    <>
+      {bodyContent}
+      {footerContent}
+    </>
   );
 };
 
-export default PostModal;
+export default Form;

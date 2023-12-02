@@ -7,9 +7,13 @@ import { IoClose } from "react-icons/io5";
 import { BsTwitterX } from "react-icons/bs";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
-import useLoginModal from "../../hooks/useLoginModal";
-import useRegisterModal from "../../hooks/useRegisterModal";
+import Modal from "./Modal";
+import Heading from "../Heading";
+import Button from "../Button";
+import Input from "../Input";
+
 import {
   bgBlack,
   bgWhite,
@@ -19,16 +23,15 @@ import {
   textWhite,
 } from "../../constants/colors";
 
-import Modal from "./Modal";
-import Heading from "../Heading";
-import Button from "../Button";
-import Input from "../Input";
+import { RootState } from "../../redux/store";
+import { onLoginModalClose } from "../../redux/reducers/loginModal";
+import { onRegisterModalOpen } from "../../redux/reducers/registerModal";
 
 const LoginModal = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const loginModal = useLoginModal();
-  const registerModal = useRegisterModal();
+  const dispatch = useDispatch();
+  const loginModal = useSelector((state: RootState) => state.loginModal);
 
   const {
     register,
@@ -47,7 +50,7 @@ const LoginModal = () => {
 
       await axios.post("/auth/login", data);
       localStorage.setItem("auth", "true");
-      loginModal.onClose();
+      dispatch(onLoginModalClose());
       navigate("/home");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -129,10 +132,10 @@ const LoginModal = () => {
   );
 
   const clickHandler = useCallback(() => {
-    loginModal.onClose();
-    registerModal.onOpen();
+    dispatch(onLoginModalClose());
+    dispatch(onRegisterModalOpen());
     reset();
-  }, [loginModal, registerModal, reset]);
+  }, [dispatch, reset]);
 
   const footerContent = (
     <div className="px-10 lg:px-20 space-y-3">
@@ -167,7 +170,7 @@ const LoginModal = () => {
     <Modal
       disabled={isLoading}
       isOpen={loginModal.isOpen}
-      onClose={loginModal.onClose}
+      onClose={() => dispatch(onLoginModalClose())}
       title={BsTwitterX}
       body={bodyContent}
       footer={footerContent}
