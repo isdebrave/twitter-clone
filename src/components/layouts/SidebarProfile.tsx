@@ -16,7 +16,7 @@ const SidebarProfile = () => {
 
   return (
     <div className="relative">
-      {showDrop && <Drop top />}
+      {showDrop && <Drop userId={me?.id.slice(0, 10)} top />}
       <button
         onClick={clickHandler}
         className="
@@ -35,7 +35,7 @@ const SidebarProfile = () => {
       >
         <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
           <img
-            src={me?.profileImage || ""}
+            src={me?.profileImage || "/images/anonymous.jpg"}
             alt="ProfileImage"
             referrerPolicy="no-referrer"
             className="w-full"
@@ -44,7 +44,7 @@ const SidebarProfile = () => {
 
         <div className="hidden lg:flex flex-col items-start">
           <span className="font-bold">{me?.username}</span>
-          <span className="text-gray-500">@{me?.username}</span>
+          <span className="text-gray-500">@{me?.id.slice(0, 10)}</span>
         </div>
 
         <div className="hidden lg:block ml-auto">

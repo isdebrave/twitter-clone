@@ -1,13 +1,23 @@
-import axios, { AxiosError } from "axios";
 import React, { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
+import axios, { AxiosError } from "axios";
+import { IoClose } from "react-icons/io5";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
-import usePostForm from "../hooks/usePostForm";
+import Modal from "./Modal";
 
-const Form = () => {
+import usePostForm from "../../hooks/usePostForm";
+
+import { RootState } from "../../redux/store";
+import { onPostFormModalClose } from "../../redux/reducers/postFormModal";
+import { onAddPostToPosts } from "../../redux/reducers/posts";
+
+const PostFormModal = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const showDivision = false;
+  const showDivision = true;
+  const dispatch = useDispatch();
+  const postFormModal = useSelector((state: RootState) => state.postFormModal);
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -20,7 +30,8 @@ const Form = () => {
       formData.append("body", data.body);
 
       const response = await axios.post("/post", formData);
-      console.log(response.data);
+      dispatch(onAddPostToPosts(response.data));
+      dispatch(onPostFormModalClose());
       resetAll();
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -49,11 +60,16 @@ const Form = () => {
   }, [reset, setImagesPreview, setImageFiles]);
 
   return (
-    <>
-      {bodyContent}
-      {footerContent}
-    </>
+    <Modal
+      disabled={isLoading}
+      isOpen={postFormModal.isOpen}
+      onClose={() => dispatch(onPostFormModalClose())}
+      icon={IoClose}
+      body={bodyContent}
+      footer={footerContent}
+      reset={resetAll}
+    />
   );
 };
 
-export default Form;
+export default PostFormModal;

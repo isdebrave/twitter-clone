@@ -15,13 +15,13 @@ const MobileProfile = () => {
 
   return (
     <div className="relative flex flex-col justify-center">
-      {showDrop && <Drop />}
+      {showDrop && <Drop userId={me?.id.slice(0, 10)} />}
       <button
         onClick={clickHandler}
         className="w-[36px] h-[36px] rounded-full overflow-hidden"
       >
         <img
-          src={me?.profileImage || ""}
+          src={me?.profileImage || "./images/anonymous.jpg"}
           alt="ProfileImage"
           className="w-full"
         />

@@ -37,7 +37,7 @@ const Followbar = () => {
         >
           <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
             <img
-              src={user.profileImage || ""}
+              src={user.profileImage || "/images/anonymous.jpg"}
               alt="UserImage"
               className="w-full"
             />
@@ -45,7 +45,7 @@ const Followbar = () => {
 
           <div className="flex flex-col">
             <span className="font-bold">{user.username}</span>
-            <span className="text-gray-500">@{user.username}</span>
+            <span className="text-gray-500">@{user.id.slice(0, 10)}</span>
           </div>
 
           <div className="ml-auto">

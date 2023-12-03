@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
-import Post from "../components/Post";
+import PostForm from "../components/PostForm";
 import Feed from "../components/feeds/Feed";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -27,10 +27,10 @@ const Home = () => {
   return (
     <>
       <div className="mt-4">
-        <Post />
+        <PostForm />
         <hr className="my-3" />
       </div>
-      <Feed />
+      <Feed posts={posts} />
     </>
   );
 };

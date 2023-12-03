@@ -11,6 +11,7 @@ export interface UserState {
   createdAt: string;
   updatedAt: string;
   followingIds: string[];
+  followerIds: string[];
 }
 
 const initialState: UserState[] = [];

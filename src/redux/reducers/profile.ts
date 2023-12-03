@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { PostState } from "./posts";
 
-interface MeState {
+interface ProfileState {
   id: string;
   username: string;
   email: string;
@@ -17,7 +17,7 @@ interface MeState {
   posts: PostState[];
 }
 
-const initialState: MeState = {
+const initialState: ProfileState = {
   id: "",
   username: "",
   email: "",
@@ -32,19 +32,19 @@ const initialState: MeState = {
   posts: [],
 };
 
-export const meSlice = createSlice({
-  name: "me",
+export const profileSlice = createSlice({
+  name: "profile",
   initialState,
   reducers: {
-    onMeSave: (state, action) => {
+    onProfileSave: (state, action) => {
       return action.payload;
     },
-    onMeRemove: () => {
+    onProfileRemove: () => {
       return initialState;
     },
   },
 });
 
-export const { onMeSave, onMeRemove } = meSlice.actions;
+export const { onProfileSave, onProfileRemove } = profileSlice.actions;
 
-export default meSlice.reducer;
+export default profileSlice.reducer;

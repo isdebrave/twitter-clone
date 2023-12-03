@@ -24,9 +24,12 @@ export const postsSlice = createSlice({
     onPostsSave: (state, action) => {
       state.push(...action.payload);
     },
+    onAddPostToPosts: (state, action) => {
+      state.unshift(action.payload);
+    },
   },
 });
 
-export const { onPostsSave } = postsSlice.actions;
+export const { onPostsSave, onAddPostToPosts } = postsSlice.actions;
 
 export default postsSlice.reducer;

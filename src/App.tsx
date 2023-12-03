@@ -1,5 +1,9 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
 
 import PrivateRoute from "./utils/PrivateRoute";
 import PublicRoute from "./utils/PublicRoute";
@@ -10,6 +14,7 @@ import Home from "./pages/Home";
 import Explore from "./pages/Explore";
 import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
+import Post from "./pages/Post";
 
 const router = createBrowserRouter([
   {
@@ -18,10 +23,12 @@ const router = createBrowserRouter([
       {
         element: <PrivateRoute />,
         children: [
+          { path: "/", loader: () => redirect("/home") },
           { path: "/home", element: <Home /> },
           { path: "/explore", element: <Explore /> },
           { path: "/notifications", element: <Notifications /> },
-          { path: "/profile", element: <Profile /> },
+          { path: "/:userId", element: <Profile /> },
+          { path: "/:userId/status/:postId", element: <Post /> },
         ],
       },
       {

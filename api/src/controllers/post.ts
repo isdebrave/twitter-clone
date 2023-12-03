@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { User } from "@prisma/client";
+import { Post, User } from "@prisma/client";
 import path from "path";
 
 import prisma from "../libs/prismadb";
@@ -32,13 +32,15 @@ export const posts = async (
   }
 };
 
-export const post = async (req: Request, res: Response, next: NextFunction) => {
+export const registerPost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { body } = req.body;
 
   try {
-    const user = req.session.user;
-
-    if (user && user.id) {
+    if (req.session.meId) {
       const files = req.files as Express.Multer.File[];
 
       const images = [];
@@ -50,9 +52,18 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         data: {
           body,
           images,
-          userId: user.id,
+          userId: req.session.meId,
+        },
+        include: {
+          user: true,
+          comments: true,
         },
       });
+
+      type SafeUser = Omit<User, "hashedPassword" | "name" | "birth">;
+      const user = post.user;
+      const { hashedPassword, name, birth, ...userObj } = user;
+      (post.user as SafeUser) = userObj;
 
       return res.status(201).json(post);
     } else {
@@ -64,4 +75,37 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     console.log(error);
     next(error);
   }
+};
+
+export const lookAroundPost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { postId } = req.params;
+  let post;
+
+  try {
+    post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+      include: {
+        user: true,
+        comments: true,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json("해당 게시물이 존재하지 않습니다.");
+  }
+
+  if (post) {
+    type SafeUser = Omit<User, "hashedPassword" | "name" | "birth">;
+    const user = post.user;
+    const { hashedPassword, name, birth, ...userObj } = user;
+    (post.user as SafeUser) = userObj;
+  }
+
+  return res.status(200).json(post);
 };

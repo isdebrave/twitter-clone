@@ -6,6 +6,7 @@ import ImageCard from "../ImageCard";
 
 interface FeedItemProps {
   username: string;
+  userId: string;
   createdAt: string;
   body: string;
   images: string[];
@@ -13,6 +14,7 @@ interface FeedItemProps {
 
 const FeedItem: React.FC<FeedItemProps> = ({
   username,
+  userId,
   createdAt,
   body,
   images,
@@ -27,28 +29,30 @@ const FeedItem: React.FC<FeedItemProps> = ({
       <div className="space-x-2">
         <span className="font-bold">{username}</span>
         <span className="text-gray-500">
-          @{username} ▪ {createdAt}
+          @{userId} ▪ {createdAt}
         </span>
       </div>
       <p className="text-gray-600 mb-2">{body}</p>
-      <ImageCard length={images.length}>
-        {images.map((src, idx) => (
-          <div
-            key={src + idx}
-            className={`
+      {images.length > 0 && (
+        <ImageCard imagesLength={images.length}>
+          {images.map((src, idx) => (
+            <div
+              key={src + idx}
+              className={`
               w-full 
               flex
               ${images.length === 3 && idx === 0 && "row-span-2"}
             `}
-          >
-            <img
-              src={`${axios.defaults.baseURL}/${src}`}
-              alt="BodyImage"
-              className="w-full object-cover"
-            />
-          </div>
-        ))}
-      </ImageCard>
+            >
+              <img
+                src={`${axios.defaults.baseURL}/${src}`}
+                alt="BodyImage"
+                className="w-full object-cover"
+              />
+            </div>
+          ))}
+        </ImageCard>
+      )}
     </>
   );
 };

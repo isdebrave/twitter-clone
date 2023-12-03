@@ -1,62 +1,51 @@
-import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
-import { IoMdArrowBack } from "react-icons/io";
-import { BiCalendar } from "react-icons/bi";
-import { format } from "date-fns";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import axios, { AxiosError } from "axios";
+import { toast } from "react-hot-toast";
 
 import { bgWhite, hoverGray, textBlack } from "../constants/colors";
 
 import Button from "../components/Button";
+import ProfileHero from "../components/profile/ProfileHero";
+import MainHeading from "../components/MainHeading";
+import ProfileBio from "../components/profile/ProfileBio";
+import Feed from "../components/feeds/Feed";
 
+import { onProfileSave } from "../redux/reducers/profile";
 import { RootState } from "../redux/store";
 
 const Profile = () => {
-  const me = useSelector((state: RootState) => state.me);
+  const profile = useSelector((state: RootState) => state.profile);
+  const dispatch = useDispatch();
+  const { userId } = useParams();
+  const navigate = useNavigate();
 
-  const createdAt = useMemo(() => {
-    if (me.createdAt) {
-      return format(new Date(me.createdAt), "MMMM yyyy");
-    }
-  }, [me?.createdAt]);
+  useEffect(() => {
+    axios
+      .post("/user/profile", { userId })
+      .then((res) => {
+        dispatch(onProfileSave(res.data));
+      })
+      .catch((error) => {
+        if (error instanceof AxiosError) {
+          console.log(error);
+          toast.error(error?.response?.data);
+          navigate("/home");
+        }
+      });
+  }, [dispatch, userId, navigate]);
 
   return (
     <>
-      <div className="z-10 sticky top-0 bg-white flex items-center py-1 px-4 gap-6">
-        <div className="p-2 rounded-full hover:bg-neutral-300/40 cursor-pointer">
-          <IoMdArrowBack size={20} />
-        </div>
-        <div className="flex flex-col">
-          <span className="font-bold text-lg">{me?.username}</span>
-          <span className="font-bold text-xs text-gray-400">
-            {me?.posts.length} posts
-          </span>
-        </div>
-      </div>
-      <div className="bg-gray-300 h-44 w-full relative">
-        {me?.coverImage && <img src={me.coverImage} alt="CoverImage" />}
-        <div
-          className="
-            w-[130px] 
-            h-[130px] 
-            border-4 
-            border-white 
-            rounded-full 
-            absolute
-            bottom-0
-            translate-y-1/2
-            translate-x-4
-            cursor-pointer
-          "
-        >
-          <img
-            src={me?.profileImage || "./images/anonymous.jpg"}
-            alt="ProfileImage"
-            className="w-full rounded-full object-cover hover:brightness-90 transition"
-          />
-        </div>
-      </div>
+      <MainHeading title={profile?.username} length={profile?.posts.length} />
+      <ProfileHero
+        coverImage={profile?.coverImage}
+        profileImage={profile?.profileImage}
+      />
       <div className="mt-3 flex justify-end">
         <Button
+          onClick={() => {}}
           bgColor={bgWhite}
           textColor={textBlack}
           hoverColor={hoverGray}
@@ -65,16 +54,15 @@ const Profile = () => {
           bold
         />
       </div>
-      <div>
-        <div>
-          <span className="font-bold text-lg">{me?.username}</span>
-          <span className="font-bold text-lg">@{me?.username}</span>
-        </div>
-        <div>
-          <BiCalendar />
-          <span>Joined {createdAt}</span>
-        </div>
-      </div>
+      <ProfileBio
+        username={profile?.username}
+        userId={profile?.id.slice(0, 10)}
+        createdAt={profile?.createdAt}
+        followingIdsLength={profile?.followingIds.length}
+        followerIdsLength={profile?.followerIds.length}
+      />
+      <hr className="my-3" />
+      <Feed posts={profile?.posts} />
     </>
   );
 };

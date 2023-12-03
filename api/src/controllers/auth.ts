@@ -121,13 +121,7 @@ export const register = async (
       },
     });
 
-    const {
-      hashedPassword: _hashedPassword,
-      name: _name,
-      birth: _birth,
-      ...userObj
-    } = user;
-    req.session.user = userObj;
+    req.session.meId = user.id;
 
     return res.status(201).json();
   } catch (error) {
@@ -210,8 +204,7 @@ export const googleCallback = async (
         });
       }
 
-      const { hashedPassword, name, birth, ...userObj } = user;
-      req.session.user = userObj;
+      req.session.meId = user.id;
 
       return res.redirect("http://localhost:3000/home");
     } else {
@@ -288,8 +281,7 @@ export const githubCallback = async (req: Request, res: Response) => {
       });
     }
 
-    const { hashedPassword, name, birth, ...userObj } = user;
-    req.session.user = userObj;
+    req.session.meId = user.id;
 
     return res.redirect("http://localhost:3000/home");
   } else {
@@ -320,8 +312,7 @@ export const login = async (
       return res.status(401).json("잘못된 비밀번호입니다.");
     }
 
-    const { hashedPassword, name, birth, ...userObj } = user;
-    req.session.user = userObj;
+    req.session.meId = user.id;
 
     return res.status(200).json();
   } catch (error) {
@@ -331,6 +322,6 @@ export const login = async (
 };
 
 export const logout = async (req: Request, res: Response) => {
-  req.session.user = null;
+  req.session.meId = null;
   return res.redirect("http://localhost:3000/auth");
 };

@@ -13,8 +13,12 @@ import SidebarItem from "./SidebarItem";
 import SidebarLogo from "./SidebarLogo";
 import SidebarProfile from "./SidebarProfile";
 import SidebarPostButton from "./SidebarPostButton";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 const Sidebar = () => {
+  const me = useSelector((state: RootState) => state.me);
+
   const items = [
     {
       icon: GoHome,
@@ -38,7 +42,7 @@ const Sidebar = () => {
       icon: PiUser,
       faIcon: PiUserFill,
       label: "Profile",
-      href: "/profile",
+      href: `/${me.id}`,
     },
   ];
 

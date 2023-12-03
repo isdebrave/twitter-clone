@@ -54,7 +54,7 @@ const usePostForm = (
     []
   );
 
-  const profileImage = me?.profileImage || "";
+  const profileImage = me?.profileImage || "/images/anonymous.jpg";
   const bodyContent = (
     <div className="px-6">
       <div className="flex gap-3 mb-4">
