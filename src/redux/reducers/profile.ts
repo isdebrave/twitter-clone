@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { PostState } from "./posts";
+import { PostState } from "./post";
 
-interface ProfileState {
+export interface UserState {
   id: string;
   username: string;
   email: string;
@@ -17,7 +17,7 @@ interface ProfileState {
   posts: PostState[];
 }
 
-const initialState: ProfileState = {
+const initialState: UserState = {
   id: "",
   username: "",
   email: "",
@@ -42,9 +42,13 @@ export const profileSlice = createSlice({
     onProfileRemove: () => {
       return initialState;
     },
+    onAddPostToProfile: (state, action) => {
+      state.posts.unshift(action.payload);
+    },
   },
 });
 
-export const { onProfileSave, onProfileRemove } = profileSlice.actions;
+export const { onProfileSave, onProfileRemove, onAddPostToProfile } =
+  profileSlice.actions;
 
 export default profileSlice.reducer;

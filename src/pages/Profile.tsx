@@ -38,10 +38,14 @@ const Profile = () => {
 
   return (
     <>
-      <MainHeading title={profile?.username} length={profile?.posts.length} />
+      <MainHeading
+        title={profile.username}
+        length={profile.posts.length}
+        onClick={() => navigate(-1)}
+      />
       <ProfileHero
-        coverImage={profile?.coverImage}
-        profileImage={profile?.profileImage}
+        coverImage={profile.coverImage}
+        profileImage={profile.profileImage}
       />
       <div className="mt-3 flex justify-end">
         <Button
@@ -55,14 +59,14 @@ const Profile = () => {
         />
       </div>
       <ProfileBio
-        username={profile?.username}
-        userId={profile?.id.slice(0, 10)}
-        createdAt={profile?.createdAt}
-        followingIdsLength={profile?.followingIds.length}
-        followerIdsLength={profile?.followerIds.length}
+        username={profile.username}
+        userId={profile.id.slice(0, 10)}
+        createdAt={profile.createdAt}
+        followingIdsLength={profile.followingIds.length}
+        followerIdsLength={profile.followerIds.length}
       />
       <hr className="my-3" />
-      <Feed posts={profile?.posts} />
+      <Feed posts={profile.posts} />
     </>
   );
 };

@@ -1,19 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { CommentsState } from "./comments";
-import { UserState } from "./users";
-
-export interface PostState {
-  id: string;
-  body: string;
-  images: string[];
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
-  likedIds: string[];
-  user: UserState;
-  comments: CommentsState[];
-}
+import { PostState } from "./post";
 
 const initialState: PostState[] = [];
 
@@ -25,6 +12,7 @@ export const postsSlice = createSlice({
       state.push(...action.payload);
     },
     onAddPostToPosts: (state, action) => {
+      console.log(action.payload);
       state.unshift(action.payload);
     },
   },

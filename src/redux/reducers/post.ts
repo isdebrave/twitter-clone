@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { CommentsState } from "./comments";
-import { UserState } from "./users";
+import { UserState } from "./profile";
 
 export interface PostState {
   id: string;
@@ -11,7 +11,7 @@ export interface PostState {
   updatedAt: string;
   userId: string;
   likedIds: string[];
-  user: UserState | null;
+  user: UserState;
   comments: CommentsState[];
 }
 
@@ -23,7 +23,20 @@ const initialState: PostState = {
   updatedAt: "",
   userId: "",
   likedIds: [],
-  user: null,
+  user: {
+    id: "",
+    username: "",
+    email: "",
+    bio: null,
+    coverImage: null,
+    profileImage: null,
+    hasNotification: null,
+    createdAt: "",
+    updatedAt: "",
+    followingIds: [],
+    followerIds: [],
+    posts: [],
+  },
   comments: [],
 };
 

@@ -4,11 +4,11 @@ interface FeedProfileProps {
   profileImage: string | null;
 }
 
-const FeedProfile: React.FC<FeedProfileProps> = ({ profileImage }) => {
+const FeedProfileImage: React.FC<FeedProfileProps> = ({ profileImage }) => {
   return (
-    <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
+    <div className="w-[40px] h-[40px] rounded-full overflow-hidden hover:brightness-90 transition">
       <img
-        src={profileImage || "./images/anonymous.jpg"}
+        src={profileImage || "/images/anonymous.jpg"}
         alt="ProfileImage"
         className="w-full"
       />
@@ -16,4 +16,4 @@ const FeedProfile: React.FC<FeedProfileProps> = ({ profileImage }) => {
   );
 };
 
-export default FeedProfile;
+export default FeedProfileImage;

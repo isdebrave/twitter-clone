@@ -4,9 +4,14 @@ import { IoMdArrowBack } from "react-icons/io";
 interface ProfileHeadingProps {
   title: string;
   length?: number;
+  onClick: () => void;
 }
 
-const ProfileHeading: React.FC<ProfileHeadingProps> = ({ title, length }) => {
+const ProfileHeading: React.FC<ProfileHeadingProps> = ({
+  title,
+  length,
+  onClick,
+}) => {
   return (
     <div
       className="
@@ -17,11 +22,14 @@ const ProfileHeading: React.FC<ProfileHeadingProps> = ({ title, length }) => {
         flex 
         items-center 
         py-1 
-        px-4 
+        px-2 
         gap-6
       "
     >
-      <div className="p-2 rounded-full hover:bg-neutral-300/40 cursor-pointer">
+      <div
+        onClick={onClick}
+        className="p-2 rounded-full hover:bg-neutral-300/40 cursor-pointer"
+      >
         <IoMdArrowBack size={20} />
       </div>
       <div className="flex flex-col">

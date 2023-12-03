@@ -12,6 +12,7 @@ import usePostForm from "../../hooks/usePostForm";
 import { RootState } from "../../redux/store";
 import { onPostFormModalClose } from "../../redux/reducers/postFormModal";
 import { onAddPostToPosts } from "../../redux/reducers/posts";
+import { onAddPostToProfile } from "../../redux/reducers/profile";
 
 const PostFormModal = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +32,7 @@ const PostFormModal = () => {
 
       const response = await axios.post("/post", formData);
       dispatch(onAddPostToPosts(response.data));
+      // dispatch(onAddPostToProfile(response.data));
       dispatch(onPostFormModalClose());
       resetAll();
     } catch (error: unknown) {

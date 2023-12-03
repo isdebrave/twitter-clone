@@ -1,23 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { PostState } from "./posts";
+import { UserState } from "./profile";
 
-interface MeState {
-  id: string;
-  username: string;
-  email: string;
-  bio: string | null;
-  coverImage: string | null;
-  profileImage: string | null;
-  hasNotification: boolean | null;
-  createdAt: string;
-  updatedAt: string;
-  followingIds: string[];
-  followerIds: string[];
-  posts: PostState[];
-}
-
-const initialState: MeState = {
+const initialState: UserState = {
   id: "",
   username: "",
   email: "",

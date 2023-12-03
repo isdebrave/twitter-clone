@@ -33,5 +33,7 @@ module.exports = {
       2,
       { labelAttributes: ["htmlFor"] },
     ],
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
   },
 };

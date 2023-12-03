@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -26,13 +26,21 @@ const Followbar = () => {
       });
   }, [dispatch]);
 
+  const linkHandler = useCallback(
+    (e: React.MouseEvent, href: string) => {
+      e.stopPropagation();
+      navigate(href);
+    },
+    [navigate]
+  );
+
   return (
     <div className="ml-8 my-3 py-3 rounded-lg bg-gray-100">
       <h3 className="font-bold text-xl px-3 mb-5">Who to follow</h3>
       {users?.map((user) => (
-        <button
+        <div
           key={user.id}
-          onClick={() => navigate("/bye")}
+          onClick={(e) => linkHandler(e, "/bye")}
           className="w-full px-3 py-2 flex items-center gap-3 hover:bg-gray-200"
         >
           <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
@@ -50,10 +58,7 @@ const Followbar = () => {
 
           <div className="ml-auto">
             <Button
-              onClick={(e) => {
-                e?.stopPropagation();
-                navigate("/hi");
-              }}
+              onClick={(e) => e && linkHandler(e, "/bye")}
               label="Follow"
               bgColor={bgBlack}
               textColor={textWhite}
@@ -61,7 +66,7 @@ const Followbar = () => {
               fit
             />
           </div>
-        </button>
+        </div>
       ))}
     </div>
   );

@@ -24,7 +24,7 @@ const UserHero: React.FC<UserHeroProps> = ({ coverImage, profileImage }) => {
         "
       >
         <img
-          src={profileImage || "./images/anonymous.jpg"}
+          src={profileImage || "/images/anonymous.jpg"}
           alt="ProfileImage"
           className="w-full rounded-full object-cover hover:brightness-90 transition"
         />
