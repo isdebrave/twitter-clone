@@ -21,7 +21,7 @@ const MobileProfile = () => {
         className="w-[36px] h-[36px] rounded-full overflow-hidden"
       >
         <img
-          src={me?.profileImage || "./images/anonymous.jpg"}
+          src={me?.profileImage || "/images/anonymous.jpg"}
           alt="ProfileImage"
           className="w-full"
         />

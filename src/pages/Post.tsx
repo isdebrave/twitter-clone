@@ -1,22 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import { BiHeart, BiSolidHeart, BiMessageRounded } from "react-icons/bi";
 
 import MainHeading from "../components/MainHeading";
-
 import PostProfile from "../components/post/PostProfile";
 import PostBody from "../components/post/PostBody";
 import PostFooter from "../components/post/PostFooter";
+import Icon from "../components/Icon";
 
 import { RootState } from "../redux/store";
-import { onPostSave } from "../redux/reducers/post";
-import PostIcon from "../components/post/PostIcon";
-import { BiHeart, BiMessageRounded } from "react-icons/bi";
+import { onPostLiked, onPostSave } from "../redux/reducers/post";
+import { onUpdatePosts } from "../redux/reducers/posts";
 
 const Post = () => {
   const post = useSelector((state: RootState) => state.post);
+  const me = useSelector((state: RootState) => state.me);
   const { postId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -35,6 +36,28 @@ const Post = () => {
         }
       });
   }, [postId, dispatch, navigate]);
+
+  const likedHandler = useCallback(() => {
+    axios
+      .post("/post/liked", { postId })
+      .then((res) => {
+        dispatch(onPostLiked({ meId: me.id, status: res.data }));
+        dispatch(onUpdatePosts());
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [dispatch, me.id, postId]);
+
+  const isHeartFill = useCallback((array: string[], meId: string) => {
+    const idx = array.find((likedUserId) => likedUserId === meId);
+
+    if (idx) {
+      return true;
+    } else {
+      return false;
+    }
+  }, []);
 
   return (
     <>
@@ -56,22 +79,30 @@ const Post = () => {
           />
         </div>
         <PostFooter createdAt={post.createdAt} />
-        <hr className="my-3" />
+        <hr className="mt-3 mb-1" />
         <div className="flex justify-around">
-          <PostIcon
+          <Icon
+            onClick={() => {}}
             icon={BiMessageRounded}
             length={post.comments.length}
             groupTextHoverColor="group-hover:text-sky-500"
             groupBgHoverColor="group-hover:bg-sky-200/40"
+            textColor="text-gray-500"
           />
-          <PostIcon
-            icon={BiHeart}
+          <Icon
+            onClick={likedHandler}
+            icon={isHeartFill(post.likedIds, me.id) ? BiSolidHeart : BiHeart}
             length={post.likedIds.length}
             groupTextHoverColor="group-hover:text-rose-500"
             groupBgHoverColor="group-hover:bg-rose-200/40"
+            textColor={
+              isHeartFill(post.likedIds, me.id)
+                ? "text-rose-500"
+                : "text-gray-500"
+            }
           />
         </div>
-        <hr className="my-3" />
+        <hr className="mt-1 mb-3" />
       </div>
     </>
   );

@@ -2,22 +2,33 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { PostState } from "./post";
 
-const initialState: PostState[] = [];
+interface PostsState {
+  isUpdatedOnce: boolean;
+  value: PostState[];
+}
+
+const initialState: PostsState = {
+  isUpdatedOnce: false,
+  value: [],
+};
 
 export const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
     onPostsSave: (state, action) => {
-      state.push(...action.payload);
+      return { isUpdatedOnce: true, value: action.payload };
+    },
+    onUpdatePosts: (state) => {
+      state.isUpdatedOnce = false;
     },
     onAddPostToPosts: (state, action) => {
-      console.log(action.payload);
-      state.unshift(action.payload);
+      state.value.unshift(action.payload);
     },
   },
 });
 
-export const { onPostsSave, onAddPostToPosts } = postsSlice.actions;
+export const { onPostsSave, onUpdatePosts, onAddPostToPosts } =
+  postsSlice.actions;
 
 export default postsSlice.reducer;

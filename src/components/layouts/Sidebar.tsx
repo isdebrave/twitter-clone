@@ -49,11 +49,14 @@ const Sidebar = () => {
   return (
     <div
       className="
+        z-10
+        sm:fixed
+        sm:w-[88px] 
+        lg:w-[300px]
         h-full
         flex 
         flex-col 
         justify-between 
-        border-r 
         px-3
         py-2 
       "

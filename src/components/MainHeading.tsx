@@ -5,26 +5,29 @@ interface ProfileHeadingProps {
   title: string;
   length?: number;
   onClick: () => void;
+  backdropBlur?: boolean;
 }
 
 const ProfileHeading: React.FC<ProfileHeadingProps> = ({
   title,
   length,
   onClick,
+  backdropBlur,
 }) => {
   return (
     <div
-      className="
+      className={`
         z-10 
         sticky 
         top-0 
-        bg-white 
+        bg-white/70
         flex 
         items-center 
         py-1 
         px-2 
         gap-6
-      "
+        ${backdropBlur && "backdrop-blur-lg"}
+      `}
     >
       <div
         onClick={onClick}

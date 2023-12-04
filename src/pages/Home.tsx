@@ -13,13 +13,7 @@ const Home = () => {
   const posts = useSelector((state: RootState) => state.posts);
 
   useEffect(() => {
-    /*
-      여기 버그 있음
-      1. posts.length === 0가 없으면 똑같은 post 렌더링됨
-      2. profile에서 postModal submit하면 실시간 반영 안됨
-      3. sidebar fixed
-    */
-    if (posts.length === 0) {
+    if (!posts.isUpdatedOnce) {
       axios
         .get("/post")
         .then((res) => {
@@ -29,7 +23,7 @@ const Home = () => {
           console.log(error);
         });
     }
-  }, [posts.length, dispatch]);
+  }, [posts.isUpdatedOnce, dispatch]);
 
   return (
     <>
@@ -37,7 +31,7 @@ const Home = () => {
         <PostForm />
         <hr className="my-3" />
       </div>
-      <Feed posts={posts} />
+      <Feed posts={posts.value} />
     </>
   );
 };

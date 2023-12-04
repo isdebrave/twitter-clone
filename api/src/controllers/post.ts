@@ -77,11 +77,7 @@ export const registerPost = async (
   }
 };
 
-export const lookAroundPost = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const lookAroundPost = async (req: Request, res: Response) => {
   const { postId } = req.params;
   let post;
 
@@ -108,4 +104,49 @@ export const lookAroundPost = async (
   }
 
   return res.status(200).json(post);
+};
+
+export const liked = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { postId } = req.body;
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    let idx;
+    if (post && req.session.meId) {
+      idx = post.likedIds.findIndex((userId) => userId === req.session.meId);
+
+      if (idx !== -1) {
+        post.likedIds.splice(idx, 1);
+      } else {
+        post.likedIds.push(req.session.meId);
+      }
+
+      await prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          likedIds: post.likedIds,
+        },
+      });
+    }
+
+    if (idx) {
+      res.status(200).json("ADD");
+    } else {
+      res.status(200).json("REMOVE");
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
 };

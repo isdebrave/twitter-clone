@@ -42,6 +42,7 @@ const Profile = () => {
         title={profile.username}
         length={profile.posts.length}
         onClick={() => navigate(-1)}
+        backdropBlur
       />
       <ProfileHero
         coverImage={profile.coverImage}

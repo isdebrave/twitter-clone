@@ -3,7 +3,12 @@ import multer, { FileFilterCallback } from "multer";
 import fs from "fs";
 import path from "path";
 
-import { posts, registerPost, lookAroundPost } from "../controllers/post";
+import {
+  posts,
+  registerPost,
+  lookAroundPost,
+  liked,
+} from "../controllers/post";
 
 if (!fs.existsSync("uploads/bodyImages")) {
   fs.mkdirSync("uploads/bodyImages", { recursive: true });
@@ -44,5 +49,6 @@ const postRouter = express.Router();
 postRouter.get("/", posts);
 postRouter.post("/", bodyImagesUpload.array("bodyImages"), registerPost);
 postRouter.get("/:postId", lookAroundPost);
+postRouter.post("/liked", liked);
 
 export default postRouter;

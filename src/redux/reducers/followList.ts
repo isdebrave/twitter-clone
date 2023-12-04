@@ -4,16 +4,16 @@ import { UserState } from "./profile";
 
 const initialState: UserState[] = [];
 
-export const usersSlice = createSlice({
-  name: "users",
+export const followListSlice = createSlice({
+  name: "followList",
   initialState,
   reducers: {
-    onUsersSave: (state, action) => {
+    onFollowListSave: (state, action) => {
       state.push(...action.payload);
     },
   },
 });
 
-export const { onUsersSave } = usersSlice.actions;
+export const { onFollowListSave } = followListSlice.actions;
 
-export default usersSlice.reducer;
+export default followListSlice.reducer;

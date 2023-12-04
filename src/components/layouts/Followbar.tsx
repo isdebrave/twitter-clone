@@ -7,19 +7,19 @@ import { bgBlack, hoverLightWhite, textWhite } from "../../constants/colors";
 
 import Button from "../Button";
 
-import { onUsersSave } from "../../redux/reducers/users";
+import { onFollowListSave } from "../../redux/reducers/followList";
 import { RootState } from "../../redux/store";
 
 const Followbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const users = useSelector((state: RootState) => state.users);
+  const followList = useSelector((state: RootState) => state.followList);
 
   useEffect(() => {
     axios
       .get("/user/all")
       .then((res) => {
-        dispatch(onUsersSave(res.data));
+        dispatch(onFollowListSave(res.data));
       })
       .catch((error) => {
         console.log(error);
@@ -35,9 +35,9 @@ const Followbar = () => {
   );
 
   return (
-    <div className="ml-8 my-3 py-3 rounded-lg bg-gray-100">
+    <div className="sticky top-3 ml-8 my-3 py-3 rounded-lg bg-gray-100">
       <h3 className="font-bold text-xl px-3 mb-5">Who to follow</h3>
-      {users?.map((user) => (
+      {followList.map((user) => (
         <div
           key={user.id}
           onClick={(e) => linkHandler(e, "/bye")}

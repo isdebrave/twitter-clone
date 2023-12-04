@@ -4,6 +4,7 @@ import axios, { AxiosError } from "axios";
 import { IoClose } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import Modal from "./Modal";
 
@@ -16,9 +17,11 @@ import { onAddPostToProfile } from "../../redux/reducers/profile";
 
 const PostFormModal = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const showDivision = true;
+  const { userId } = useParams();
   const dispatch = useDispatch();
+  const me = useSelector((state: RootState) => state.me);
   const postFormModal = useSelector((state: RootState) => state.postFormModal);
+  const showDivision = true;
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -32,7 +35,7 @@ const PostFormModal = () => {
 
       const response = await axios.post("/post", formData);
       dispatch(onAddPostToPosts(response.data));
-      // dispatch(onAddPostToProfile(response.data));
+      userId === me.id && dispatch(onAddPostToProfile(response.data));
       dispatch(onPostFormModalClose());
       resetAll();
     } catch (error: unknown) {

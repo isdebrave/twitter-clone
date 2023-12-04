@@ -47,9 +47,18 @@ export const postSlice = createSlice({
     onPostSave: (state, action) => {
       return action.payload;
     },
+    onPostLiked: (state, action) => {
+      const { meId, status } = action.payload;
+
+      if (status === "ADD") {
+        state.likedIds.push(meId);
+      } else {
+        state.likedIds = state.likedIds.filter((userId) => userId !== meId);
+      }
+    },
   },
 });
 
-export const { onPostSave } = postSlice.actions;
+export const { onPostSave, onPostLiked } = postSlice.actions;
 
 export default postSlice.reducer;
