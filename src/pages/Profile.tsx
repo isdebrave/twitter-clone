@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import axios, { AxiosError } from "axios";
@@ -17,9 +17,29 @@ import { RootState } from "../redux/store";
 
 const Profile = () => {
   const profile = useSelector((state: RootState) => state.profile);
-  const dispatch = useDispatch();
+  const me = useSelector((state: RootState) => state.me);
   const { userId } = useParams();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // profile에서 heart 누르면 바로 적용 안됨. fetchProfile을 호출해야 됨.
+  // 이 fetch를 action으로 불러야 한다. -> createAsyncThunk 필요
+  // Posts.tsx에서 onUpdatePosts action으로 새롭게 호출하는데 createAsyncThunk 있으면 그럴 필요 없음.
+
+  // const fetchProfile = useCallback(() => {
+  //   axios
+  //     .post("/user/profile", { userId })
+  //     .then((res) => {
+  //       dispatch(onProfileSave(res.data));
+  //     })
+  //     .catch((error) => {
+  //       if (error instanceof AxiosError) {
+  //         console.log(error);
+  //         toast.error(error?.response?.data);
+  //         navigate("/home");
+  //       }
+  //     });
+  // }, [dispatch, userId, navigate]);
 
   useEffect(() => {
     axios
@@ -36,6 +56,21 @@ const Profile = () => {
       });
   }, [dispatch, userId, navigate]);
 
+  // button label 수정
+  const buttonLabel = useCallback(() => {
+    const alreadyFollowId = me.followerIds.find((id) => id === userId);
+
+    if (alreadyFollowId) {
+      return "Unfollow";
+    } else {
+      if (userId === me.id) {
+        return "Set up profile";
+      } else {
+        return "Follow";
+      }
+    }
+  }, [me.followerIds, me.id, userId]);
+
   return (
     <>
       <MainHeading
@@ -48,13 +83,13 @@ const Profile = () => {
         coverImage={profile.coverImage}
         profileImage={profile.profileImage}
       />
-      <div className="mt-3 flex justify-end">
+      <div className="mt-3 flex justify-end mr-4">
         <Button
           onClick={() => {}}
           bgColor={bgWhite}
           textColor={textBlack}
           hoverColor={hoverGray}
-          label="Set up profile"
+          label={buttonLabel()}
           fit
           bold
         />

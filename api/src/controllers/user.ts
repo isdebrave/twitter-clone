@@ -1,16 +1,25 @@
 import { Post, User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 
-export const me = async (req: Request, res: Response) => {
-  if (req.session.meId) {
-    const me = await prisma.user.findUnique({
-      where: { id: req.session.meId },
-      include: { posts: true },
-    });
+export const me = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (req.session.meId) {
+      const me = await prisma.user.findUnique({
+        where: { id: req.session.meId },
+      });
 
-    return res.status(200).json(me);
-  } else {
-    return res.status(200).json();
+      let reducedMe;
+      if (me) {
+        const { hashedPassword, name, birth, ...meObj } = me;
+        reducedMe = meObj;
+      }
+      return res.status(200).json(reducedMe);
+    } else {
+      return res.status(200).json();
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 };
 
@@ -20,7 +29,11 @@ export const users = async (
   next: NextFunction
 ) => {
   try {
-    const users = await prisma.user.findMany();
+    let users = await prisma.user.findMany();
+
+    if (req.session.meId) {
+      users = users.filter((user) => user.id !== req.session.meId);
+    }
 
     return res.status(200).json(users);
   } catch (error) {
@@ -65,6 +78,49 @@ export const profile = async (
     (profile as Profile).posts = posts;
 
     return res.status(200).json(profile);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const follow = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { followerId } = req.body;
+
+    if (req.session.meId) {
+      const me = await prisma.user.update({
+        where: {
+          id: req.session.meId,
+        },
+        data: {
+          followingIds: { push: followerId },
+        },
+      });
+
+      const follower = await prisma.user.update({
+        where: {
+          id: followerId,
+        },
+        data: {
+          followerIds: { push: req.session.meId },
+        },
+      });
+
+      const { hashedPassword, name, birth, ...meRest } = me;
+      const {
+        hashedPassword: _hashedPassword,
+        name: _name,
+        birth: _birth,
+        ...followerRest
+      } = follower;
+
+      return res.status(200).json({ meRest, followerRest });
+    }
   } catch (error) {
     console.log(error);
     next(error);

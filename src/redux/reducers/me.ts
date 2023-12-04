@@ -2,7 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { UserState } from "./profile";
 
-const initialState: UserState = {
+type ReducedUserState = Omit<UserState, "posts">;
+
+const initialState: ReducedUserState = {
   id: "",
   username: "",
   email: "",
@@ -14,7 +16,6 @@ const initialState: UserState = {
   updatedAt: "",
   followingIds: [],
   followerIds: [],
-  posts: [],
 };
 
 export const meSlice = createSlice({

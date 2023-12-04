@@ -21,7 +21,7 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const linkHandler = useCallback(
+  const profileHandler = useCallback(
     (e: React.MouseEvent<HTMLDivElement>, href: string) => {
       e.stopPropagation();
       navigate(href);
@@ -38,6 +38,7 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
         .then((res) => {
           dispatch(onPostLiked({ userId, status: res.data }));
           dispatch(onUpdatePosts());
+          // dispatch(onUpdatedProfile());
         })
         .catch((error) => {
           console.log(error);
@@ -61,18 +62,20 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
       {posts.map((post) => (
         <div
           key={post.id}
-          onClick={(e) => linkHandler(e, `/${post.user.id}/status/${post.id}`)}
+          onClick={(e) =>
+            profileHandler(e, `/${post.user.id}/status/${post.id}`)
+          }
           className="cursor-pointer"
         >
           <div className="p-2 px-4 hover:bg-neutral-300/20">
             <div className="flex gap-3">
-              <div onClick={(e) => linkHandler(e, `/${post.user.id}`)}>
+              <div onClick={(e) => profileHandler(e, `/${post.user.id}`)}>
                 <PostsProfileImage profileImage={post.user.profileImage} />
               </div>
 
               <div className="flex-1">
                 <PostsItem
-                  onClick={(e) => linkHandler(e, `/${post.user.id}`)}
+                  onClick={(e) => profileHandler(e, `/${post.user.id}`)}
                   username={post.user.username}
                   userId={post.user.id.slice(0, 10)}
                   createdAt={post.createdAt}

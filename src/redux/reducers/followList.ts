@@ -9,7 +9,7 @@ export const followListSlice = createSlice({
   initialState,
   reducers: {
     onFollowListSave: (state, action) => {
-      state.push(...action.payload);
+      return [...action.payload];
     },
   },
 });

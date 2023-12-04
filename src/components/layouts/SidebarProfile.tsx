@@ -43,7 +43,9 @@ const SidebarProfile = () => {
         </div>
 
         <div className="hidden lg:flex flex-col items-start">
-          <span className="font-bold">{me?.username}</span>
+          <span className="font-bold w-[120px] overflow-hidden whitespace-nowrap">
+            {me?.username}
+          </span>
           <span className="text-gray-500">@{me?.id.slice(0, 10)}</span>
         </div>
 

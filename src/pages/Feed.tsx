@@ -78,7 +78,7 @@ const Feed = () => {
             images={post.images}
           />
         </div>
-        <PostFooter createdAt={post.createdAt} />
+        <PostFooter createdAt={post.createdAt} views={post.views} />
         <hr className="mt-3 mb-1" />
         <div className="flex justify-around">
           <Icon

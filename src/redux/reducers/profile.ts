@@ -45,10 +45,25 @@ export const profileSlice = createSlice({
     onAddPostToProfile: (state, action) => {
       state.posts.unshift(action.payload);
     },
+    onAddFollowingToProfile: (state, action) => {
+      let { posts, ...rest } = state;
+      rest = action.payload;
+      return { ...rest, posts };
+    },
+    onAddFollowerToProfile: (state, action) => {
+      let { posts, ...rest } = state;
+      rest = action.payload;
+      return { ...rest, posts };
+    },
   },
 });
 
-export const { onProfileSave, onProfileRemove, onAddPostToProfile } =
-  profileSlice.actions;
+export const {
+  onProfileSave,
+  onProfileRemove,
+  onAddPostToProfile,
+  onAddFollowingToProfile,
+  onAddFollowerToProfile,
+} = profileSlice.actions;
 
 export default profileSlice.reducer;

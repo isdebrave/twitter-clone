@@ -7,6 +7,7 @@ export interface PostState {
   id: string;
   body: string;
   images: string[];
+  views: number;
   createdAt: string;
   updatedAt: string;
   userId: string;
@@ -19,6 +20,7 @@ const initialState: PostState = {
   id: "",
   body: "",
   images: [],
+  views: 0,
   createdAt: "",
   updatedAt: "",
   userId: "",

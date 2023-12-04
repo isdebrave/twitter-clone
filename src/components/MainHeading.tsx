@@ -37,7 +37,7 @@ const ProfileHeading: React.FC<ProfileHeadingProps> = ({
       </div>
       <div className="flex flex-col">
         <span className="font-bold text-lg">{title}</span>
-        {length && (
+        {length !== undefined && (
           <span className="font-bold text-xs text-gray-400">
             {length} posts
           </span>

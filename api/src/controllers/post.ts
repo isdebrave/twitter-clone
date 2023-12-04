@@ -77,7 +77,11 @@ export const registerPost = async (
   }
 };
 
-export const lookAroundPost = async (req: Request, res: Response) => {
+export const lookAroundPost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { postId } = req.params;
   let post;
 
@@ -86,24 +90,42 @@ export const lookAroundPost = async (req: Request, res: Response) => {
       where: {
         id: postId,
       },
-      include: {
-        user: true,
-        comments: true,
-      },
     });
   } catch (error) {
     console.log(error);
     return res.status(400).json("해당 게시물이 존재하지 않습니다.");
   }
 
-  if (post) {
-    type SafeUser = Omit<User, "hashedPassword" | "name" | "birth">;
-    const user = post.user;
-    const { hashedPassword, name, birth, ...userObj } = user;
-    (post.user as SafeUser) = userObj;
-  }
+  try {
+    let updatedPost;
 
-  return res.status(200).json(post);
+    if (post) {
+      const updatedViews = post.views + 1;
+
+      updatedPost = await prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          views: updatedViews,
+        },
+        include: {
+          user: true,
+          comments: true,
+        },
+      });
+
+      type SafeUser = Omit<User, "hashedPassword" | "name" | "birth">;
+      const user = updatedPost.user;
+      const { hashedPassword, name, birth, ...userObj } = user;
+      (updatedPost.user as SafeUser) = userObj;
+    }
+
+    return res.status(200).json(updatedPost);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
 };
 
 export const liked = async (
