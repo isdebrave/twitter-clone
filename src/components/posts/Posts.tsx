@@ -1,27 +1,25 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { BiMessageRounded, BiHeart, BiSolidHeart } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { BiHeart, BiMessageRounded, BiSolidHeart } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import FeedProfileImage from "./FeedProfileImage";
-import FeedItem from "./FeedItem";
+import PostsProfileImage from "./PostsProfileImage";
+import PostsItem from "./PostsItem";
 import Icon from "../Icon";
 
 import { PostState, onPostLiked } from "../../redux/reducers/post";
-import { RootState } from "../../redux/store";
 import { onUpdatePosts } from "../../redux/reducers/posts";
+import { RootState } from "../../redux/store";
 
-interface FeedProps {
+interface PostsProps {
   posts: PostState[];
 }
 
-const Feed: React.FC<FeedProps> = ({ posts }) => {
-  const post = useSelector((state: RootState) => state.post);
+const Posts: React.FC<PostsProps> = ({ posts }) => {
   const me = useSelector((state: RootState) => state.me);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [clickLiked, setClickLiked] = useState(false);
+  const navigate = useNavigate();
 
   const linkHandler = useCallback(
     (e: React.MouseEvent<HTMLDivElement>, href: string) => {
@@ -69,11 +67,11 @@ const Feed: React.FC<FeedProps> = ({ posts }) => {
           <div className="p-2 px-4 hover:bg-neutral-300/20">
             <div className="flex gap-3">
               <div onClick={(e) => linkHandler(e, `/${post.user.id}`)}>
-                <FeedProfileImage profileImage={post.user.profileImage} />
+                <PostsProfileImage profileImage={post.user.profileImage} />
               </div>
 
               <div className="flex-1">
-                <FeedItem
+                <PostsItem
                   onClick={(e) => linkHandler(e, `/${post.user.id}`)}
                   username={post.user.username}
                   userId={post.user.id.slice(0, 10)}
@@ -115,4 +113,4 @@ const Feed: React.FC<FeedProps> = ({ posts }) => {
   );
 };
 
-export default Feed;
+export default Posts;

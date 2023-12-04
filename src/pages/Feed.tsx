@@ -15,7 +15,7 @@ import { RootState } from "../redux/store";
 import { onPostLiked, onPostSave } from "../redux/reducers/post";
 import { onUpdatePosts } from "../redux/reducers/posts";
 
-const Post = () => {
+const Feed = () => {
   const post = useSelector((state: RootState) => state.post);
   const me = useSelector((state: RootState) => state.me);
   const { postId } = useParams();
@@ -108,4 +108,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default Feed;

@@ -14,7 +14,7 @@ import Home from "./pages/Home";
 import Explore from "./pages/Explore";
 import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
-import Post from "./pages/Post";
+import Feed from "./pages/Feed";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
           { path: "/explore", element: <Explore /> },
           { path: "/notifications", element: <Notifications /> },
           { path: "/:userId", element: <Profile /> },
-          { path: "/:userId/status/:postId", element: <Post /> },
+          { path: "/:userId/status/:postId", element: <Feed /> },
         ],
       },
       {

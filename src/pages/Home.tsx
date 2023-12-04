@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
 import PostForm from "../components/PostForm";
-import Feed from "../components/feeds/Feed";
+import Posts from "../components/posts/Posts";
 
-import { onPostsSave } from "../redux/reducers/posts";
 import { RootState } from "../redux/store";
+import { onPostsSave } from "../redux/reducers/posts";
 
 const Home = () => {
-  const dispatch = useDispatch();
   const posts = useSelector((state: RootState) => state.posts);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!posts.isUpdatedOnce) {
@@ -31,7 +31,7 @@ const Home = () => {
         <PostForm />
         <hr className="my-3" />
       </div>
-      <Feed posts={posts.value} />
+      <Posts posts={posts.value} />
     </>
   );
 };

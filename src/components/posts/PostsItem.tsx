@@ -4,7 +4,7 @@ import { formatDistanceToNowStrict } from "date-fns";
 
 import ImageCard from "../ImageCard";
 
-interface FeedItemProps {
+interface PostsItemProps {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   username: string;
   userId: string;
@@ -13,7 +13,7 @@ interface FeedItemProps {
   images: string[];
 }
 
-const FeedItem: React.FC<FeedItemProps> = ({
+const PostsItem: React.FC<PostsItemProps> = ({
   onClick,
   username,
   userId,
@@ -36,6 +36,7 @@ const FeedItem: React.FC<FeedItemProps> = ({
           @{userId} ▪ {customizedCreatedAt}
         </span>
       </div>
+
       <p className="text-gray-600 mb-2">{body}</p>
       {images.length > 0 && (
         <ImageCard imagesLength={images.length}>
@@ -61,4 +62,4 @@ const FeedItem: React.FC<FeedItemProps> = ({
   );
 };
 
-export default FeedItem;
+export default PostsItem;

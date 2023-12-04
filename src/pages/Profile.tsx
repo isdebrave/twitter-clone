@@ -10,7 +10,7 @@ import Button from "../components/Button";
 import ProfileHero from "../components/profile/ProfileHero";
 import MainHeading from "../components/MainHeading";
 import ProfileBio from "../components/profile/ProfileBio";
-import Feed from "../components/feeds/Feed";
+import Posts from "../components/posts/Posts";
 
 import { onProfileSave } from "../redux/reducers/profile";
 import { RootState } from "../redux/store";
@@ -67,7 +67,7 @@ const Profile = () => {
         followerIdsLength={profile.followerIds.length}
       />
       <hr className="my-3" />
-      <Feed posts={profile.posts} />
+      <Posts posts={profile.posts} />
     </>
   );
 };
