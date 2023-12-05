@@ -19,11 +19,11 @@ const Feed = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  useEffect(() => {
-    if (post.user.id !== "" && post.user.id !== userId) {
-      navigate(`/${post.user.id}/status/${postId}`);
-    }
-  }, [post.user, navigate, userId, postId]);
+  // useEffect(() => {
+  //   if (post.user.id !== "" && post.user.id !== userId) {
+  //     navigate(`/${post.user.id}/status/${postId}`);
+  //   }
+  // }, [post.user, navigate, userId, postId]);
 
   useEffect(() => {
     if (postId) {
