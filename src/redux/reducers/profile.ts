@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-import { PostState } from "./post";
 import axios, { AxiosError } from "axios";
 import { NavigateFunction } from "react-router-dom";
 import { toast } from "react-hot-toast";
+
+import { PostState } from "./post";
 
 interface DataType {
   userId: string;
@@ -65,19 +65,6 @@ export const profileSlice = createSlice({
     onProfileRemove: () => {
       return initialState;
     },
-    onAddPostToProfile: (state, action) => {
-      state.posts.unshift(action.payload);
-    },
-    onAddFollowingToProfile: (state, action) => {
-      let { posts, ...rest } = state;
-      rest = action.payload;
-      return { ...rest, posts };
-    },
-    onAddFollowerToProfile: (state, action) => {
-      let { posts, ...rest } = state;
-      rest = action.payload;
-      return { ...rest, posts };
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchProfile.fulfilled, (state, action) => {
@@ -86,11 +73,6 @@ export const profileSlice = createSlice({
   },
 });
 
-export const {
-  onProfileRemove,
-  onAddPostToProfile,
-  onAddFollowingToProfile,
-  onAddFollowerToProfile,
-} = profileSlice.actions;
+export const { onProfileRemove } = profileSlice.actions;
 
 export default profileSlice.reducer;

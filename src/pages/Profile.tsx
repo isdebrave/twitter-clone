@@ -28,18 +28,18 @@ const Profile = () => {
 
   // button label 수정
   const buttonLabel = useCallback(() => {
-    const alreadyFollowId = me.followerIds.find((id) => id === userId);
+    if (userId === me.id) {
+      return "Set up profile";
+    }
+
+    const alreadyFollowId = me.followingIds.find((id) => id === userId);
 
     if (alreadyFollowId) {
       return "Unfollow";
     } else {
-      if (userId === me.id) {
-        return "Set up profile";
-      } else {
-        return "Follow";
-      }
+      return "Follow";
     }
-  }, [me.followerIds, me.id, userId]);
+  }, [me.followingIds, me.id, userId]);
 
   return (
     <>

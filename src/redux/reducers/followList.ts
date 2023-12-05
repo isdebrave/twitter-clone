@@ -1,12 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-import {
-  UserState,
-  onAddFollowerToProfile,
-  onAddFollowingToProfile,
-} from "./profile";
+import { UserState, fetchProfile } from "./profile";
 import { AppDispatch } from "../store";
+import { NavigateFunction } from "react-router-dom";
 
 export const fetchFollowList = createAsyncThunk("fetchFollowList", async () => {
   try {
@@ -18,30 +15,28 @@ export const fetchFollowList = createAsyncThunk("fetchFollowList", async () => {
 });
 
 interface DataType {
+  isFollowing: (followerId: string) => boolean;
   followerId: string;
   userId: string;
-  meId: string;
   dispatch: AppDispatch;
+  navigate: NavigateFunction;
 }
 
 export const fetchFollow = createAsyncThunk(
   "fetchFollow",
   async (data: DataType) => {
-    const { followerId, userId, meId, dispatch } = data;
+    const { isFollowing, followerId, userId, dispatch, navigate } = data;
 
     try {
-      const response = await axios.post("/user/follow", { followerId });
+      let response;
 
-      const meRest = response.data.meRest;
-      const followerRest = response.data.followerRest;
-
-      if (userId === meId) {
-        dispatch(onAddFollowingToProfile(meRest));
-      }
-      if (userId === followerId) {
-        dispatch(onAddFollowerToProfile(followerRest));
+      if (isFollowing(followerId)) {
+        response = await axios.post("/user/follow", { followerId });
+      } else {
+        response = await axios.delete("/user/follow", { data: { followerId } });
       }
 
+      dispatch(fetchProfile({ userId, navigate }));
       return response.data;
     } catch (error) {
       console.log(error);

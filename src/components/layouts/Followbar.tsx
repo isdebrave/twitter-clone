@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +6,7 @@ import { bgBlack, hoverLightWhite, textWhite } from "../../constants/colors";
 
 import Button from "../Button";
 
-import { fetchFollow, fetchFollowList } from "../../redux/reducers/followList";
+import { fetchFollowList, fetchFollow } from "../../redux/reducers/followList";
 import { AppDispatch, RootState } from "../../redux/store";
 
 const Followbar = () => {
@@ -29,15 +28,30 @@ const Followbar = () => {
     [navigate]
   );
 
+  const isFollowing = useCallback(
+    (followerId: string) => {
+      for (const userId of me.followingIds) {
+        if (followerId === userId) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+    [me.followingIds]
+  );
+
   const followHandler = useCallback(
     (e: React.MouseEvent, followerId: string) => {
       e.stopPropagation();
 
       if (userId) {
-        dispatch(fetchFollow({ followerId, userId, meId: me.id, dispatch }));
+        dispatch(
+          fetchFollow({ isFollowing, followerId, userId, dispatch, navigate })
+        );
       }
     },
-    [dispatch, me.id, userId]
+    [isFollowing, dispatch, navigate, userId]
   );
 
   return (
@@ -47,7 +61,7 @@ const Followbar = () => {
         <div
           key={user.id}
           onClick={(e) => profileHandler(e, user.id)}
-          className="w-full px-3 py-2 flex items-center gap-3 hover:bg-gray-200 cursor-pointer"
+          className="px-3 py-2 flex items-center gap-3 hover:bg-gray-200 cursor-pointer"
         >
           <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
             <img
@@ -57,22 +71,24 @@ const Followbar = () => {
             />
           </div>
 
-          <div className="flex flex-col">
-            <span className="font-bold w-[120px] overflow-hidden whitespace-nowrap">
-              {user.username}
-            </span>
-            <span className="text-gray-500">@{user.id.slice(0, 10)}</span>
-          </div>
+          <div className="flex items-center flex-1">
+            <div className="flex flex-col">
+              <span className="font-bold w-[120px] overflow-hidden whitespace-nowrap">
+                {user.username}
+              </span>
+              <span className="text-gray-500">@{user.id.slice(0, 10)}</span>
+            </div>
 
-          <div className="ml-auto">
-            <Button
-              onClick={(e) => e && followHandler(e, user.id)}
-              label="Follow"
-              bgColor={bgBlack}
-              textColor={textWhite}
-              hoverColor={hoverLightWhite}
-              fit
-            />
+            <div className="ml-auto">
+              <Button
+                onClick={(e) => e && followHandler(e, user.id)}
+                label={isFollowing(user.id) ? "Following" : "Follow"}
+                bgColor={bgBlack}
+                textColor={textWhite}
+                hoverColor={hoverLightWhite}
+                fit
+              />
+            </div>
           </div>
         </div>
       ))}

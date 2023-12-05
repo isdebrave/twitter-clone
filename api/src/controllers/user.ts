@@ -84,7 +84,7 @@ export const profile = async (
   }
 };
 
-export const follow = async (
+export const postFollow = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -121,6 +121,19 @@ export const follow = async (
 
       return res.status(200).json({ meRest, followerRest });
     }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const deleteFollow = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { followerId } = req.body;
   } catch (error) {
     console.log(error);
     next(error);

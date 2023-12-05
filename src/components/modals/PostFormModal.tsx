@@ -4,23 +4,24 @@ import axios, { AxiosError } from "axios";
 import { IoClose } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Modal from "./Modal";
 
 import usePostForm from "../../hooks/usePostForm";
 
-import { RootState } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { onPostFormModalClose } from "../../redux/reducers/postFormModal";
-import { onAddPostToPosts } from "../../redux/reducers/posts";
-import { onAddPostToProfile } from "../../redux/reducers/profile";
+import { fetchPosts } from "../../redux/reducers/posts";
+import { fetchProfile } from "../../redux/reducers/profile";
 
 const PostFormModal = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { userId } = useParams();
-  const dispatch = useDispatch();
   const me = useSelector((state: RootState) => state.me);
   const postFormModal = useSelector((state: RootState) => state.postFormModal);
+  const [isLoading, setIsLoading] = useState(false);
+  const { userId } = useParams();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const showDivision = true;
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -33,9 +34,9 @@ const PostFormModal = () => {
       }
       formData.append("body", data.body);
 
-      const response = await axios.post("/post", formData);
-      dispatch(onAddPostToPosts(response.data));
-      userId === me.id && dispatch(onAddPostToProfile(response.data));
+      await axios.post("/post", formData);
+      dispatch(fetchPosts());
+      userId === me.id && dispatch(fetchProfile({ userId, navigate }));
       dispatch(onPostFormModalClose());
       resetAll();
     } catch (error: unknown) {

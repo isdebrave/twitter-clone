@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { redirect, useNavigate, useParams } from "react-router-dom";
 import { BiHeart, BiSolidHeart, BiMessageRounded } from "react-icons/bi";
 
 import MainHeading from "../components/MainHeading";
@@ -19,11 +19,12 @@ const Feed = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
+  // 사용자가 임의로 userId 변경해도 원상태로 돌리는 방법
   // useEffect(() => {
   //   if (post.user.id !== "" && post.user.id !== userId) {
-  //     navigate(`/${post.user.id}/status/${postId}`);
+  //     window.location.replace(`/${post.user.id}/status/${postId}`);
   //   }
-  // }, [post.user, navigate, userId, postId]);
+  // }, [navigate, userId, post.user.id, postId]);
 
   useEffect(() => {
     if (postId) {

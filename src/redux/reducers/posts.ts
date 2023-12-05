@@ -25,18 +25,12 @@ const initialState: PostsState = {
 export const postsSlice = createSlice({
   name: "posts",
   initialState,
-  reducers: {
-    onAddPostToPosts: (state, action) => {
-      state.value.unshift(action.payload);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
       return { isUpdatedOnce: true, value: action.payload };
     });
   },
 });
-
-export const { onAddPostToPosts } = postsSlice.actions;
 
 export default postsSlice.reducer;

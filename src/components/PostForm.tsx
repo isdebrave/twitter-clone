@@ -6,12 +6,13 @@ import { useDispatch } from "react-redux";
 
 import usePostForm from "../hooks/usePostForm";
 
-import { onAddPostToPosts } from "../redux/reducers/posts";
+import { fetchPosts } from "../redux/reducers/posts";
+import { AppDispatch } from "../redux/store";
 
 const PostForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const showDivision = false;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -23,8 +24,8 @@ const PostForm = () => {
       }
       formData.append("body", data.body);
 
-      const response = await axios.post("/post", formData);
-      dispatch(onAddPostToPosts(response.data));
+      await axios.post("/post", formData);
+      dispatch(fetchPosts());
       resetAll();
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
