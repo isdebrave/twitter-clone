@@ -4,9 +4,9 @@ import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 
 import { CommentsState } from "./comments";
-import { UserState } from "./profile";
+import { UserState, fetchProfile } from "./profile";
 import { AppDispatch } from "../store";
-import { onUpdatePosts } from "./posts";
+import { fetchPosts } from "./posts";
 
 interface PostDataType {
   postId: string;
@@ -35,29 +35,23 @@ interface LikedDataType {
   postId: string;
   dispatch: AppDispatch;
   meId: string;
+  userId?: string;
+  navigate?: NavigateFunction;
 }
 
 export const fetchPostLiked = createAsyncThunk(
   "fetchPostLiked",
   async (data: LikedDataType) => {
-    const { postId, dispatch, meId } = data;
+    const { postId, dispatch, meId, userId, navigate } = data;
 
     try {
       const response = await axios.post("/post/liked", { postId });
+      dispatch(fetchPosts());
 
-      dispatch(onUpdatePosts());
-
+      if (userId && navigate) {
+        dispatch(fetchProfile({ userId, navigate }));
+      }
       return { meId, status: response.data };
-
-      // axios
-      // .post("/post/liked", { postId })
-      // .then((res) => {
-      //   dispatch(onPostLiked({ meId: me.id, status: res.data }));
-      //   dispatch(onUpdatePosts());
-      // })
-      // .catch((error) => {
-      //   console.log(error);
-      // });
     } catch (error) {
       console.log(error);
     }
@@ -106,23 +100,12 @@ const initialState: PostState = {
 export const postSlice = createSlice({
   name: "post",
   initialState,
-  reducers: {
-    onPostLiked: (state, action) => {
-      const { meId, status } = action.payload;
-
-      console.log(action.payload);
-
-      if (status === "ADD") {
-        state.likedIds.push(meId);
-      } else {
-        state.likedIds = state.likedIds.filter((userId) => userId !== meId);
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchPost.fulfilled, (state, action) => {
       return action.payload;
     });
+
     builder.addCase(fetchPostLiked.fulfilled, (state, action) => {
       const { meId, status } = action.payload!;
 
@@ -134,7 +117,5 @@ export const postSlice = createSlice({
     });
   },
 });
-
-export const { onPostLiked } = postSlice.actions;
 
 export default postSlice.reducer;

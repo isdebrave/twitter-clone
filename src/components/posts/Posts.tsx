@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BiHeart, BiMessageRounded, BiSolidHeart } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import PostsProfileImage from "./PostsProfileImage";
 import PostsItem from "./PostsItem";
@@ -28,14 +28,22 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
   );
 
   const likedHandler = useCallback(
-    (e: React.MouseEvent, postId: string) => {
+    (e: React.MouseEvent, postId: string, userId: string) => {
       e.stopPropagation();
 
       if (postId) {
-        dispatch(fetchPostLiked({ postId, meId: me.id, dispatch }));
+        dispatch(
+          fetchPostLiked({
+            postId,
+            meId: me.id,
+            dispatch,
+            userId,
+            navigate,
+          })
+        );
       }
     },
-    [dispatch, me.id]
+    [dispatch, me.id, navigate]
   );
 
   const isHeartFill = useCallback((array: string[], meId: string) => {
@@ -84,7 +92,7 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
                     textColor="text-gray-500"
                   />
                   <Icon
-                    onClick={(e) => e && likedHandler(e, post.id)}
+                    onClick={(e) => e && likedHandler(e, post.id, post.user.id)}
                     icon={
                       isHeartFill(post.likedIds, me.id) ? BiSolidHeart : BiHeart
                     }

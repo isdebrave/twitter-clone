@@ -21,6 +21,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     dispatch(fetchMe(navigate));
   }, [dispatch, navigate]);
 
+  console.log(window.history);
+
   return (
     <div
       className="

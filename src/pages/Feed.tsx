@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { BiHeart, BiSolidHeart, BiMessageRounded } from "react-icons/bi";
@@ -96,4 +96,4 @@ const Feed = () => {
   );
 };
 
-export default Feed;
+export default memo(Feed);

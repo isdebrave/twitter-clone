@@ -26,9 +26,6 @@ export const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    onUpdatePosts: (state) => {
-      state.isUpdatedOnce = false;
-    },
     onAddPostToPosts: (state, action) => {
       state.value.unshift(action.payload);
     },
@@ -40,6 +37,6 @@ export const postsSlice = createSlice({
   },
 });
 
-export const { onUpdatePosts, onAddPostToPosts } = postsSlice.actions;
+export const { onAddPostToPosts } = postsSlice.actions;
 
 export default postsSlice.reducer;

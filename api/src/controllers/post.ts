@@ -146,10 +146,10 @@ export const liked = async (
     if (post && req.session.meId) {
       idx = post.likedIds.findIndex((userId) => userId === req.session.meId);
 
-      if (idx !== -1) {
-        post.likedIds.splice(idx, 1);
-      } else {
+      if (idx === -1) {
         post.likedIds.push(req.session.meId);
+      } else {
+        post.likedIds.splice(idx, 1);
       }
 
       await prisma.post.update({
@@ -162,7 +162,7 @@ export const liked = async (
       });
     }
 
-    if (idx) {
+    if (idx === -1) {
       res.status(200).json("ADD");
     } else {
       res.status(200).json("REMOVE");
