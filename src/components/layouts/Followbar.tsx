@@ -7,29 +7,18 @@ import { bgBlack, hoverLightWhite, textWhite } from "../../constants/colors";
 
 import Button from "../Button";
 
-import { onFollowListSave } from "../../redux/reducers/followList";
-import {
-  onAddFollowerToProfile,
-  onAddFollowingToProfile,
-} from "../../redux/reducers/profile";
-import { RootState } from "../../redux/store";
+import { fetchFollow, fetchFollowList } from "../../redux/reducers/followList";
+import { AppDispatch, RootState } from "../../redux/store";
 
 const Followbar = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const followList = useSelector((state: RootState) => state.followList);
   const me = useSelector((state: RootState) => state.me);
   const { userId } = useParams();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get("/user/all")
-      .then((res) => {
-        dispatch(onFollowListSave(res.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    dispatch(fetchFollowList());
   }, [dispatch]);
 
   const profileHandler = useCallback(
@@ -44,19 +33,9 @@ const Followbar = () => {
     (e: React.MouseEvent, followerId: string) => {
       e.stopPropagation();
 
-      axios
-        .post("/user/follow", { followerId })
-        .then((res) => {
-          if (userId === me.id) {
-            dispatch(onAddFollowingToProfile(res.data.meRest));
-          }
-          if (userId === res.data.followerRest.id) {
-            dispatch(onAddFollowerToProfile(res.data.followerRest));
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (userId) {
+        dispatch(fetchFollow({ followerId, userId, meId: me.id, dispatch }));
+      }
     },
     [dispatch, me.id, userId]
   );

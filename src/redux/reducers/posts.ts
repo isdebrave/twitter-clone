@@ -1,6 +1,16 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { PostState } from "./post";
+import axios from "axios";
+
+export const fetchPosts = createAsyncThunk("fetchPosts", async () => {
+  try {
+    const response = await axios.get("/post");
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 interface PostsState {
   isUpdatedOnce: boolean;
@@ -16,9 +26,6 @@ export const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    onPostsSave: (state, action) => {
-      return { isUpdatedOnce: true, value: action.payload };
-    },
     onUpdatePosts: (state) => {
       state.isUpdatedOnce = false;
     },
@@ -26,9 +33,13 @@ export const postsSlice = createSlice({
       state.value.unshift(action.payload);
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchPosts.fulfilled, (state, action) => {
+      return { isUpdatedOnce: true, value: action.payload };
+    });
+  },
 });
 
-export const { onPostsSave, onUpdatePosts, onAddPostToPosts } =
-  postsSlice.actions;
+export const { onUpdatePosts, onAddPostToPosts } = postsSlice.actions;
 
 export default postsSlice.reducer;

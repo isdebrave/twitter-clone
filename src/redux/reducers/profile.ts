@@ -1,6 +1,32 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { PostState } from "./post";
+import axios, { AxiosError } from "axios";
+import { NavigateFunction } from "react-router-dom";
+import { toast } from "react-hot-toast";
+
+interface DataType {
+  userId: string;
+  navigate: NavigateFunction;
+}
+
+export const fetchProfile = createAsyncThunk(
+  "fetchProfile",
+  async (data: DataType) => {
+    const { userId, navigate } = data;
+
+    try {
+      const response = await axios.post("/user/profile", { userId });
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error);
+        toast.error(error?.response?.data);
+        navigate("/home");
+      }
+    }
+  }
+);
 
 export interface UserState {
   id: string;
@@ -36,9 +62,6 @@ export const profileSlice = createSlice({
   name: "profile",
   initialState,
   reducers: {
-    onProfileSave: (state, action) => {
-      return action.payload;
-    },
     onProfileRemove: () => {
       return initialState;
     },
@@ -56,10 +79,14 @@ export const profileSlice = createSlice({
       return { ...rest, posts };
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchProfile.fulfilled, (state, action) => {
+      return action.payload;
+    });
+  },
 });
 
 export const {
-  onProfileSave,
   onProfileRemove,
   onAddPostToProfile,
   onAddFollowingToProfile,

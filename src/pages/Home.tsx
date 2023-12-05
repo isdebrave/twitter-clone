@@ -1,27 +1,19 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 
 import PostForm from "../components/PostForm";
 import Posts from "../components/posts/Posts";
 
-import { RootState } from "../redux/store";
-import { onPostsSave } from "../redux/reducers/posts";
+import { AppDispatch, RootState } from "../redux/store";
+import { fetchPosts } from "../redux/reducers/posts";
 
 const Home = () => {
   const posts = useSelector((state: RootState) => state.posts);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (!posts.isUpdatedOnce) {
-      axios
-        .get("/post")
-        .then((res) => {
-          dispatch(onPostsSave(res.data));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      dispatch(fetchPosts());
     }
   }, [posts.isUpdatedOnce, dispatch]);
 

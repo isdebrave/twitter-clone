@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 
 import Sidebar from "./Sidebar";
@@ -11,26 +10,15 @@ import MobileLogo from "./mobile/MobileLogo";
 import MobilePostButton from "./mobile/MobilePostButton";
 import MobileNavbar from "./mobile/MobileNavbar";
 
-import { onMeSave } from "../../redux/reducers/me";
+import { fetchMe } from "../../redux/reducers/me";
+import { AppDispatch } from "../../redux/store";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    axios
-      .get("/user/me")
-      .then((res) => {
-        if (res.data) {
-          dispatch(onMeSave(res.data));
-        } else {
-          localStorage.removeItem("auth");
-          navigate("/auth");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    dispatch(fetchMe(navigate));
   }, [dispatch, navigate]);
 
   return (

@@ -1,16 +1,14 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BiHeart, BiMessageRounded, BiSolidHeart } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 import PostsProfileImage from "./PostsProfileImage";
 import PostsItem from "./PostsItem";
 import Icon from "../Icon";
 
-import { PostState, onPostLiked } from "../../redux/reducers/post";
-import { onUpdatePosts } from "../../redux/reducers/posts";
-import { RootState } from "../../redux/store";
+import { PostState, fetchPostLiked } from "../../redux/reducers/post";
+import { AppDispatch, RootState } from "../../redux/store";
 
 interface PostsProps {
   posts: PostState[];
@@ -18,7 +16,7 @@ interface PostsProps {
 
 const Posts: React.FC<PostsProps> = ({ posts }) => {
   const me = useSelector((state: RootState) => state.me);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const profileHandler = useCallback(
@@ -30,21 +28,14 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
   );
 
   const likedHandler = useCallback(
-    (e: React.MouseEvent, postId: string, userId: string) => {
+    (e: React.MouseEvent, postId: string) => {
       e.stopPropagation();
 
-      axios
-        .post("/post/liked", { postId })
-        .then((res) => {
-          dispatch(onPostLiked({ userId, status: res.data }));
-          dispatch(onUpdatePosts());
-          // dispatch(onUpdatedProfile());
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (postId) {
+        dispatch(fetchPostLiked({ postId, meId: me.id, dispatch }));
+      }
     },
-    [dispatch]
+    [dispatch, me.id]
   );
 
   const isHeartFill = useCallback((array: string[], meId: string) => {
@@ -93,7 +84,7 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
                     textColor="text-gray-500"
                   />
                   <Icon
-                    onClick={(e) => e && likedHandler(e, post.id, post.user.id)}
+                    onClick={(e) => e && likedHandler(e, post.id)}
                     icon={
                       isHeartFill(post.likedIds, me.id) ? BiSolidHeart : BiHeart
                     }

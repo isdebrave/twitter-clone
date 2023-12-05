@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import axios, { AxiosError } from "axios";
-import { toast } from "react-hot-toast";
 import { BiHeart, BiSolidHeart, BiMessageRounded } from "react-icons/bi";
 
 import MainHeading from "../components/MainHeading";
@@ -11,42 +9,32 @@ import PostBody from "../components/post/PostBody";
 import PostFooter from "../components/post/PostFooter";
 import Icon from "../components/Icon";
 
-import { RootState } from "../redux/store";
-import { onPostLiked, onPostSave } from "../redux/reducers/post";
-import { onUpdatePosts } from "../redux/reducers/posts";
+import { AppDispatch, RootState } from "../redux/store";
+import { fetchPost, fetchPostLiked } from "../redux/reducers/post";
 
 const Feed = () => {
   const post = useSelector((state: RootState) => state.post);
   const me = useSelector((state: RootState) => state.me);
-  const { postId } = useParams();
+  const { userId, postId } = useParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    axios
-      .get(`/post/${postId}`)
-      .then((res) => {
-        dispatch(onPostSave(res.data));
-      })
-      .catch((error) => {
-        if (error instanceof AxiosError) {
-          console.log(error);
-          toast.error(error?.response?.data);
-          navigate("/home");
-        }
-      });
-  }, [postId, dispatch, navigate]);
+    if (post.user.id !== "" && post.user.id !== userId) {
+      navigate(`/${post.user.id}/status/${postId}`);
+    }
+  }, [post.user, navigate, userId, postId]);
+
+  useEffect(() => {
+    if (postId) {
+      dispatch(fetchPost({ postId, navigate }));
+    }
+  }, [dispatch, postId, navigate]);
 
   const likedHandler = useCallback(() => {
-    axios
-      .post("/post/liked", { postId })
-      .then((res) => {
-        dispatch(onPostLiked({ meId: me.id, status: res.data }));
-        dispatch(onUpdatePosts());
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (postId) {
+      dispatch(fetchPostLiked({ postId, meId: me.id, dispatch }));
+    }
   }, [dispatch, me.id, postId]);
 
   const isHeartFill = useCallback((array: string[], meId: string) => {
