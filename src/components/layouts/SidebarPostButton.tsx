@@ -6,7 +6,7 @@ import { bgBlue, hoverDarkBlue, textWhite } from "../../constants/colors";
 
 import Button from "../Button";
 
-import { onPostFormModalOpen } from "../../redux/reducers/postFormModal";
+import { onWritePostModalOpen } from "../../redux/reducers/WritePostModal";
 
 const SidebarPostButton = () => {
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ const SidebarPostButton = () => {
   return (
     <>
       <button
-        onClick={() => dispatch(onPostFormModalOpen())}
+        onClick={() => dispatch(onWritePostModalOpen())}
         className={`
             p-3 
             rounded-full 
@@ -36,7 +36,7 @@ const SidebarPostButton = () => {
 
       <div className="hidden lg:block">
         <Button
-          onClick={() => dispatch(onPostFormModalOpen())}
+          onClick={() => dispatch(onWritePostModalOpen())}
           bgColor={bgBlue}
           textColor={textWhite}
           hoverColor={hoverDarkBlue}

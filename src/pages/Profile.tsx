@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { bgWhite, hoverGray, textBlack } from "../constants/colors";
 
@@ -10,36 +9,24 @@ import MainHeading from "../components/MainHeading";
 import ProfileBio from "../components/profile/ProfileBio";
 import Posts from "../components/posts/Posts";
 
-import { fetchProfile } from "../redux/reducers/profile";
-import { AppDispatch, RootState } from "../redux/store";
+import useProfile from "../hooks/useProfile";
 
 const Profile = () => {
-  const profile = useSelector((state: RootState) => state.profile);
-  const me = useSelector((state: RootState) => state.me);
-  const { userId } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (userId) {
-      dispatch(fetchProfile({ userId, navigate }));
-    }
-  }, [dispatch, userId, navigate]);
+  const { profile, me } = useProfile();
 
   // button label 수정
-  const buttonLabel = useCallback(() => {
-    if (userId === me.id) {
+  const buttonLabel = () => {
+    if (profile.id === me.id) {
       return "Set up profile";
     }
 
-    const alreadyFollowId = me.followingIds.find((id) => id === userId);
-
-    if (alreadyFollowId) {
+    if (me.followingIds.includes(profile.id)) {
       return "Unfollow";
     } else {
       return "Follow";
     }
-  }, [me.followingIds, me.id, userId]);
+  };
 
   return (
     <>

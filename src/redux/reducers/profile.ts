@@ -1,34 +1,9 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios, { AxiosError } from "axios";
-import { NavigateFunction } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import { createSlice } from "@reduxjs/toolkit";
 
 import { PostState } from "./post";
+import { fetchProfile } from "../thunk/profile";
 
-interface DataType {
-  userId: string;
-  navigate: NavigateFunction;
-}
-
-export const fetchProfile = createAsyncThunk(
-  "fetchProfile",
-  async (data: DataType) => {
-    const { userId, navigate } = data;
-
-    try {
-      const response = await axios.post("/user/profile", { userId });
-      return response.data;
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast.error(error?.response?.data);
-        navigate("/home");
-      }
-    }
-  }
-);
-
-export interface UserState {
+export interface ProfileState {
   id: string;
   username: string;
   email: string;
@@ -43,7 +18,7 @@ export interface UserState {
   posts: PostState[];
 }
 
-const initialState: UserState = {
+const initialState: ProfileState = {
   id: "",
   username: "",
   email: "",

@@ -1,30 +1,11 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { NavigateFunction } from "react-router-dom";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
-import { UserState } from "./profile";
+import { ProfileState } from "./profile";
+import { fetchMe } from "../thunk/me";
 
-export const fetchMe = createAsyncThunk(
-  "fetchMe",
-  async (navigate: NavigateFunction) => {
-    try {
-      const response = await axios.get("/user/me");
+export type MeState = Omit<ProfileState, "posts">;
 
-      if (!response.data) {
-        localStorage.removeItem("auth");
-        return navigate("/auth");
-      }
-
-      return response.data;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
-
-type ReducedUserState = Omit<UserState, "posts">;
-
-const initialState: ReducedUserState = {
+const initialState: MeState = {
   id: "",
   username: "",
   email: "",

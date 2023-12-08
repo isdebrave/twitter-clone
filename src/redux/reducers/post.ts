@@ -1,62 +1,10 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { NavigateFunction } from "react-router-dom";
-import axios, { AxiosError } from "axios";
-import { toast } from "react-hot-toast";
+import { createSlice } from "@reduxjs/toolkit";
 
 import { CommentsState } from "./comments";
-import { UserState, fetchProfile } from "./profile";
-import { AppDispatch } from "../store";
-import { fetchPosts } from "./posts";
+import { ProfileState } from "./profile";
+import { fetchPost, fetchPostLiked } from "../thunk/post";
 
-interface PostDataType {
-  postId: string;
-  navigate: NavigateFunction;
-}
-
-export const fetchPost = createAsyncThunk(
-  "fetchPost",
-  async (data: PostDataType) => {
-    const { postId, navigate } = data;
-
-    try {
-      const response = await axios.get(`/post/${postId}`);
-      return response.data;
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast.error(error?.response?.data);
-        navigate("/home");
-      }
-    }
-  }
-);
-
-interface LikedDataType {
-  postId: string;
-  dispatch: AppDispatch;
-  meId: string;
-  userId?: string;
-  navigate?: NavigateFunction;
-}
-
-export const fetchPostLiked = createAsyncThunk(
-  "fetchPostLiked",
-  async (data: LikedDataType) => {
-    const { postId, dispatch, meId, userId, navigate } = data;
-
-    try {
-      const response = await axios.post("/post/liked", { postId });
-      dispatch(fetchPosts());
-
-      if (userId && navigate) {
-        dispatch(fetchProfile({ userId, navigate }));
-      }
-      return { meId, status: response.data };
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
+type UserState = ProfileState;
 
 export interface PostState {
   id: string;

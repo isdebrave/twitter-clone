@@ -1,29 +1,20 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 
-import PostForm from "../components/PostForm";
+import WritePost from "../components/WritePost";
 import Posts from "../components/posts/Posts";
 
-import { AppDispatch, RootState } from "../redux/store";
-import { fetchPosts } from "../redux/reducers/posts";
+import usePosts from "../hooks/usePosts";
 
 const Home = () => {
-  const posts = useSelector((state: RootState) => state.posts);
-  const dispatch = useDispatch<AppDispatch>();
-
-  useEffect(() => {
-    if (!posts.isUpdatedOnce) {
-      dispatch(fetchPosts());
-    }
-  }, [posts.isUpdatedOnce, dispatch]);
+  const posts = usePosts();
 
   return (
     <>
       <div className="mt-4">
-        <PostForm />
+        <WritePost />
         <hr className="my-3" />
       </div>
-      <Posts posts={posts.value} />
+      <Posts posts={posts} />
     </>
   );
 };

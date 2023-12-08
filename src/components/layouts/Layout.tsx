@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import React from "react";
 
 import Sidebar from "./Sidebar";
 import Followbar from "./Followbar";
@@ -10,16 +8,10 @@ import MobileLogo from "./mobile/MobileLogo";
 import MobilePostButton from "./mobile/MobilePostButton";
 import MobileNavbar from "./mobile/MobileNavbar";
 
-import { fetchMe } from "../../redux/reducers/me";
-import { AppDispatch } from "../../redux/store";
+import useMe from "../../hooks/useMe";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
-
-  useEffect(() => {
-    dispatch(fetchMe(navigate));
-  }, [dispatch, navigate]);
+  useMe();
 
   return (
     <div

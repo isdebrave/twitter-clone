@@ -8,16 +8,18 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import Modal from "./Modal";
 
-import usePostForm from "../../hooks/usePostForm";
+import useWritePostForm from "../../hooks/useWritePostForm";
 
 import { AppDispatch, RootState } from "../../redux/store";
-import { onPostFormModalClose } from "../../redux/reducers/postFormModal";
-import { fetchPosts } from "../../redux/reducers/posts";
-import { fetchProfile } from "../../redux/reducers/profile";
+import { onWritePostModalClose } from "../../redux/reducers/WritePostModal";
+import { fetchPosts } from "../../redux/thunk/posts";
+import { fetchProfile } from "../../redux/thunk/profile";
 
-const PostFormModal = () => {
+const WritePostModal = () => {
   const me = useSelector((state: RootState) => state.me);
-  const postFormModal = useSelector((state: RootState) => state.postFormModal);
+  const writePostModal = useSelector(
+    (state: RootState) => state.writePostModal
+  );
   const [isLoading, setIsLoading] = useState(false);
   const { userId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
@@ -36,8 +38,10 @@ const PostFormModal = () => {
 
       await axios.post("/post", formData);
       dispatch(fetchPosts());
-      userId === me.id && dispatch(fetchProfile({ userId, navigate }));
-      dispatch(onPostFormModalClose());
+      if (userId) {
+        userId === me.id && dispatch(fetchProfile({ userId, navigate }));
+      }
+      dispatch(onWritePostModalClose());
       resetAll();
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -49,27 +53,16 @@ const PostFormModal = () => {
     }
   };
 
-  const {
-    reset,
-    imagesPreview,
-    setImagesPreview,
-    imageFiles,
-    setImageFiles,
-    bodyContent,
-    footerContent,
-  } = usePostForm(onSubmit, showDivision);
-
-  const resetAll = useCallback(() => {
-    reset();
-    setImagesPreview([]);
-    setImageFiles([]);
-  }, [reset, setImagesPreview, setImageFiles]);
+  const { resetAll, imageFiles, bodyContent, footerContent } = useWritePostForm(
+    onSubmit,
+    showDivision
+  );
 
   return (
     <Modal
       disabled={isLoading}
-      isOpen={postFormModal.isOpen}
-      onClose={() => dispatch(onPostFormModalClose())}
+      isOpen={writePostModal.isOpen}
+      onClose={() => dispatch(onWritePostModalClose())}
       icon={IoClose}
       body={bodyContent}
       footer={footerContent}
@@ -78,4 +71,4 @@ const PostFormModal = () => {
   );
 };
 
-export default PostFormModal;
+export default WritePostModal;

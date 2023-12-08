@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 import { bgBlue, hoverDarkBlue, textWhite } from "../../../constants/colors";
 
-import { onPostFormModalOpen } from "../../../redux/reducers/postFormModal";
+import { onWritePostModalOpen } from "../../../redux/reducers/WritePostModal";
 
 const MobilePostButton = () => {
   const dispatch = useDispatch();
@@ -12,7 +12,7 @@ const MobilePostButton = () => {
   return (
     <div className="absolute right-3 bottom-16">
       <button
-        onClick={() => dispatch(onPostFormModalOpen())}
+        onClick={() => dispatch(onWritePostModalOpen())}
         className={`
           p-3 
           rounded-full 

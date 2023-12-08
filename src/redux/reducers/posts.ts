@@ -1,16 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 import { PostState } from "./post";
-import axios from "axios";
-
-export const fetchPosts = createAsyncThunk("fetchPosts", async () => {
-  try {
-    const response = await axios.get("/post");
-    return response.data;
-  } catch (error) {
-    console.log(error);
-  }
-});
+import { fetchPosts } from "../thunk/posts";
 
 interface PostsState {
   isUpdatedOnce: boolean;

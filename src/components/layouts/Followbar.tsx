@@ -1,58 +1,22 @@
-import React, { useCallback, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { bgBlack, hoverLightWhite, textWhite } from "../../constants/colors";
 
 import Button from "../Button";
 
-import { fetchFollowList, fetchFollow } from "../../redux/reducers/followList";
-import { AppDispatch, RootState } from "../../redux/store";
+import useFollowList from "../../hooks/useFollowList";
+import useFollow from "../../hooks/useFollow";
 
 const Followbar = () => {
-  const followList = useSelector((state: RootState) => state.followList);
-  const me = useSelector((state: RootState) => state.me);
-  const { userId } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { followList } = useFollowList();
+  const { isFollowing, followHandler } = useFollow();
 
-  useEffect(() => {
-    dispatch(fetchFollowList());
-  }, [dispatch]);
-
-  const profileHandler = useCallback(
-    (e: React.MouseEvent, href: string) => {
-      e.stopPropagation();
-      navigate(href);
-    },
-    [navigate]
-  );
-
-  const isFollowing = useCallback(
-    (followerId: string) => {
-      for (const userId of me.followingIds) {
-        if (followerId === userId) {
-          return true;
-        }
-      }
-
-      return false;
-    },
-    [me.followingIds]
-  );
-
-  const followHandler = useCallback(
-    (e: React.MouseEvent, followerId: string) => {
-      e.stopPropagation();
-
-      if (userId) {
-        dispatch(
-          fetchFollow({ isFollowing, followerId, userId, dispatch, navigate })
-        );
-      }
-    },
-    [isFollowing, dispatch, navigate, userId]
-  );
+  const profileHandler = (e: React.MouseEvent, href: string) => {
+    e.stopPropagation();
+    navigate(href);
+  };
 
   return (
     <div className="sticky top-3 ml-8 my-3 py-3 rounded-lg bg-gray-100">

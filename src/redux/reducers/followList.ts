@@ -1,52 +1,11 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
-import { UserState, fetchProfile } from "./profile";
-import { AppDispatch } from "../store";
-import { NavigateFunction } from "react-router-dom";
+import { ProfileState } from "./profile";
+import { fetchFollowList } from "../thunk/followList";
 
-export const fetchFollowList = createAsyncThunk("fetchFollowList", async () => {
-  try {
-    const response = await axios.get("/user/all");
-    return response.data;
-  } catch (error) {
-    console.log(error);
-  }
-});
+type UserState = Omit<ProfileState, "posts">;
 
-interface DataType {
-  isFollowing: (followerId: string) => boolean;
-  followerId: string;
-  userId: string;
-  dispatch: AppDispatch;
-  navigate: NavigateFunction;
-}
-
-export const fetchFollow = createAsyncThunk(
-  "fetchFollow",
-  async (data: DataType) => {
-    const { isFollowing, followerId, userId, dispatch, navigate } = data;
-
-    try {
-      let response;
-
-      if (isFollowing(followerId)) {
-        response = await axios.post("/user/follow", { followerId });
-      } else {
-        response = await axios.delete("/user/follow", { data: { followerId } });
-      }
-
-      dispatch(fetchProfile({ userId, navigate }));
-      return response.data;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
-
-type ReducedUserState = Omit<UserState, "posts">;
-
-const initialState: ReducedUserState[] = [];
+const initialState: UserState[] = [];
 
 export const followListSlice = createSlice({
   name: "followList",

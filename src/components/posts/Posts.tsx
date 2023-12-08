@@ -7,8 +7,9 @@ import PostsProfileImage from "./PostsProfileImage";
 import PostsItem from "./PostsItem";
 import Icon from "../Icon";
 
-import { PostState, fetchPostLiked } from "../../redux/reducers/post";
 import { AppDispatch, RootState } from "../../redux/store";
+import { PostState } from "../../redux/reducers/post";
+import { fetchPostLiked } from "../../redux/thunk/post";
 
 interface PostsProps {
   posts: PostState[];

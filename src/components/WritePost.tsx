@@ -4,12 +4,12 @@ import { FieldValues, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 
-import usePostForm from "../hooks/usePostForm";
+import useWritePostForm from "../hooks/useWritePostForm";
 
-import { fetchPosts } from "../redux/reducers/posts";
 import { AppDispatch } from "../redux/store";
+import { fetchPosts } from "../redux/thunk/posts";
 
-const PostForm = () => {
+const WritePost = () => {
   const [isLoading, setIsLoading] = useState(false);
   const showDivision = false;
   const dispatch = useDispatch<AppDispatch>();
@@ -25,33 +25,24 @@ const PostForm = () => {
       formData.append("body", data.body);
 
       await axios.post("/post", formData);
+      // dispatch(fetchWritePost(formData));
       dispatch(fetchPosts());
       resetAll();
     } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast.error(error?.response?.data);
-      }
+      console.log(error);
+      // if (error instanceof AxiosError) {
+      //   console.log(error);
+      //   toast.error(error?.response?.data);
+      // }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const {
-    reset,
-    imagesPreview,
-    setImagesPreview,
-    imageFiles,
-    setImageFiles,
-    bodyContent,
-    footerContent,
-  } = usePostForm(onSubmit, showDivision);
-
-  const resetAll = useCallback(() => {
-    reset();
-    setImagesPreview([]);
-    setImageFiles([]);
-  }, [reset, setImagesPreview, setImageFiles]);
+  const { resetAll, imageFiles, bodyContent, footerContent } = useWritePostForm(
+    onSubmit,
+    showDivision
+  );
 
   return (
     <>
@@ -61,4 +52,4 @@ const PostForm = () => {
   );
 };
 
-export default PostForm;
+export default WritePost;

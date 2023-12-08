@@ -1,6 +1,6 @@
-import React, { memo, useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { redirect, useNavigate, useParams } from "react-router-dom";
+import React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { BiHeart, BiSolidHeart, BiMessageRounded } from "react-icons/bi";
 
 import MainHeading from "../components/MainHeading";
@@ -9,15 +9,13 @@ import PostBody from "../components/post/PostBody";
 import PostFooter from "../components/post/PostFooter";
 import Icon from "../components/Icon";
 
-import { AppDispatch, RootState } from "../redux/store";
-import { fetchPost, fetchPostLiked } from "../redux/reducers/post";
+import { RootState } from "../redux/store";
+import usePost from "../hooks/usePost";
 
 const Feed = () => {
-  const post = useSelector((state: RootState) => state.post);
+  const { post, likedHandler } = usePost();
   const me = useSelector((state: RootState) => state.me);
-  const { userId, postId } = useParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
 
   // 사용자가 임의로 userId 변경해도 원상태로 돌리는 방법
   // useEffect(() => {
@@ -26,27 +24,13 @@ const Feed = () => {
   //   }
   // }, [navigate, userId, post.user.id, postId]);
 
-  useEffect(() => {
-    if (postId) {
-      dispatch(fetchPost({ postId, navigate }));
-    }
-  }, [dispatch, postId, navigate]);
-
-  const likedHandler = useCallback(() => {
-    if (postId) {
-      dispatch(fetchPostLiked({ postId, meId: me.id, dispatch }));
-    }
-  }, [dispatch, me.id, postId]);
-
-  const isHeartFill = useCallback((array: string[], meId: string) => {
-    const idx = array.find((likedUserId) => likedUserId === meId);
-
-    if (idx) {
+  const isHeartFill = (array: string[], meId: string) => {
+    if (array.includes(meId)) {
       return true;
-    } else {
-      return false;
     }
-  }, []);
+
+    return false;
+  };
 
   return (
     <>
@@ -97,4 +81,4 @@ const Feed = () => {
   );
 };
 
-export default memo(Feed);
+export default Feed;
