@@ -134,6 +134,40 @@ export const deleteFollow = async (
 ) => {
   try {
     const { followerId } = req.body;
+
+    if (req.session.meId) {
+      const me = await prisma.user.findUnique({
+        where: { id: req.session.meId },
+      });
+
+      if (me) {
+        const updatedFollowingIds = me.followingIds.filter(
+          (userId) => userId !== followerId
+        );
+
+        await prisma.user.update({
+          where: { id: req.session.meId },
+          data: { followingIds: updatedFollowingIds },
+        });
+      }
+
+      const follower = await prisma.user.findUnique({
+        where: { id: followerId },
+      });
+
+      if (follower) {
+        const updatedFollowerIds = follower.followerIds.filter(
+          (userId) => userId !== req.session.meId
+        );
+
+        await prisma.user.update({
+          where: { id: followerId },
+          data: { followerIds: updatedFollowerIds },
+        });
+      }
+
+      return res.status(200).json();
+    }
   } catch (error) {
     console.log(error);
     next(error);

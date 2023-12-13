@@ -4,6 +4,8 @@ import axios from "axios";
 
 import { fetchProfile } from "./profile";
 import { AppDispatch } from "../store";
+import { fetchFollowList } from "./followList";
+import { fetchMe } from "./me";
 
 interface DataType {
   isFollowing: (followerId: string) => boolean;
@@ -21,12 +23,15 @@ export const fetchFollow = createAsyncThunk(
     try {
       let response;
 
-      if (isFollowing(followerId)) {
+      if (!isFollowing(followerId)) {
+        console.log("post");
         response = await axios.post("/user/follow", { followerId });
       } else {
+        console.log("delete");
         response = await axios.delete("/user/follow", { data: { followerId } });
       }
 
+      dispatch(fetchMe(navigate));
       dispatch(fetchProfile({ userId, navigate }));
       return response.data;
     } catch (error) {

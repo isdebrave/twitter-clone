@@ -12,10 +12,8 @@ const useFollow = () => {
   const navigate = useNavigate();
 
   const isFollowing = (followerId: string) => {
-    for (const userId of me.followingIds) {
-      if (userId === followerId) {
-        return true;
-      }
+    if (me.followingIds.includes(followerId)) {
+      return true;
     }
 
     return false;

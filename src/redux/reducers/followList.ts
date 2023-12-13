@@ -10,12 +10,16 @@ const initialState: UserState[] = [];
 export const followListSlice = createSlice({
   name: "followList",
   initialState,
-  reducers: {},
+  reducers: {
+    changeLabel: (state, action) => {},
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchFollowList.fulfilled, (state, action) => {
-      return [...action.payload];
+      return action.payload;
     });
   },
 });
+
+export const { changeLabel } = followListSlice.actions;
 
 export default followListSlice.reducer;
