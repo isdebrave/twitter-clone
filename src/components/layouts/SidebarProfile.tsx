@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { useSelector } from "react-redux";
 
@@ -10,15 +10,11 @@ const SidebarProfile = () => {
   const [showDrop, setShowDrop] = useState(false);
   const me = useSelector((state: RootState) => state.me);
 
-  const clickHandler = useCallback(() => {
-    setShowDrop((cur) => !cur);
-  }, []);
-
   return (
     <div className="relative">
-      {showDrop && <Drop userId={me?.id.slice(0, 10)} top />}
+      {showDrop && <Drop userId={me.id.slice(0, 10)} top />}
       <button
-        onClick={clickHandler}
+        onClick={() => setShowDrop((cur) => !cur)}
         className="
           flex 
           flex-row 
@@ -35,7 +31,7 @@ const SidebarProfile = () => {
       >
         <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
           <img
-            src={me?.profileImage || "/images/anonymous.jpg"}
+            src={me.profileImage || "/images/anonymous.jpg"}
             alt="ProfileImage"
             referrerPolicy="no-referrer"
             className="w-full"
@@ -44,9 +40,9 @@ const SidebarProfile = () => {
 
         <div className="hidden lg:flex flex-col items-start">
           <span className="text-start font-bold w-[120px] overflow-hidden whitespace-nowrap">
-            {me?.username}
+            {me.username}
           </span>
-          <span className="text-gray-500">@{me?.id.slice(0, 10)}</span>
+          <span className="text-gray-500">@{me.id.slice(0, 10)}</span>
         </div>
 
         <div className="hidden lg:block ml-auto">

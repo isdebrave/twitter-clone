@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { UseFormRegister, FieldValues, FieldErrors } from "react-hook-form";
 import axios from "axios";
 
@@ -20,33 +20,20 @@ const FourthBody: React.FC<FourthBodyProps> = ({
   isEmail,
   errors,
 }) => {
-  const authHandler = useCallback(
-    (url: string) => {
-      axios.post(url, { id }).catch((error) => {
+  const authHandler = () => {
+    axios
+      .post(isEmail ? "/auth/email" : "/auth/phone", { id })
+      .catch((error) => {
         console.log(error);
       });
-    },
-    [id]
-  );
-
-  useEffect(() => {
-    let url;
-
-    if (isEmail) {
-      url = "/auth/email";
-    } else {
-      url = "/auth/phone";
-    }
-
-    authHandler(url);
-  }, [isEmail, authHandler]);
+  };
 
   const email = (
     <p className="ml-2 mt-1 mb-20">
       이메일을 받지 못했으면{" "}
       <button
         className="text-sky-500 hover:underline cursor-pointer text-sm"
-        onClick={authHandler.bind(null, "/auth/email")}
+        onClick={authHandler}
       >
         여기
       </button>
@@ -59,7 +46,7 @@ const FourthBody: React.FC<FourthBodyProps> = ({
       SMS을 받지 못했으면{" "}
       <button
         className="text-sky-500 hover:underline cursor-pointer text-sm"
-        onClick={authHandler.bind(null, "/auth/phone")}
+        onClick={authHandler}
       >
         여기
       </button>
@@ -85,6 +72,7 @@ const FourthBody: React.FC<FourthBodyProps> = ({
         errors={errors}
         required
       />
+
       {isEmail ? email : phone}
     </div>
   );

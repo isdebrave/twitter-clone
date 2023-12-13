@@ -30,7 +30,7 @@ export const email = async (
         pass: process.env.NODEMAILER_PASSWORD,
       },
     });
-    //   xpcx xtto foxz clqi
+
     const options = {
       from: process.env.NODEMAILER_USER,
       to: email,

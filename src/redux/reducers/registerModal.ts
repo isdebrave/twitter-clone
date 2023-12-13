@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { fetchRegisterModal } from "../thunk/registerModal";
+
 const initialState: { isOpen: boolean } = {
   isOpen: false,
 };
@@ -14,6 +16,10 @@ export const registerModalSlice = createSlice({
     onRegisterModalClose: (state) => {
       state.isOpen = false;
     },
+  },
+
+  extraReducers: (builder) => {
+    builder.addCase(fetchRegisterModal.fulfilled, () => {});
   },
 });
 

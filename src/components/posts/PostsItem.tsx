@@ -1,5 +1,5 @@
+import React from "react";
 import axios from "axios";
-import React, { useMemo } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
 
 import ImageCard from "../ImageCard";
@@ -21,11 +21,6 @@ const PostsItem: React.FC<PostsItemProps> = ({
   body,
   images,
 }) => {
-  const customizedCreatedAt = useMemo(
-    () => formatDistanceToNowStrict(new Date(createdAt)),
-    [createdAt]
-  );
-
   return (
     <>
       <div className="space-x-2">
@@ -33,7 +28,7 @@ const PostsItem: React.FC<PostsItemProps> = ({
           {username}
         </span>
         <span className="text-gray-500">
-          @{userId} ▪ {customizedCreatedAt}
+          @{userId} ▪ {formatDistanceToNowStrict(new Date(createdAt))}
         </span>
       </div>
 

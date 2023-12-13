@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 import Drop from "../../Drop";
@@ -9,15 +9,11 @@ const MobileProfile = () => {
   const [showDrop, setShowDrop] = useState(false);
   const me = useSelector((state: RootState) => state.me);
 
-  const clickHandler = useCallback(() => {
-    setShowDrop((cur) => !cur);
-  }, []);
-
   return (
     <div className="relative flex flex-col justify-center">
-      {showDrop && <Drop userId={me?.id.slice(0, 10)} />}
+      {showDrop && <Drop userId={me.id.slice(0, 10)} />}
       <button
-        onClick={clickHandler}
+        onClick={() => setShowDrop((cur) => !cur)}
         className="w-[36px] h-[36px] rounded-full overflow-hidden"
       >
         <img

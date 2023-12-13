@@ -7,14 +7,14 @@ import { AppDispatch } from "../store";
 import { fetchPosts } from "./posts";
 import { fetchProfile } from "./profile";
 
-interface postDataType {
+interface PostDataType {
   postId: string;
   navigate: NavigateFunction;
 }
 
 export const fetchPost = createAsyncThunk(
   "fetchPost",
-  async (data: postDataType) => {
+  async (data: PostDataType) => {
     const { postId, navigate } = data;
 
     try {
@@ -30,14 +30,30 @@ export const fetchPost = createAsyncThunk(
   }
 );
 
+interface WritePostDataType {
+  imageFiles: File[];
+  body: string;
+}
+
 export const fetchWritePost = createAsyncThunk(
   "fetchWritePost",
-  async (data: FormData) => {
+  async (data: WritePostDataType) => {
+    const { body, imageFiles } = data;
+
+    const formData = new FormData();
+    for (const file of imageFiles) {
+      formData.append("bodyImages", file);
+    }
+    formData.append("body", body);
+
     try {
-      const response = await axios.post("/post", data);
+      const response = await axios.post("/post", formData);
       return response.data;
     } catch (error) {
-      console.log(error);
+      if (error instanceof AxiosError) {
+        console.log(error);
+        toast.error(error?.response?.data);
+      }
     }
   }
 );

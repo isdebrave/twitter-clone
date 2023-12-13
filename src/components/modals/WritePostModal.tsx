@@ -1,8 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
-import axios, { AxiosError } from "axios";
 import { IoClose } from "react-icons/io5";
-import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,6 +12,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { onWritePostModalClose } from "../../redux/reducers/WritePostModal";
 import { fetchPosts } from "../../redux/thunk/posts";
 import { fetchProfile } from "../../redux/thunk/profile";
+import { fetchWritePost } from "../../redux/thunk/post";
 
 const WritePostModal = () => {
   const me = useSelector((state: RootState) => state.me);
@@ -27,30 +26,15 @@ const WritePostModal = () => {
   const showDivision = true;
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    try {
-      setIsLoading(true);
-
-      const formData = new FormData();
-      for (const file of imageFiles) {
-        formData.append("bodyImages", file);
-      }
-      formData.append("body", data.body);
-
-      await axios.post("/post", formData);
-      dispatch(fetchPosts());
-      if (userId) {
-        userId === me.id && dispatch(fetchProfile({ userId, navigate }));
-      }
-      dispatch(onWritePostModalClose());
-      resetAll();
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast.error(error?.response?.data);
-      }
-    } finally {
-      setIsLoading(false);
+    setIsLoading(true);
+    await dispatch(fetchWritePost({ body: data.body, imageFiles }));
+    dispatch(fetchPosts());
+    if (userId) {
+      userId === me.id && dispatch(fetchProfile({ userId, navigate }));
     }
+    dispatch(onWritePostModalClose());
+    resetAll();
+    setIsLoading(false);
   };
 
   const { resetAll, imageFiles, bodyContent, footerContent } = useWritePostForm(

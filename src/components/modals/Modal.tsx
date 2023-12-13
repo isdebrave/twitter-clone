@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { IconType } from "react-icons";
 import { UseFormReset, FieldValues } from "react-hook-form";
 
@@ -25,7 +25,7 @@ const Modal: React.FC<ModalProps> = ({
   icon: Icon,
   reset,
 }) => {
-  const closeHandler = useCallback(() => {
+  const closeHandler = () => {
     if (disabled) {
       return;
     }
@@ -41,7 +41,7 @@ const Modal: React.FC<ModalProps> = ({
     }
 
     onClose();
-  }, [step, disabled, reset, onClose]);
+  };
 
   if (!isOpen) {
     return null;

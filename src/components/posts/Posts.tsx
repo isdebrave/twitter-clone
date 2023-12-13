@@ -1,7 +1,7 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BiHeart, BiMessageRounded, BiSolidHeart } from "react-icons/bi";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import PostsProfileImage from "./PostsProfileImage";
 import PostsItem from "./PostsItem";
@@ -20,42 +20,32 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const profileHandler = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>, href: string) => {
-      e.stopPropagation();
-      navigate(href);
-    },
-    [navigate]
-  );
+  const profileHandler = (e: React.MouseEvent, href: string) => {
+    e.stopPropagation();
+    navigate(href);
+  };
 
-  const likedHandler = useCallback(
-    (e: React.MouseEvent, postId: string, userId: string) => {
-      e.stopPropagation();
+  const likedHandler = (
+    e: React.MouseEvent,
+    postId: string,
+    userId: string
+  ) => {
+    e.stopPropagation();
 
-      if (postId) {
-        dispatch(
-          fetchPostLiked({
-            postId,
-            meId: me.id,
-            dispatch,
-            userId,
-            navigate,
-          })
-        );
-      }
-    },
-    [dispatch, me.id, navigate]
-  );
-
-  const isHeartFill = useCallback((array: string[], meId: string) => {
-    const idx = array.find((likedUserId) => likedUserId === meId);
-
-    if (idx) {
-      return true;
-    } else {
-      return false;
+    if (postId) {
+      dispatch(
+        fetchPostLiked({ postId, meId: me.id, dispatch, userId, navigate })
+      );
     }
-  }, []);
+  };
+
+  const isHeartFill = (array: string[], meId: string) => {
+    if (array.includes(meId)) {
+      return true;
+    }
+
+    return false;
+  };
 
   return (
     <>

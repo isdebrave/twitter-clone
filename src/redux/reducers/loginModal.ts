@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { fetchLoginModal } from "../thunk/loginModal";
+
 const initialState: { isOpen: boolean } = {
   isOpen: false,
 };
@@ -14,6 +16,10 @@ export const loginModalSlice = createSlice({
     onLoginModalClose: (state) => {
       state.isOpen = false;
     },
+  },
+
+  extraReducers: (builder) => {
+    builder.addCase(fetchLoginModal.fulfilled, () => {});
   },
 });
 

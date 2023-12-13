@@ -33,8 +33,7 @@ const WritePostFormFooter: React.FC<WritePostFormFooterProps> = ({
     if (!files) return;
 
     if (files.length + imageFiles.length > 4) {
-      toast.error("최대 4개까지 선택 가능합니다.");
-      return;
+      return toast.error("최대 4개까지 선택 가능합니다.");
     }
 
     for (let i = 0; i < files.length; i++) {

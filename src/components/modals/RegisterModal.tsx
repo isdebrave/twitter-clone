@@ -24,9 +24,10 @@ import {
   textWhite,
 } from "../../constants/colors";
 
-import { RootState } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { onRegisterModalClose } from "../../redux/reducers/registerModal";
 import { onLoginModalOpen } from "../../redux/reducers/loginModal";
+import { fetchRegisterModal } from "../../redux/thunk/registerModal";
 
 enum STEPS {
   FIRST = 1,
@@ -41,7 +42,7 @@ const RegisterModal = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(STEPS.FIRST);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const registerModal = useSelector((state: RootState) => state.registerModal);
 
   const {
@@ -74,19 +75,14 @@ const RegisterModal = () => {
   const birth = watch("birth");
   const password = watch("password");
 
-  const onNext = () => {
-    setStep((cur) => cur + 1);
-  };
-
-  const onBack = () => {
-    setStep((cur) => cur - 1);
-  };
+  const onNext = () => setStep((cur) => cur + 1);
+  const onBack = () => setStep((cur) => cur - 1);
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     if (step === STEPS.FOURTH) {
       try {
         await axios.post("/auth/email/code", { code: data.code });
-      } catch (error: unknown) {
+      } catch (error) {
         if (error instanceof AxiosError) {
           console.log(error);
           toast.error(error?.response?.data);
@@ -99,21 +95,11 @@ const RegisterModal = () => {
       return onNext();
     }
 
-    try {
-      setIsLoading(true);
-
-      await axios.post("/auth/register", data);
-      localStorage.setItem("auth", "true");
-      dispatch(onRegisterModalClose());
-      navigate("/home");
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast.error(error?.response?.data);
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    await dispatch(fetchRegisterModal(data));
+    dispatch(onRegisterModalClose());
+    navigate("/home");
+    setIsLoading(false);
   };
 
   let bodyContent = <></>;

@@ -81,9 +81,7 @@ const FirstBody: React.FC<FirstBodyProps> = ({
     if (isEmail && regex.test(email)) {
       axios.post("/auth/email/exist", { id }).catch((error) => {
         if (error instanceof AxiosError) {
-          setError("id", {
-            message: error?.response?.data,
-          });
+          setError("id", { message: error?.response?.data });
         }
         return;
       });
@@ -91,24 +89,24 @@ const FirstBody: React.FC<FirstBodyProps> = ({
   }, [isEmail, id, clearErrors, setError]);
 
   useEffect(() => {
-    if (month === "2월") {
-      if (+year % 4 === 0) {
-        return setCustomizedDays(days.slice(0, -2));
-      } else {
-        return setCustomizedDays(days.slice(0, -3));
-      }
-    }
+    switch (month) {
+      case "2월":
+        if (+year % 4 === 0) {
+          setCustomizedDays(days.slice(0, -2));
+        } else {
+          setCustomizedDays(days.slice(0, -3));
+        }
+        break;
 
-    if (
-      month === "4월" ||
-      month === "6월" ||
-      month === "9월" ||
-      month === "11월"
-    ) {
-      return setCustomizedDays(days.slice(0, -1));
+      case "4월":
+      case "6월":
+      case "9월":
+      case "11월":
+        setCustomizedDays(days.slice(0, -1));
+        break;
+      default:
+        setCustomizedDays(days);
     }
-
-    return setCustomizedDays(days);
   }, [month, year]);
 
   return (

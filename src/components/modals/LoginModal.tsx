@@ -23,14 +23,15 @@ import {
   textWhite,
 } from "../../constants/colors";
 
-import { RootState } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { onLoginModalClose } from "../../redux/reducers/loginModal";
 import { onRegisterModalOpen } from "../../redux/reducers/registerModal";
+import { fetchLoginModal } from "../../redux/thunk/loginModal";
 
 const LoginModal = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const loginModal = useSelector((state: RootState) => state.loginModal);
 
   const {
@@ -45,21 +46,11 @@ const LoginModal = () => {
   const password = watch("password");
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    try {
-      setIsLoading(true);
-
-      await axios.post("/auth/login", data);
-      localStorage.setItem("auth", "true");
-      dispatch(onLoginModalClose());
-      navigate("/home");
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast.error(error?.response?.data);
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    await dispatch(fetchLoginModal(data));
+    dispatch(onLoginModalClose());
+    navigate("/home");
+    setIsLoading(false);
   };
 
   const bodyContent = (
