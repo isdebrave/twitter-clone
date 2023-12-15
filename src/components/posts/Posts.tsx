@@ -68,6 +68,7 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
                   onClick={(e) => profileHandler(e, `/${post.user.id}`)}
                   username={post.user.username}
                   userId={post.user.id.slice(0, 10)}
+                  postId={post.id}
                   createdAt={post.createdAt}
                   body={post.body}
                   images={post.images}

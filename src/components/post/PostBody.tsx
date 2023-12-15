@@ -1,7 +1,10 @@
 import React from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import ImageCard from "../ImageCard";
+import { RootState } from "../../redux/store";
 
 interface PostBodyProps {
   body: string;
@@ -10,11 +13,19 @@ interface PostBodyProps {
 }
 
 const PostBody: React.FC<PostBodyProps> = ({ body, imagesLength, images }) => {
+  const navigate = useNavigate();
+  const post = useSelector((state: RootState) => state.post);
+
+  const carouselHandler = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/${post.user.id}/status/${post.id}/photo`);
+  };
+
   return (
     <>
       <p className="text-gray-600 mb-3">{body}</p>
       {images.length > 0 && (
-        <ImageCard imagesLength={imagesLength}>
+        <ImageCard onClick={carouselHandler} imagesLength={imagesLength}>
           {images.map((src, idx) => (
             <div
               key={src + idx}

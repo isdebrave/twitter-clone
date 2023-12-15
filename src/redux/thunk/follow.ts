@@ -24,14 +24,14 @@ export const fetchFollow = createAsyncThunk(
       let response;
 
       if (!isFollowing(followerId)) {
-        console.log("post");
         response = await axios.post("/user/follow", { followerId });
       } else {
-        console.log("delete");
         response = await axios.delete("/user/follow", { data: { followerId } });
       }
 
       dispatch(fetchMe(navigate));
+
+      // fetchProfile 없어도 되는지 확인
       dispatch(fetchProfile({ userId, navigate }));
       return response.data;
     } catch (error) {

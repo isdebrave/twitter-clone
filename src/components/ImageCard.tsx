@@ -1,14 +1,20 @@
 import React from "react";
 
 interface ImageCardProps {
+  onClick: (e: React.MouseEvent) => void;
   imagesLength: number;
   children: React.ReactElement[];
 }
 
-const ImageCard: React.FC<ImageCardProps> = ({ imagesLength, children }) => {
+const ImageCard: React.FC<ImageCardProps> = ({
+  onClick,
+  imagesLength,
+  children,
+}) => {
   if (imagesLength === 1 || imagesLength === 2) {
     return (
       <div
+        onClick={onClick}
         className={`
           ${imagesLength === 2 && "h-[280px]"}
           flex 
@@ -17,6 +23,8 @@ const ImageCard: React.FC<ImageCardProps> = ({ imagesLength, children }) => {
           rounded-2xl 
           overflow-hidden 
           border-slate-300
+          hover:bg-sky-100
+          cursor-pointer
         `}
       >
         {children}
@@ -26,6 +34,7 @@ const ImageCard: React.FC<ImageCardProps> = ({ imagesLength, children }) => {
 
   return (
     <div
+      onClick={onClick}
       className="
         h-[280px] 
         grid 
@@ -36,6 +45,8 @@ const ImageCard: React.FC<ImageCardProps> = ({ imagesLength, children }) => {
         rounded-2xl 
         overflow-hidden 
         border-slate-300
+        hover:bg-sky-100
+        cursor-pointer
       "
     >
       {children}

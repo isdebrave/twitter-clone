@@ -36,9 +36,9 @@ const Profile = () => {
 
     if (span) {
       span.textContent = "Unfollow";
-      button.classList.add("border-rose-200");
-      button.classList.add("bg-rose-100");
-      button.classList.add("text-red-500");
+      button.classList.add("hover:border-rose-200");
+      button.classList.add("hover:bg-rose-100");
+      button.classList.add("hover:text-red-500");
     }
   };
 
@@ -46,9 +46,9 @@ const Profile = () => {
     const button = e.target as HTMLButtonElement;
     const span = button.children[0];
 
-    button.classList.remove("border-rose-200");
-    button.classList.remove("bg-rose-100");
-    button.classList.remove("text-red-500");
+    button.classList.remove("hover:border-rose-200");
+    button.classList.remove("hover:bg-rose-100");
+    button.classList.remove("hover:text-red-500");
 
     if (span && span.textContent === "Unfollow") {
       span.textContent = "Following";
