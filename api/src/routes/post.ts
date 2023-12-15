@@ -6,6 +6,7 @@ import path from "path";
 import {
   posts,
   registerPost,
+  deletePost,
   lookAroundPost,
   liked,
 } from "../controllers/post";
@@ -48,6 +49,7 @@ const postRouter = express.Router();
 
 postRouter.get("/", posts);
 postRouter.post("/", bodyImagesUpload.array("bodyImages"), registerPost);
+postRouter.delete("/", deletePost);
 postRouter.get("/:postId", lookAroundPost);
 postRouter.post("/liked", liked);
 

@@ -67,9 +67,30 @@ export const registerPost = async (
 
       return res.status(201).json(post);
     } else {
-      return res
-        .status(401)
-        .json("작성할 권한이 없습니다. 로그인을 다시 해주세요.");
+      return res.status(401).json("권한이 없습니다. 로그인을 다시 해주세요.");
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const deletePost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { postId } = req.body;
+
+  try {
+    if (req.session.meId) {
+      await prisma.post.delete({
+        where: { id: postId },
+      });
+
+      return res.status(200).json();
+    } else {
+      return res.status(401).json("권한이 없습니다. 로그인을 다시 해주세요.");
     }
   } catch (error) {
     console.log(error);

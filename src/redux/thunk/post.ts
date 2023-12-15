@@ -58,6 +58,33 @@ export const fetchWritePost = createAsyncThunk(
   }
 );
 
+interface DeletePostDataType {
+  dispatch: AppDispatch;
+  navigate?: NavigateFunction;
+  postId: string;
+}
+
+export const fetchDeletePost = createAsyncThunk(
+  "fetchDeletePost",
+  async (data: DeletePostDataType) => {
+    const { postId, dispatch, navigate } = data;
+
+    try {
+      const response = await axios.delete("/post", { data: { postId } });
+      dispatch(fetchPosts());
+      if (navigate) {
+        navigate("/home");
+      }
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error);
+        toast.error(error?.response?.data);
+      }
+    }
+  }
+);
+
 interface LikedDataType {
   postId: string;
   dispatch: AppDispatch;

@@ -57,7 +57,7 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
           }
           className="cursor-pointer"
         >
-          <div className="p-2 px-4 hover:bg-neutral-300/20">
+          <div className="p-3 px-4 hover:bg-neutral-300/20">
             <div className="flex gap-3">
               <div onClick={(e) => profileHandler(e, `/${post.user.id}`)}>
                 <PostsProfileImage profileImage={post.user.profileImage} />
@@ -67,7 +67,7 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
                 <PostsItem
                   onClick={(e) => profileHandler(e, `/${post.user.id}`)}
                   username={post.user.username}
-                  userId={post.user.id.slice(0, 10)}
+                  userId={post.user.id}
                   postId={post.id}
                   createdAt={post.createdAt}
                   body={post.body}

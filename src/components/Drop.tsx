@@ -12,7 +12,6 @@ const Drop: React.FC<DropProps> = ({ userId, top }) => {
     <div
       className={`
         py-3 
-        shadow-md
         rounded-2xl 
         absolute 
         w-[300px] 

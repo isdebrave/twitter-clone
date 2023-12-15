@@ -41,7 +41,7 @@ const Feed = () => {
             href={`/${post.user.id}`}
             profileImage={post.user.profileImage}
             username={post.user.username}
-            userId={post.user.id.slice(0, 10)}
+            userId={post.user.id}
           />
         </div>
         <div className="mb-3">
