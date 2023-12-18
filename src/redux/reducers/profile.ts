@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { PostState } from "./post";
-import { fetchProfile } from "../thunk/profile";
+import { fetchProfile, fetchUpdateProfile } from "../thunk/profile";
 
 export interface ProfileState {
   id: string;
   username: string;
   email: string;
-  bio: string | null;
-  coverImage: string | null;
-  profileImage: string | null;
-  hasNotification: boolean | null;
+  bio: string;
+  coverImage: string;
+  profileImage: string;
+  hasNotification: boolean;
   createdAt: string;
   updatedAt: string;
   followingIds: string[];
@@ -22,10 +22,10 @@ const initialState: ProfileState = {
   id: "",
   username: "",
   email: "",
-  bio: null,
-  coverImage: null,
-  profileImage: null,
-  hasNotification: null,
+  bio: "",
+  coverImage: "",
+  profileImage: "",
+  hasNotification: false,
   createdAt: "",
   updatedAt: "",
   followingIds: [],
@@ -45,6 +45,7 @@ export const profileSlice = createSlice({
     builder.addCase(fetchProfile.fulfilled, (state, action) => {
       return action.payload;
     });
+    builder.addCase(fetchUpdateProfile.fulfilled, () => {});
   },
 });
 

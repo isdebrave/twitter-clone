@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { IoEllipsisHorizontal, IoTrashSharp } from "react-icons/io5";
+
+import {
+  clickDispatchHandler,
+  clickSetFunctionHandler,
+} from "../../helpers/click";
+import { src } from "../../helpers/image";
 
 import { AppDispatch, RootState } from "../../redux/store";
 import { fetchDeletePost } from "../../redux/thunk/post";
-import { IoEllipsisHorizontal, IoTrashSharp } from "react-icons/io5";
 
 interface PostProfile {
   href: string;
-  profileImage: string | null;
+  profileImage: string;
   username: string;
   userId: string;
 }
@@ -19,11 +25,13 @@ const PostProfile: React.FC<PostProfile> = ({
   username,
   userId,
 }) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const [showBox, setShowBox] = useState(false);
+
   const me = useSelector((state: RootState) => state.me);
   const post = useSelector((state: RootState) => state.post);
-  const [showBox, setShowBox] = useState(false);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     const onCloseBox = () => setShowBox(false);
@@ -32,25 +40,20 @@ const PostProfile: React.FC<PostProfile> = ({
     return () => window.removeEventListener("click", onCloseBox);
   }, []);
 
-  const boxHandler = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowBox(true);
-  };
-
-  const deleteHandler = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    dispatch(fetchDeletePost({ postId: post.id, dispatch, navigate }));
-  };
-
   return (
     <div className="flex items-center gap-3">
       <Link to={href}>
-        <div className="w-[40px] h-[40px] rounded-full overflow-hidden hover:brightness-90 transition">
-          <img
-            src={profileImage || "/images/anonymous.jpg"}
-            alt="ProfileImage"
-            className="w-full"
-          />
+        <div
+          className="
+            w-[40px] 
+            h-[40px] 
+            rounded-full 
+            overflow-hidden 
+            hover:brightness-90 
+            transition
+          "
+        >
+          <img src={src(profileImage)} alt="ProfileImage" className="w-full" />
         </div>
       </Link>
 
@@ -63,7 +66,9 @@ const PostProfile: React.FC<PostProfile> = ({
         {me.id === userId && (
           <>
             <div
-              onClick={boxHandler}
+              onClick={(e) =>
+                clickSetFunctionHandler<boolean>(e, setShowBox, true)
+              }
               className="
                 absolute 
                 -top-1 
@@ -78,9 +83,16 @@ const PostProfile: React.FC<PostProfile> = ({
             >
               <IoEllipsisHorizontal size={18} />
             </div>
+
             {showBox && (
               <div
-                onClick={deleteHandler}
+                onClick={(e) =>
+                  clickDispatchHandler(e, dispatch, fetchDeletePost, {
+                    postId: post.id,
+                    dispatch,
+                    navigate,
+                  })
+                }
                 className="
                   absolute
                   -top-1 

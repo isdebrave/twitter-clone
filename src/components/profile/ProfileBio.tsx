@@ -5,6 +5,7 @@ import { BiCalendar } from "react-icons/bi";
 interface ProfileBioProps {
   username: string;
   userId: string;
+  bio: string;
   createdAt: string;
   followingIdsLength: number;
   followerIdsLength: number;
@@ -13,6 +14,7 @@ interface ProfileBioProps {
 const ProfileBio: React.FC<ProfileBioProps> = ({
   username,
   userId,
+  bio,
   createdAt,
   followingIdsLength,
   followerIdsLength,
@@ -23,6 +25,9 @@ const ProfileBio: React.FC<ProfileBioProps> = ({
         <span className="font-bold text-lg">{username}</span>
         <span className="text-base text-gray-400">@{userId}</span>
       </div>
+
+      {bio.length > 0 && <span className="block py-1 text-sm">{bio}</span>}
+
       <div className="flex items-center gap-1 text-gray-500">
         <BiCalendar size={20} />
         <span>

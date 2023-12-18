@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 
 import Drop from "../Drop";
 
+import { src } from "../../helpers/image";
+
 import { RootState } from "../../redux/store";
 
 const SidebarProfile = () => {
@@ -13,6 +15,7 @@ const SidebarProfile = () => {
   return (
     <div className="relative">
       {showDrop && <Drop userId={me.id.slice(0, 10)} top />}
+
       <button
         onClick={() => setShowDrop((cur) => !cur)}
         className="
@@ -31,7 +34,7 @@ const SidebarProfile = () => {
       >
         <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
           <img
-            src={me.profileImage || "/images/anonymous.jpg"}
+            src={src(me.profileImage)}
             alt="ProfileImage"
             referrerPolicy="no-referrer"
             className="w-full"

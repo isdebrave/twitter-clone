@@ -32,10 +32,10 @@ const initialState: PostState = {
     id: "",
     username: "",
     email: "",
-    bio: null,
-    coverImage: null,
-    profileImage: null,
-    hasNotification: null,
+    bio: "",
+    coverImage: "",
+    profileImage: "",
+    hasNotification: false,
     createdAt: "",
     updatedAt: "",
     followingIds: [],
@@ -53,16 +53,7 @@ export const postSlice = createSlice({
     builder.addCase(fetchPost.fulfilled, (state, action) => {
       return action.payload;
     });
-
-    builder.addCase(fetchPostLiked.fulfilled, (state, action) => {
-      const { meId, status } = action.payload!;
-
-      if (status === "ADD") {
-        state.likedIds.push(meId);
-      } else {
-        state.likedIds = state.likedIds.filter((userId) => userId !== meId);
-      }
-    });
+    builder.addCase(fetchPostLiked.fulfilled, () => {});
   },
 });
 

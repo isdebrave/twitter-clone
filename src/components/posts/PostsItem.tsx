@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNowStrict } from "date-fns";
 import { IoEllipsisHorizontal, IoTrashSharp } from "react-icons/io5";
 
 import ImageCard from "../ImageCard";
+
+import {
+  clickDispatchHandler,
+  clickNavigateHandler,
+  clickSetFunctionHandler,
+} from "../../helpers/click";
+import { src } from "../../helpers/image";
+
 import { AppDispatch, RootState } from "../../redux/store";
 import { fetchDeletePost } from "../../redux/thunk/post";
 
 interface PostsItemProps {
-  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClick: (e: React.MouseEvent) => void;
   username: string;
   userId: string;
   postId: string;
@@ -28,10 +35,12 @@ const PostsItem: React.FC<PostsItemProps> = ({
   body,
   images,
 }) => {
+  const [showBox, setShowBox] = useState(false);
+
+  const me = useSelector((state: RootState) => state.me);
+
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const me = useSelector((state: RootState) => state.me);
-  const [showBox, setShowBox] = useState(false);
 
   useEffect(() => {
     const onCloseBox = () => setShowBox(false);
@@ -39,21 +48,6 @@ const PostsItem: React.FC<PostsItemProps> = ({
     window.addEventListener("click", onCloseBox);
     return () => window.removeEventListener("click", onCloseBox);
   }, []);
-
-  const carouselHandler = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    navigate(`/${userId.slice(0, 10)}/status/${postId}/photo`);
-  };
-
-  const boxHandler = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowBox(true);
-  };
-
-  const deleteHandler = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    dispatch(fetchDeletePost({ postId, dispatch }));
-  };
 
   return (
     <>
@@ -70,7 +64,9 @@ const PostsItem: React.FC<PostsItemProps> = ({
         {me.id === userId && (
           <>
             <div
-              onClick={boxHandler}
+              onClick={(e) =>
+                clickSetFunctionHandler<boolean>(e, setShowBox, true)
+              }
               className="
                 absolute 
                 -top-1 
@@ -84,9 +80,16 @@ const PostsItem: React.FC<PostsItemProps> = ({
             >
               <IoEllipsisHorizontal size={18} />
             </div>
+
             {showBox && (
               <div
-                onClick={deleteHandler}
+                onClick={(e) =>
+                  clickDispatchHandler(e, dispatch, fetchDeletePost, {
+                    postId,
+                    dispatch,
+                    navigate,
+                  })
+                }
                 className="
                   absolute
                   -top-1 
@@ -116,10 +119,19 @@ const PostsItem: React.FC<PostsItemProps> = ({
       <p className="text-gray-600 mb-2">{body}</p>
 
       {images.length > 0 && (
-        <ImageCard onClick={carouselHandler} imagesLength={images.length}>
-          {images.map((src, idx) => (
+        <ImageCard
+          onClick={(e) =>
+            clickNavigateHandler(
+              e,
+              navigate,
+              `/${userId.slice(0, 10)}/status/${postId}/photo`
+            )
+          }
+          imagesLength={images.length}
+        >
+          {images.map((image, idx) => (
             <div
-              key={src + idx}
+              key={image + idx}
               className={`
               w-full 
               flex
@@ -127,7 +139,7 @@ const PostsItem: React.FC<PostsItemProps> = ({
             `}
             >
               <img
-                src={`${axios.defaults.baseURL}/${src}`}
+                src={src(image)}
                 alt="BodyImage"
                 className="w-full object-cover"
               />

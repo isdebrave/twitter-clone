@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { UseFormRegister, FieldValues, FieldErrors } from "react-hook-form";
 import axios from "axios";
 
@@ -20,13 +20,17 @@ const FourthBody: React.FC<FourthBodyProps> = ({
   isEmail,
   errors,
 }) => {
-  const authHandler = () => {
+  const authHandler = useCallback(() => {
     axios
       .post(isEmail ? "/auth/email" : "/auth/phone", { id })
       .catch((error) => {
         console.log(error);
       });
-  };
+  }, [id, isEmail]);
+
+  useEffect(() => {
+    authHandler();
+  }, [authHandler]);
 
   const email = (
     <p className="ml-2 mt-1 mb-20">

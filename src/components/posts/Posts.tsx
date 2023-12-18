@@ -3,9 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { BiHeart, BiMessageRounded, BiSolidHeart } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 
-import PostsProfileImage from "./PostsProfileImage";
 import PostsItem from "./PostsItem";
 import Icon from "../Icon";
+
+import {
+  clickDispatchHandler,
+  clickNavigateHandler,
+} from "../../helpers/click";
+import { src } from "../../helpers/image";
 
 import { AppDispatch, RootState } from "../../redux/store";
 import { PostState } from "../../redux/reducers/post";
@@ -17,27 +22,9 @@ interface PostsProps {
 
 const Posts: React.FC<PostsProps> = ({ posts }) => {
   const me = useSelector((state: RootState) => state.me);
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
-  const profileHandler = (e: React.MouseEvent, href: string) => {
-    e.stopPropagation();
-    navigate(href);
-  };
-
-  const likedHandler = (
-    e: React.MouseEvent,
-    postId: string,
-    userId: string
-  ) => {
-    e.stopPropagation();
-
-    if (postId) {
-      dispatch(
-        fetchPostLiked({ postId, meId: me.id, dispatch, userId, navigate })
-      );
-    }
-  };
 
   const isHeartFill = (array: string[], meId: string) => {
     if (array.includes(meId)) {
@@ -53,19 +40,41 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
         <div
           key={post.id}
           onClick={(e) =>
-            profileHandler(e, `/${post.user.id}/status/${post.id}`)
+            clickNavigateHandler(
+              e,
+              navigate,
+              `/${post.user.id}/status/${post.id}`
+            )
           }
           className="cursor-pointer"
         >
           <div className="p-3 px-4 hover:bg-neutral-300/20">
             <div className="flex gap-3">
-              <div onClick={(e) => profileHandler(e, `/${post.user.id}`)}>
-                <PostsProfileImage profileImage={post.user.profileImage} />
+              <div
+                onClick={(e) =>
+                  clickNavigateHandler(e, navigate, `/${post.user.id}`)
+                }
+                className="
+                  w-[40px] 
+                  h-[40px] 
+                  rounded-full 
+                  overflow-hidden 
+                  hover:brightness-90 
+                  transition
+                "
+              >
+                <img
+                  src={src(post.user.profileImage)}
+                  alt="ProfileImage"
+                  className="w-full"
+                />
               </div>
 
               <div className="flex-1">
                 <PostsItem
-                  onClick={(e) => profileHandler(e, `/${post.user.id}`)}
+                  onClick={(e) =>
+                    clickNavigateHandler(e, navigate, `/${post.user.id}`)
+                  }
                   username={post.user.username}
                   userId={post.user.id}
                   postId={post.id}
@@ -79,18 +88,25 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
                     onClick={() => {}}
                     icon={BiMessageRounded}
                     length={post.comments.length}
-                    groupTextHoverColor="group-hover:text-sky-500"
-                    groupBgHoverColor="group-hover:bg-sky-200/40"
+                    textHover="group-hover:text-sky-500"
+                    bgHover="group-hover:bg-sky-200/40"
                     textColor="text-gray-500"
                   />
                   <Icon
-                    onClick={(e) => e && likedHandler(e, post.id, post.user.id)}
+                    onClick={(e) =>
+                      clickDispatchHandler(e, dispatch, fetchPostLiked, {
+                        postId: post.id,
+                        dispatch,
+                        userId: post.user.id,
+                        navigate,
+                      })
+                    }
                     icon={
                       isHeartFill(post.likedIds, me.id) ? BiSolidHeart : BiHeart
                     }
                     length={post.likedIds.length}
-                    groupTextHoverColor="group-hover:text-rose-500"
-                    groupBgHoverColor="group-hover:bg-rose-200/40"
+                    textHover="group-hover:text-rose-500"
+                    bgHover="group-hover:bg-rose-200/40"
                     textColor={
                       isHeartFill(post.likedIds, me.id)
                         ? "text-rose-500"

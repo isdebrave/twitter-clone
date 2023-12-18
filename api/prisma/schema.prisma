@@ -10,17 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
+model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
-  username String @unique
+  username String 
   email String @unique
-  birth String?
-  bio String?
-  coverImage String?
-  profileImage String?
-  hashedPassword String?
-  hasNotification Boolean?
+  birth String @default("")
+  bio String @default("")
+  coverImage String @default("")
+  profileImage String @default("")
+  hashedPassword String @default("")
+  hasNotification Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   followingIds String[] @db.ObjectId
@@ -32,7 +32,7 @@ model User{
   notifications Notification[]
 }
 
-model Account{
+model Account {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   type String
   providerId String
@@ -41,7 +41,7 @@ model Account{
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Post{
+model Post {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   body String
   images String[]
@@ -55,7 +55,7 @@ model Post{
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Comment{
+model Comment {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   body String
   createdAt DateTime @default(now())
@@ -67,7 +67,7 @@ model Comment{
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
-model Notification{
+model Notification {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   body String
   createdAt DateTime @default(now())

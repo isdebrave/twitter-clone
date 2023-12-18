@@ -58,16 +58,16 @@ const Feed = () => {
             onClick={() => {}}
             icon={BiMessageRounded}
             length={post.comments.length}
-            groupTextHoverColor="group-hover:text-sky-500"
-            groupBgHoverColor="group-hover:bg-sky-200/40"
+            textHover="group-hover:text-sky-500"
+            bgHover="group-hover:bg-sky-200/40"
             textColor="text-gray-500"
           />
           <Icon
             onClick={likedHandler}
             icon={isHeartFill(post.likedIds, me.id) ? BiSolidHeart : BiHeart}
             length={post.likedIds.length}
-            groupTextHoverColor="group-hover:text-rose-500"
-            groupBgHoverColor="group-hover:bg-rose-200/40"
+            textHover="group-hover:text-rose-500"
+            bgHover="group-hover:bg-rose-200/40"
             textColor={
               isHeartFill(post.likedIds, me.id)
                 ? "text-rose-500"

@@ -7,7 +7,9 @@ import { AppDispatch, RootState } from "../redux/store";
 
 const useFollow = () => {
   const { userId } = useParams();
+
   const me = useSelector((state: RootState) => state.me);
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 

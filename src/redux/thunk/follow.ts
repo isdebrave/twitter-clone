@@ -2,9 +2,8 @@ import { NavigateFunction } from "react-router-dom";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-import { fetchProfile } from "./profile";
 import { AppDispatch } from "../store";
-import { fetchFollowList } from "./followList";
+import { fetchProfile } from "./profile";
 import { fetchMe } from "./me";
 
 interface DataType {
@@ -30,9 +29,8 @@ export const fetchFollow = createAsyncThunk(
       }
 
       dispatch(fetchMe(navigate));
-
-      // fetchProfile 없어도 되는지 확인
       dispatch(fetchProfile({ userId, navigate }));
+
       return response.data;
     } catch (error) {
       console.log(error);

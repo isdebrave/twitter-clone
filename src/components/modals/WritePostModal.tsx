@@ -9,7 +9,7 @@ import Modal from "./Modal";
 import useWritePostForm from "../../hooks/useWritePostForm";
 
 import { AppDispatch, RootState } from "../../redux/store";
-import { onWritePostModalClose } from "../../redux/reducers/WritePostModal";
+import { onWritePostModalClose } from "../../redux/reducers/writePostModal";
 import { fetchPosts } from "../../redux/thunk/posts";
 import { fetchProfile } from "../../redux/thunk/profile";
 import { fetchWritePost } from "../../redux/thunk/post";

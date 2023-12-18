@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 import { bgBlue, hoverDarkBlue, textWhite } from "../../../constants/colors";
 
-import { onWritePostModalOpen } from "../../../redux/reducers/WritePostModal";
+import { onWritePostModalOpen } from "../../../redux/reducers/writePostModal";
 
 const MobilePostButton = () => {
   const dispatch = useDispatch();

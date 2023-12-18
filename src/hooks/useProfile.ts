@@ -7,8 +7,10 @@ import { fetchProfile } from "../redux/thunk/profile";
 
 const useProfile = () => {
   const { userId } = useParams();
+
   const profile = useSelector((state: RootState) => state.profile);
   const me = useSelector((state: RootState) => state.me);
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 

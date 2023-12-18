@@ -6,7 +6,7 @@ import { bgBlue, hoverDarkBlue, textWhite } from "../../constants/colors";
 
 import Button from "../Button";
 
-import { onWritePostModalOpen } from "../../redux/reducers/WritePostModal";
+import { onWritePostModalOpen } from "../../redux/reducers/writePostModal";
 
 const SidebarPostButton = () => {
   const dispatch = useDispatch();

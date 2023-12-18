@@ -60,7 +60,7 @@ export const fetchWritePost = createAsyncThunk(
 
 interface DeletePostDataType {
   dispatch: AppDispatch;
-  navigate?: NavigateFunction;
+  navigate: NavigateFunction;
   postId: string;
 }
 
@@ -71,10 +71,10 @@ export const fetchDeletePost = createAsyncThunk(
 
     try {
       const response = await axios.delete("/post", { data: { postId } });
+
       dispatch(fetchPosts());
-      if (navigate) {
-        navigate("/home");
-      }
+      navigate("/home");
+
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -87,25 +87,26 @@ export const fetchDeletePost = createAsyncThunk(
 
 interface LikedDataType {
   postId: string;
+  userId: string;
   dispatch: AppDispatch;
-  meId: string;
-  userId?: string;
-  navigate?: NavigateFunction;
+  navigate: NavigateFunction;
 }
 
 export const fetchPostLiked = createAsyncThunk(
   "fetchPostLiked",
   async (data: LikedDataType) => {
-    const { postId, dispatch, meId, userId, navigate } = data;
+    const { postId, userId, dispatch, navigate } = data;
 
     try {
       const response = await axios.post("/post/liked", { postId });
-      dispatch(fetchPosts());
 
-      if (userId && navigate) {
-        dispatch(fetchProfile({ userId, navigate }));
-      }
-      return { meId, status: response.data };
+      dispatch(fetchPosts());
+      dispatch(fetchProfile({ userId, navigate }));
+
+      // 누를 때마다 views가 증가하는 버그 있음
+      dispatch(fetchPost({ postId, navigate }));
+
+      return response.data;
     } catch (error) {
       console.log(error);
     }

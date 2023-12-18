@@ -1,5 +1,6 @@
 import { Post, User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import path from "path";
 
 export const me = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -47,7 +48,7 @@ export const profile = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
   let profile;
 
   try {
@@ -84,7 +85,57 @@ export const profile = async (
   }
 };
 
-export const postFollow = async (
+export const updateProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { username, bio } = JSON.parse(req.body.data);
+  const { userId } = req.params;
+
+  let user;
+  try {
+    user = await prisma.user.findUnique({ where: { id: userId } });
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json("권한이 없습니다. 다시 로그인 해주세요.");
+  }
+
+  try {
+    let coverImage;
+    let profileImage;
+
+    if (user) {
+      coverImage = user.coverImage;
+      profileImage = user.profileImage;
+    }
+
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    if (files.coverImage) {
+      coverImage = path.join(files.coverImage[0].path);
+    }
+    if (files.profileImage) {
+      profileImage = path.join(files.profileImage[0].path);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        username,
+        bio,
+        coverImage,
+        profileImage,
+      },
+    });
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const addFollow = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -127,7 +178,7 @@ export const postFollow = async (
   }
 };
 
-export const deleteFollow = async (
+export const removeFollow = async (
   req: Request,
   res: Response,
   next: NextFunction

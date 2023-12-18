@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import { bgBlack, hoverLightWhite, textWhite } from "../../constants/colors";
 
+import { src } from "../../helpers/image";
+
 import useFollowList from "../../hooks/useFollowList";
 import useFollow from "../../hooks/useFollow";
 
@@ -49,7 +51,7 @@ const Followbar = () => {
         >
           <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
             <img
-              src={user.profileImage || "/images/anonymous.jpg"}
+              src={src(user.profileImage)}
               alt="UserImage"
               className="w-full"
             />

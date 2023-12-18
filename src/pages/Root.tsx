@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import RegisterModal from "../components/modals/RegisterModal";
 import LoginModal from "../components/modals/LoginModal";
 import WritePostModal from "../components/modals/WritePostModal";
+import ProfileModal from "../components/modals/ProfileModal";
 
 const Root = () => {
   return (
@@ -13,6 +14,7 @@ const Root = () => {
       <RegisterModal />
       <LoginModal />
       <WritePostModal />
+      <ProfileModal />
       <Outlet />
     </>
   );

@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import { bgWhite, hoverGray, textBlack } from "../constants/colors";
 
@@ -11,14 +12,18 @@ import Posts from "../components/posts/Posts";
 import useProfile from "../hooks/useProfile";
 import useFollow from "../hooks/useFollow";
 
+import { onProfileModalOpen } from "../redux/reducers/profileModal";
+
 const Profile = () => {
-  const navigate = useNavigate();
   const { profile, me } = useProfile();
   const { isFollowing, followHandler } = useFollow();
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const buttonLabel = () => {
     if (profile.id === me.id) {
-      return "Set up profile";
+      return "Edit profile";
     }
 
     if (isFollowing(profile.id)) {
@@ -28,8 +33,9 @@ const Profile = () => {
     return "Follow";
   };
 
-  const enterHandler = (e: React.MouseEvent) => {
+  const mouseEnterHandler = (e: React.MouseEvent) => {
     if (!isFollowing(profile.id)) return;
+    if (profile.id === me.id) return;
 
     const button = e.target as HTMLButtonElement;
     const span = button.children[0] as HTMLElement;
@@ -42,7 +48,7 @@ const Profile = () => {
     }
   };
 
-  const leaveHandler = (e: React.MouseEvent) => {
+  const mouseLeaveHandler = (e: React.MouseEvent) => {
     const button = e.target as HTMLButtonElement;
     const span = button.children[0];
 
@@ -53,6 +59,14 @@ const Profile = () => {
     if (span && span.textContent === "Unfollow") {
       span.textContent = "Following";
     }
+  };
+
+  const clickHandler = (e: React.MouseEvent) => {
+    if (profile.id === me.id) {
+      return dispatch(onProfileModalOpen());
+    }
+
+    return followHandler(e, profile.id);
   };
 
   return (
@@ -69,9 +83,9 @@ const Profile = () => {
       />
       <div className="mt-3 flex justify-end mr-4">
         <button
-          onMouseEnter={enterHandler}
-          onMouseLeave={leaveHandler}
-          onClick={(e) => e && followHandler(e, profile.id)}
+          onMouseEnter={mouseEnterHandler}
+          onMouseLeave={mouseLeaveHandler}
+          onClick={clickHandler}
           className={`
             py-2
             px-5 
@@ -94,6 +108,7 @@ const Profile = () => {
       <ProfileBio
         username={profile.username}
         userId={profile.id.slice(0, 10)}
+        bio={profile.bio}
         createdAt={profile.createdAt}
         followingIdsLength={profile.followingIds.length}
         followerIdsLength={profile.followerIds.length}

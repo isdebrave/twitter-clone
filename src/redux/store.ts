@@ -3,7 +3,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import me from "./reducers/me";
 import loginModal from "./reducers/loginModal";
 import registerModal from "./reducers/registerModal";
-import writePostModal from "./reducers/WritePostModal";
+import writePostModal from "./reducers/writePostModal";
+import profileModal from "./reducers/profileModal";
 import followList from "./reducers/followList";
 import posts from "./reducers/posts";
 import comments from "./reducers/comments";
@@ -16,6 +17,7 @@ export const store = configureStore({
     loginModal,
     registerModal,
     writePostModal,
+    profileModal,
     followList,
     posts,
     comments,

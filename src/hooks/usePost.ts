@@ -20,7 +20,14 @@ const usePost = () => {
 
   const likedHandler = () => {
     if (postId) {
-      dispatch(fetchPostLiked({ postId, meId: me.id, dispatch }));
+      dispatch(
+        fetchPostLiked({
+          postId,
+          dispatch,
+          userId: post.user.id,
+          navigate,
+        })
+      );
     }
   };
 
