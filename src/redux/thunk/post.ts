@@ -4,8 +4,8 @@ import { toast } from "react-hot-toast";
 import { NavigateFunction } from "react-router-dom";
 
 import { AppDispatch } from "../store";
-import { fetchPosts } from "./posts";
-import { fetchProfile } from "./profile";
+// import { fetchPosts } from "./posts";
+// import { fetchProfile } from "./profile";
 
 interface PostDataType {
   postId: string;
@@ -72,7 +72,7 @@ export const fetchDeletePost = createAsyncThunk(
     try {
       const response = await axios.delete("/post", { data: { postId } });
 
-      dispatch(fetchPosts());
+      // dispatch(fetchPosts());
       navigate("/home");
 
       return response.data;
@@ -100,8 +100,8 @@ export const fetchPostLiked = createAsyncThunk(
     try {
       const response = await axios.post("/post/liked", { postId });
 
-      dispatch(fetchPosts());
-      dispatch(fetchProfile({ userId, navigate }));
+      // dispatch(fetchPosts());
+      // dispatch(fetchProfile({ userId, navigate }));
 
       // 누를 때마다 views가 증가하는 버그 있음
       dispatch(fetchPost({ postId, navigate }));

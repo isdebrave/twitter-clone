@@ -1,37 +1,25 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import useSWRImmutable from "swr/immutable";
 import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
-import { AppDispatch, RootState } from "../redux/store";
-import { fetchPost, fetchPostLiked } from "../redux/thunk/post";
+import fetcher from "../libs/fetcher";
 
 const usePost = () => {
-  const post = useSelector((state: RootState) => state.post);
-  const me = useSelector((state: RootState) => state.me);
-  const { userId, postId } = useParams();
+  const { postId } = useParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
 
-  useEffect(() => {
-    if (postId) {
-      dispatch(fetchPost({ postId, navigate }));
+  const { data, mutate } = useSWRImmutable(
+    postId ? `/post/${postId}` : null,
+    fetcher,
+    {
+      onError: (error) => {
+        toast.error(error.response.data);
+        navigate("/home");
+      },
     }
-  }, [dispatch, postId, navigate]);
+  );
 
-  const likedHandler = () => {
-    if (postId) {
-      dispatch(
-        fetchPostLiked({
-          postId,
-          dispatch,
-          userId: post.user.id,
-          navigate,
-        })
-      );
-    }
-  };
-
-  return { post, likedHandler };
+  return { data, mutate };
 };
 
 export default usePost;

@@ -1,20 +1,15 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import useSWRImmutable from "swr/immutable";
 
-import { AppDispatch, RootState } from "../redux/store";
-import { fetchPosts } from "../redux/thunk/posts";
+import fetcher from "../libs/fetcher";
 
 const usePosts = () => {
-  const posts = useSelector((state: RootState) => state.posts);
-  const dispatch = useDispatch<AppDispatch>();
+  const { data, mutate } = useSWRImmutable("/post/all", fetcher, {
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
-  useEffect(() => {
-    if (!posts.isUpdatedOnce) {
-      dispatch(fetchPosts());
-    }
-  }, [posts.isUpdatedOnce, dispatch]);
-
-  return posts.value;
+  return { data, mutate };
 };
 
 export default usePosts;

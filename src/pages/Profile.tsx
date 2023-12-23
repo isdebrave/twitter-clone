@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { bgWhite, hoverGray, textBlack } from "../constants/colors";
 
@@ -11,15 +11,31 @@ import Posts from "../components/posts/Posts";
 
 import useProfile from "../hooks/useProfile";
 import useFollow from "../hooks/useFollow";
+import useProfileModal from "../hooks/useProfileModal";
 
-import { onProfileModalOpen } from "../redux/reducers/profileModal";
+import { mouseEnterHandler, mouseLeaveHandler } from "../helpers/mouse";
+
+import { RootState } from "../redux/store";
+import { onProfile } from "../redux/reducers/profile";
 
 const Profile = () => {
-  const { profile, me } = useProfile();
-  const { isFollowing, followHandler } = useFollow();
+  const { data, mutate } = useProfile();
+  const { isFollowing, followHandler } = useFollow(mutate);
+  const profileModal = useProfileModal();
+
+  const me = useSelector((state: RootState) => state.me);
+  const profile = useSelector((state: RootState) => state.profile);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!data) return;
+
+    if (profile.id !== data.id) {
+      dispatch(onProfile(data));
+    }
+  }, [profile, data, dispatch]);
 
   const buttonLabel = () => {
     if (profile.id === me.id) {
@@ -33,37 +49,9 @@ const Profile = () => {
     return "Follow";
   };
 
-  const mouseEnterHandler = (e: React.MouseEvent) => {
-    if (!isFollowing(profile.id)) return;
-    if (profile.id === me.id) return;
-
-    const button = e.target as HTMLButtonElement;
-    const span = button.children[0] as HTMLElement;
-
-    if (span) {
-      span.textContent = "Unfollow";
-      button.classList.add("hover:border-rose-200");
-      button.classList.add("hover:bg-rose-100");
-      button.classList.add("hover:text-red-500");
-    }
-  };
-
-  const mouseLeaveHandler = (e: React.MouseEvent) => {
-    const button = e.target as HTMLButtonElement;
-    const span = button.children[0];
-
-    button.classList.remove("hover:border-rose-200");
-    button.classList.remove("hover:bg-rose-100");
-    button.classList.remove("hover:text-red-500");
-
-    if (span && span.textContent === "Unfollow") {
-      span.textContent = "Following";
-    }
-  };
-
   const clickHandler = (e: React.MouseEvent) => {
     if (profile.id === me.id) {
-      return dispatch(onProfileModalOpen());
+      return profileModal.onOpen();
     }
 
     return followHandler(e, profile.id);
@@ -83,7 +71,9 @@ const Profile = () => {
       />
       <div className="mt-3 flex justify-end mr-4">
         <button
-          onMouseEnter={mouseEnterHandler}
+          onMouseEnter={(e) =>
+            mouseEnterHandler(e, isFollowing, profile.id, me.id)
+          }
           onMouseLeave={mouseLeaveHandler}
           onClick={clickHandler}
           className={`

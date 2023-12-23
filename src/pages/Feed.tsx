@@ -1,7 +1,8 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { BiHeart, BiSolidHeart, BiMessageRounded } from "react-icons/bi";
+import axios from "axios";
 
 import MainHeading from "../components/MainHeading";
 import PostProfile from "../components/post/PostProfile";
@@ -10,12 +11,20 @@ import PostFooter from "../components/post/PostFooter";
 import Icon from "../components/Icon";
 
 import { RootState } from "../redux/store";
+import { onPost, onPostViews } from "../redux/reducers/post";
+
 import usePost from "../hooks/usePost";
+import useLiked from "../hooks/useLiked";
 
 const Feed = () => {
-  const { post, likedHandler } = usePost();
+  const { data } = usePost();
+  const { likedHandler } = useLiked();
+
   const me = useSelector((state: RootState) => state.me);
+  const post = useSelector((state: RootState) => state.post);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // 사용자가 임의로 userId 변경해도 원상태로 돌리는 방법
   // useEffect(() => {
@@ -23,6 +32,21 @@ const Feed = () => {
   //     window.location.replace(`/${post.user.id}/status/${postId}`);
   //   }
   // }, [navigate, userId, post.user.id, postId]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    if (post.id !== data.id) {
+      dispatch(onPost(data));
+    }
+  }, [post, data, dispatch]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    axios.post("/post/views", { postId: data.id });
+    dispatch(onPostViews());
+  }, [dispatch, data]);
 
   const isHeartFill = (array: string[], meId: string) => {
     if (array.includes(meId)) {
@@ -63,7 +87,7 @@ const Feed = () => {
             textColor="text-gray-500"
           />
           <Icon
-            onClick={likedHandler}
+            onClick={(e) => likedHandler(e, post.id)}
             icon={isHeartFill(post.likedIds, me.id) ? BiSolidHeart : BiHeart}
             length={post.likedIds.length}
             textHover="group-hover:text-rose-500"

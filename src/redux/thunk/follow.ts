@@ -4,7 +4,7 @@ import axios from "axios";
 
 import { AppDispatch } from "../store";
 import { fetchProfile } from "./profile";
-import { fetchMe } from "./me";
+import { KeyedMutator } from "swr";
 
 interface DataType {
   isFollowing: (followerId: string) => boolean;
@@ -12,12 +12,22 @@ interface DataType {
   userId: string;
   dispatch: AppDispatch;
   navigate: NavigateFunction;
+  mutateMe: KeyedMutator<any>;
+  mutateProfile: KeyedMutator<any>;
 }
 
 export const fetchFollow = createAsyncThunk(
   "fetchFollow",
   async (data: DataType) => {
-    const { isFollowing, followerId, userId, dispatch, navigate } = data;
+    const {
+      isFollowing,
+      followerId,
+      userId,
+      dispatch,
+      navigate,
+      mutateMe,
+      mutateProfile,
+    } = data;
 
     try {
       let response;
@@ -28,8 +38,9 @@ export const fetchFollow = createAsyncThunk(
         response = await axios.delete("/user/follow", { data: { followerId } });
       }
 
-      dispatch(fetchMe(navigate));
-      dispatch(fetchProfile({ userId, navigate }));
+      mutateMe();
+      mutateProfile();
+      // dispatch(fetchProfile({ userId, navigate }));
 
       return response.data;
     } catch (error) {

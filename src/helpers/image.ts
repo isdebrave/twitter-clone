@@ -7,7 +7,7 @@ export const src = (image: string) => {
     return "/images/anonymous.jpg";
   }
 
-  if (image.includes("http")) {
+  if (image.includes("http") || image.includes("data")) {
     return image;
   }
 

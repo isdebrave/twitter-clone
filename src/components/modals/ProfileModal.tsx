@@ -1,36 +1,39 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IoClose, IoCameraOutline } from "react-icons/io5";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { FieldValues, SubmitHandler } from "react-hook-form";
+import axios, { AxiosError } from "axios";
+import toast from "react-hot-toast";
 
 import Modal from "./Modal";
 import Input from "../Input";
 import Button from "../Button";
 
-import { AppDispatch, RootState } from "../../redux/store";
-import { onProfileModalClose } from "../../redux/reducers/profileModal";
 import { bgBlack, hoverLightWhite, textWhite } from "../../constants/colors";
-import { fetchUpdateProfile } from "../../redux/thunk/profile";
 
 import { addImageHandler, removeImageHandler, src } from "../../helpers/image";
 import { namePattern } from "../../helpers/pattern";
+
 import useReactHookForm from "../../hooks/useReactHookForm";
+import useProfileModal from "../../hooks/useProfileModal";
+
+import { AppDispatch, RootState } from "../../redux/store";
+import { onProfileUpdate } from "../../redux/reducers/profile";
+import { onMeProfileUpdate } from "../../redux/reducers/me";
 
 const ProfileModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const coverImageInputRef = useRef<HTMLInputElement>(null);
+  const profileModal = useProfileModal();
 
   const [coverImagePreview, setCoverImagePreview] = useState("");
   const [profileImagePreview, setProfileImagePreview] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
 
-  const profileModal = useSelector((state: RootState) => state.profileModal);
   const profile = useSelector((state: RootState) => state.profile);
 
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
 
   const extendedSrc = (imagePreview: string, image: string) => {
     if (imagePreview.length > 0) return imagePreview;
@@ -190,48 +193,36 @@ const ProfileModal = () => {
     initializedForm();
   };
 
-  // const {
-  //   register,
-  //   watch,
-  //   handleSubmit,
-  //   setValue,
-  //   clearErrors,
-  //   formState: { errors },
-  // } = useForm<FieldValues>({
-  //   defaultValues: { username: "", bio: "" },
-  // });
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    const formData = new FormData();
+    coverImage && formData.append("coverImage", coverImage);
+    profileImage && formData.append("profileImage", profileImage);
+    formData.append("data", JSON.stringify(data));
 
-  // const username = watch("username");
-  // const bio = watch("bio");
+    try {
+      axios.patch(`/user/profile/${profile.id}`, formData);
 
-  // useEffect(() => {
-  //   setValue("username", profile.username);
-  //   setValue("bio", profile.bio);
-  // }, [profile, setValue]);
+      dispatch(
+        onProfileUpdate({
+          coverImage: coverImagePreview,
+          profileImage: profileImagePreview,
+          username: watchAllFields.username,
+          bio: watchAllFields.bio,
+        })
+      );
 
-  // const resetAll = () => {
-  //   setCoverImagePreview("");
-  //   setProfileImagePreview("");
-  //   setCoverImage(null);
-  //   setProfileImage(null);
-  //   setValue("username", profile.username);
-  //   setValue("bio", profile.bio);
-  //   clearErrors("username");
-  // };
+      if (profileImage) {
+        dispatch(onMeProfileUpdate({ profileImage: profileImagePreview }));
+      }
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    dispatch(
-      fetchUpdateProfile({
-        coverImage,
-        profileImage,
-        data,
-        userId: profile.id,
-        dispatch,
-        navigate,
-      })
-    );
-    dispatch(onProfileModalClose());
-    resetAll();
+      profileModal.onClose();
+      resetAll();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error);
+        toast.error(error.response?.data);
+      }
+    }
   };
 
   const footerContent = (
@@ -272,7 +263,7 @@ const ProfileModal = () => {
     <Modal
       disabled={isLoading}
       isOpen={profileModal.isOpen}
-      onClose={() => dispatch(onProfileModalClose())}
+      onClose={profileModal.onClose}
       icon={IoClose}
       title="Edit profile"
       body={bodyContent}

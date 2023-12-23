@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import { AiOutlineGithub } from "react-icons/ai";
@@ -7,7 +7,6 @@ import { IoClose } from "react-icons/io5";
 import { BsTwitterX } from "react-icons/bs";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
 
 import Modal from "./Modal";
 import Heading from "../Heading";
@@ -23,16 +22,16 @@ import {
   textWhite,
 } from "../../constants/colors";
 
-import { AppDispatch, RootState } from "../../redux/store";
-import { onLoginModalClose } from "../../redux/reducers/loginModal";
-import { onRegisterModalOpen } from "../../redux/reducers/registerModal";
-import { fetchLoginModal } from "../../redux/thunk/loginModal";
+import useLoginModal from "../../hooks/useLoginModal";
+import useRegisterModal from "../../hooks/useRegisterModal";
 
 const LoginModal = () => {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch<AppDispatch>();
-  const loginModal = useSelector((state: RootState) => state.loginModal);
+
+  const loginModal = useLoginModal();
+  const registerModal = useRegisterModal();
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -42,15 +41,25 @@ const LoginModal = () => {
     formState: { errors },
   } = useForm<FieldValues>({ defaultValues: { id: "", password: "" } });
 
-  const id = watch("id");
-  const password = watch("password");
+  const data = watch();
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    setIsLoading(true);
-    await dispatch(fetchLoginModal(data));
-    dispatch(onLoginModalClose());
-    navigate("/home");
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+
+      await axios.post("/auth/login", data);
+
+      localStorage.setItem("auth", "true");
+      loginModal.onClose();
+      navigate("/home");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error);
+        toast.error(error?.response?.data);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const bodyContent = (
@@ -104,7 +113,7 @@ const LoginModal = () => {
               register={register}
               errors={errors}
               required
-              value={id}
+              value={data.id}
             />
             <Input
               id="password"
@@ -114,7 +123,7 @@ const LoginModal = () => {
               register={register}
               errors={errors}
               required
-              value={password}
+              value={data.password}
             />
           </div>
         </div>
@@ -122,11 +131,11 @@ const LoginModal = () => {
     </div>
   );
 
-  const clickHandler = useCallback(() => {
-    dispatch(onLoginModalClose());
-    dispatch(onRegisterModalOpen());
+  const clickHandler = () => {
+    loginModal.onClose();
+    registerModal.onOpen();
     reset();
-  }, [dispatch, reset]);
+  };
 
   const footerContent = (
     <div className="px-10 lg:px-20 space-y-3">
@@ -161,7 +170,7 @@ const LoginModal = () => {
     <Modal
       disabled={isLoading}
       isOpen={loginModal.isOpen}
-      onClose={() => dispatch(onLoginModalClose())}
+      onClose={loginModal.onClose}
       title={BsTwitterX}
       body={bodyContent}
       footer={footerContent}

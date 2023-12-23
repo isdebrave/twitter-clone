@@ -18,12 +18,12 @@ const Carousel = () => {
   const sliderRef = useRef<Slider>(null);
 
   useEffect(() => {
-    const post = posts.value.find((post) => post.id === postId);
+    const post = posts.find((post) => post.id === postId);
 
     if (post) {
       setImages(post.images);
     }
-  }, [postId, posts.value]);
+  }, [postId, posts]);
 
   const settings = {
     infinite: true,

@@ -1,17 +1,20 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import useSWRImmutable from "swr/immutable";
 import { useNavigate } from "react-router-dom";
 
-import { AppDispatch } from "../redux/store";
-import { fetchMe } from "../redux/thunk/me";
+import fetcher from "../libs/fetcher";
 
 const useMe = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
 
-  useEffect(() => {
-    dispatch(fetchMe(navigate));
-  }, [dispatch, navigate]);
+  const { data, mutate } = useSWRImmutable("/user/me", fetcher, {
+    onError: (error) => {
+      console.log(error);
+      localStorage.removeItem("auth");
+      return navigate("/auth");
+    },
+  });
+
+  return { data, mutate };
 };
 
 export default useMe;

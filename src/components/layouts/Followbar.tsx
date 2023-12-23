@@ -7,43 +7,19 @@ import { src } from "../../helpers/image";
 
 import useFollowList from "../../hooks/useFollowList";
 import useFollow from "../../hooks/useFollow";
+import useProfile from "../../hooks/useProfile";
+import { mouseEnterHandler, mouseLeaveHandler } from "../../helpers/mouse";
 
 const Followbar = () => {
   const navigate = useNavigate();
   const { followList } = useFollowList();
-  const { isFollowing, followHandler } = useFollow();
-
-  const enterHandler = (e: React.MouseEvent, userId: string) => {
-    if (!isFollowing(userId)) return;
-
-    const button = e.target as HTMLButtonElement;
-    const span = button.children[0] as HTMLElement;
-
-    if (span) {
-      span.textContent = "Unfollow";
-      button.classList.add("hover:border-rose-200");
-      button.classList.add("hover:bg-rose-100");
-      button.classList.add("hover:text-red-500");
-    }
-  };
-
-  const leaveHandler = (e: React.MouseEvent) => {
-    const button = e.target as HTMLButtonElement;
-    const span = button.children[0];
-
-    button.classList.remove("hover:border-rose-200");
-    button.classList.remove("hover:bg-rose-100");
-    button.classList.remove("hover:text-red-500");
-
-    if (span && span.textContent === "Unfollow") {
-      span.textContent = "Following";
-    }
-  };
+  const { mutate } = useProfile();
+  const { isFollowing, followHandler } = useFollow(mutate);
 
   return (
     <div className="sticky top-3 ml-8 my-3 py-3 rounded-lg bg-gray-100">
       <h3 className="font-bold text-xl px-3 mb-5">Who to follow</h3>
-      {followList.map((user) => (
+      {followList?.map((user) => (
         <div
           key={user.id}
           onClick={() => navigate(user.id)}
@@ -67,8 +43,8 @@ const Followbar = () => {
 
             <div className="ml-auto">
               <button
-                onMouseEnter={(e) => enterHandler(e, user.id)}
-                onMouseLeave={leaveHandler}
+                onMouseEnter={(e) => mouseEnterHandler(e, isFollowing, user.id)}
+                onMouseLeave={mouseLeaveHandler}
                 onClick={(e) => e && followHandler(e, user.id)}
                 className={`
                   py-2

@@ -1,11 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 import { IoMdArrowBack } from "react-icons/io";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
 
 import Modal from "./Modal";
 import Button from "../Button";
@@ -24,10 +23,8 @@ import {
   textWhite,
 } from "../../constants/colors";
 
-import { AppDispatch, RootState } from "../../redux/store";
-import { onRegisterModalClose } from "../../redux/reducers/registerModal";
-import { onLoginModalOpen } from "../../redux/reducers/loginModal";
-import { fetchRegisterModal } from "../../redux/thunk/registerModal";
+import useRegisterModal from "../../hooks/useRegisterModal";
+import useLoginModal from "../../hooks/useLoginModal";
 
 enum STEPS {
   FIRST = 1,
@@ -38,12 +35,14 @@ enum STEPS {
 }
 
 const RegisterModal = () => {
-  const navigate = useNavigate();
   const [isEmail, setIsEmail] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(STEPS.FIRST);
-  const dispatch = useDispatch<AppDispatch>();
-  const registerModal = useSelector((state: RootState) => state.registerModal);
+
+  const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -67,13 +66,7 @@ const RegisterModal = () => {
     },
   });
 
-  const name = watch("name");
-  const id = watch("id");
-  const month = watch("month");
-  const day = watch("day");
-  const year = watch("year");
-  const birth = watch("birth");
-  const password = watch("password");
+  const data = watch();
 
   const onNext = () => setStep((cur) => cur + 1);
   const onBack = () => setStep((cur) => cur - 1);
@@ -95,11 +88,22 @@ const RegisterModal = () => {
       return onNext();
     }
 
-    setIsLoading(true);
-    await dispatch(fetchRegisterModal(data));
-    dispatch(onRegisterModalClose());
-    navigate("/home");
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+
+      await axios.post("/auth/register", data);
+
+      localStorage.setItem("auth", "true");
+      registerModal.onClose();
+      navigate("/home");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error);
+        toast.error(error?.response?.data);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   let bodyContent = <></>;
@@ -110,11 +114,11 @@ const RegisterModal = () => {
           disabled={isLoading}
           isEmail={isEmail}
           onEmail={() => setIsEmail((cur) => !cur)}
-          name={name}
-          id={id}
-          month={month}
-          day={day}
-          year={year}
+          name={data.name}
+          id={data.id}
+          month={data.month}
+          day={data.day}
+          year={data.year}
           register={register}
           errors={errors}
           setError={setError}
@@ -127,7 +131,12 @@ const RegisterModal = () => {
   if (step === STEPS.SECOND) {
     bodyContent = (
       <div className="px-10 lg:px-20">
-        <SecondBody setValue={setValue} year={year} month={month} day={day} />
+        <SecondBody
+          setValue={setValue}
+          year={data.year}
+          month={data.month}
+          day={data.day}
+        />
       </div>
     );
   }
@@ -138,9 +147,9 @@ const RegisterModal = () => {
         <ThirdBody
           disabled={isLoading}
           isEmail={isEmail}
-          name={name}
-          id={id}
-          birth={birth}
+          name={data.name}
+          id={data.id}
+          birth={data.birth}
           register={register}
           onClick={() => setStep(STEPS.FIRST)}
         />
@@ -152,7 +161,7 @@ const RegisterModal = () => {
     bodyContent = (
       <div className="px-10 lg:px-20">
         <FourthBody
-          id={id}
+          id={data.id}
           disabled={isLoading}
           register={register}
           isEmail={isEmail}
@@ -169,18 +178,18 @@ const RegisterModal = () => {
           disabled={isLoading}
           register={register}
           errors={errors}
-          password={password}
+          password={data.password}
         />
       </div>
     );
   }
 
-  const clickHandler = useCallback(() => {
-    dispatch(onRegisterModalClose());
-    dispatch(onLoginModalOpen());
+  const clickHandler = () => {
+    registerModal.onClose();
+    loginModal.onOpen();
     setStep(STEPS.FIRST);
     reset();
-  }, [dispatch, reset]);
+  };
 
   const footerContent = (
     <div className="px-10 lg:px-20">
@@ -206,9 +215,7 @@ const RegisterModal = () => {
     <Modal
       disabled={isLoading}
       isOpen={registerModal.isOpen}
-      onClose={
-        step === STEPS.FIRST ? () => dispatch(onRegisterModalClose()) : onBack
-      }
+      onClose={step === STEPS.FIRST ? registerModal.onClose : onBack}
       icon={step === STEPS.FIRST ? IoClose : IoMdArrowBack}
       step={step}
       title={`5단계 중 ${step}단계`}

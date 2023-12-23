@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BsTwitterX } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import { AiOutlineGithub } from "react-icons/ai";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 
 import {
   bgBlue,
@@ -19,15 +18,18 @@ import {
 
 import Button from "../components/Button";
 
-import { onLoginModalOpen } from "../redux/reducers/loginModal";
-import { onRegisterModalOpen } from "../redux/reducers/registerModal";
+import useLoginModal from "../hooks/useLoginModal";
+import useRegisterModal from "../hooks/useRegisterModal";
 
 const Auth = () => {
-  const dispatch = useDispatch();
+  const loginModal = useLoginModal();
+  const registerModal = useRegisterModal();
 
-  if (localStorage.getItem("auth")) {
-    localStorage.removeItem("auth");
-  }
+  useEffect(() => {
+    if (localStorage.getItem("auth")) {
+      localStorage.removeItem("auth");
+    }
+  }, []);
 
   return (
     <div className="flex flex-col items-center h-full w-fit mx-auto lg:w-full lg:flex-row">
@@ -107,7 +109,7 @@ const Auth = () => {
 
           <div className="mb-3">
             <Button
-              onClick={() => dispatch(onRegisterModalOpen())}
+              onClick={registerModal.onOpen}
               bgColor={bgBlue}
               textColor={textWhite}
               hoverColor={hoverDarkBlue}
@@ -136,7 +138,7 @@ const Auth = () => {
             이미 트위터에 가입하셨나요?
           </h4>
           <Button
-            onClick={() => dispatch(onLoginModalOpen())}
+            onClick={loginModal.onOpen}
             bgColor={bgWhite}
             textColor={textBlue}
             hoverColor={hoverLightBlue}

@@ -8,12 +8,13 @@ import {
 } from "react-icons/go";
 import { FaSearch } from "react-icons/fa";
 import { PiUser, PiUserFill } from "react-icons/pi";
+import { useSelector } from "react-redux";
 
 import SidebarItem from "./SidebarItem";
 import SidebarLogo from "./SidebarLogo";
 import SidebarProfile from "./SidebarProfile";
 import SidebarPostButton from "./SidebarPostButton";
-import { useSelector } from "react-redux";
+
 import { RootState } from "../../redux/store";
 
 const Sidebar = () => {

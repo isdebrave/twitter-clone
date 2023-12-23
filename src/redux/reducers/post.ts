@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { CommentsState } from "./comments";
 import { ProfileState } from "./profile";
-import { fetchPost, fetchPostLiked } from "../thunk/post";
 
 type UserState = ProfileState;
 
@@ -48,13 +47,25 @@ const initialState: PostState = {
 export const postSlice = createSlice({
   name: "post",
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(fetchPost.fulfilled, (state, action) => {
+  reducers: {
+    onPost: (state, action) => {
       return action.payload;
-    });
-    builder.addCase(fetchPostLiked.fulfilled, () => {});
+    },
+    onPostLiked: (state, action) => {
+      const { isExists, userId } = action.payload;
+
+      if (!isExists) {
+        state.likedIds.push(userId);
+      } else {
+        state.likedIds = state.likedIds.filter((id) => id !== userId);
+      }
+    },
+    onPostViews: (state) => {
+      state.views++;
+    },
   },
 });
+
+export const { onPost, onPostLiked, onPostViews } = postSlice.actions;
 
 export default postSlice.reducer;

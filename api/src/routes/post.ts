@@ -5,10 +5,11 @@ import path from "path";
 
 import {
   posts,
+  post,
   registerPost,
   deletePost,
-  lookAroundPost,
   liked,
+  views,
 } from "../controllers/post";
 
 if (!fs.existsSync("uploads/bodyImages")) {
@@ -47,10 +48,14 @@ const bodyImagesUpload = multer({ storage, fileFilter });
 
 const postRouter = express.Router();
 
-postRouter.get("/", posts);
+postRouter.get("/all", posts);
+
+postRouter.get("/:postId", post);
 postRouter.post("/", bodyImagesUpload.array("bodyImages"), registerPost);
 postRouter.delete("/", deletePost);
-postRouter.get("/:postId", lookAroundPost);
+
 postRouter.post("/liked", liked);
+
+postRouter.post("/views", views);
 
 export default postRouter;

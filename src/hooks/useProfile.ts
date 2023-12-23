@@ -1,26 +1,26 @@
-import { useEffect } from "react";
+import useSWRImmutable from "swr/immutable";
 import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
-import { AppDispatch, RootState } from "../redux/store";
-import { fetchProfile } from "../redux/thunk/profile";
+import fetcher from "../libs/fetcher";
 
 const useProfile = () => {
   const { userId } = useParams();
-
-  const profile = useSelector((state: RootState) => state.profile);
-  const me = useSelector((state: RootState) => state.me);
-
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (userId) {
-      dispatch(fetchProfile({ userId, navigate }));
+  const { data, mutate } = useSWRImmutable(
+    userId ? `/user/profile/${userId}` : null,
+    fetcher,
+    {
+      onError: (error) => {
+        console.log(error);
+        toast.error(error.response.data);
+        return navigate("/home");
+      },
     }
-  }, [dispatch, userId, navigate]);
+  );
 
-  return { profile, me };
+  return { data, mutate };
 };
 
 export default useProfile;

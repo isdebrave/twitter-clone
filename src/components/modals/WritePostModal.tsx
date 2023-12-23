@@ -1,52 +1,61 @@
 import React, { useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import axios, { AxiosError } from "axios";
 
 import Modal from "./Modal";
 
 import useWritePostForm from "../../hooks/useWritePostForm";
+import useWritePostModal from "../../hooks/useWritePostModal";
 
-import { AppDispatch, RootState } from "../../redux/store";
-import { onWritePostModalClose } from "../../redux/reducers/writePostModal";
-import { fetchPosts } from "../../redux/thunk/posts";
-import { fetchProfile } from "../../redux/thunk/profile";
-import { fetchWritePost } from "../../redux/thunk/post";
+import { onPostsAdd } from "../../redux/reducers/posts";
+import { onProfilePostsAdd } from "../../redux/reducers/profile";
 
 const WritePostModal = () => {
-  const me = useSelector((state: RootState) => state.me);
-  const writePostModal = useSelector(
-    (state: RootState) => state.writePostModal
-  );
   const [isLoading, setIsLoading] = useState(false);
-  const { userId } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
-  const showDivision = true;
+  const dispatch = useDispatch();
+  const writePostModal = useWritePostModal();
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    setIsLoading(true);
-    await dispatch(fetchWritePost({ body: data.body, imageFiles }));
-    dispatch(fetchPosts());
-    if (userId) {
-      userId === me.id && dispatch(fetchProfile({ userId, navigate }));
+    const formData = new FormData();
+    for (const file of imageFiles) {
+      formData.append("bodyImages", file);
     }
-    dispatch(onWritePostModalClose());
-    resetAll();
-    setIsLoading(false);
+    formData.append("body", data.body);
+
+    try {
+      setIsLoading(true);
+
+      // async 말고 react-hook-form에서 바로 가져오기
+      const response = await axios.post("/post", formData);
+
+      dispatch(onPostsAdd(response.data));
+      dispatch(onProfilePostsAdd(response.data));
+
+      writePostModal.onClose();
+      resetAll();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error);
+        toast.error(error.response?.data);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const { resetAll, imageFiles, bodyContent, footerContent } = useWritePostForm(
     onSubmit,
-    showDivision
+    true
   );
 
   return (
     <Modal
       disabled={isLoading}
       isOpen={writePostModal.isOpen}
-      onClose={() => dispatch(onWritePostModalClose())}
+      onClose={writePostModal.onClose}
       icon={IoClose}
       body={bodyContent}
       footer={footerContent}

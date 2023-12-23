@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 import Sidebar from "./Sidebar";
 import Followbar from "./Followbar";
@@ -10,8 +11,17 @@ import MobileNavbar from "./mobile/MobileNavbar";
 
 import useMe from "../../hooks/useMe";
 
+import { onMe } from "../../redux/reducers/me";
+
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  useMe();
+  const { data } = useMe();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!data) return;
+
+    dispatch(onMe(data));
+  }, [data, dispatch]);
 
   return (
     <div
@@ -38,14 +48,18 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       >
         <Sidebar />
       </div>
+
       <div className="sm:hidden flex items-center py-3 px-6 relative">
         <MobileProfile />
         <MobileLogo />
       </div>
+
       <div className="sm:col-span-2 sm:border-r">{children}</div>
+
       <div className="hidden lg:block lg:col-span-1 w-[350px]">
         <Followbar />
       </div>
+
       <div className="sm:hidden">
         <MobilePostButton />
         <MobileNavbar />

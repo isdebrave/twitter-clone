@@ -15,6 +15,7 @@ import { src } from "../../helpers/image";
 import { AppDispatch, RootState } from "../../redux/store";
 import { PostState } from "../../redux/reducers/post";
 import { fetchPostLiked } from "../../redux/thunk/post";
+import useLiked from "../../hooks/useLiked";
 
 interface PostsProps {
   posts: PostState[];
@@ -22,6 +23,7 @@ interface PostsProps {
 
 const Posts: React.FC<PostsProps> = ({ posts }) => {
   const me = useSelector((state: RootState) => state.me);
+  const { likedHandler } = useLiked();
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -93,14 +95,7 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
                     textColor="text-gray-500"
                   />
                   <Icon
-                    onClick={(e) =>
-                      clickDispatchHandler(e, dispatch, fetchPostLiked, {
-                        postId: post.id,
-                        dispatch,
-                        userId: post.user.id,
-                        navigate,
-                      })
-                    }
+                    onClick={(e) => likedHandler(e, post.id)}
                     icon={
                       isHeartFill(post.likedIds, me.id) ? BiSolidHeart : BiHeart
                     }

@@ -1,18 +1,17 @@
 import React from "react";
 import { FiFeather } from "react-icons/fi";
-import { useDispatch } from "react-redux";
 
 import { bgBlue, hoverDarkBlue, textWhite } from "../../../constants/colors";
 
-import { onWritePostModalOpen } from "../../../redux/reducers/writePostModal";
+import useWritePostModal from "../../../hooks/useWritePostModal";
 
 const MobilePostButton = () => {
-  const dispatch = useDispatch();
+  const writePostModal = useWritePostModal();
 
   return (
     <div className="absolute right-3 bottom-16">
       <button
-        onClick={() => dispatch(onWritePostModalOpen())}
+        onClick={writePostModal.onOpen}
         className={`
           p-3 
           rounded-full 

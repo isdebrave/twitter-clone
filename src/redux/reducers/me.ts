@@ -1,10 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { ProfileState } from "./profile";
-import { fetchMe } from "../thunk/me";
 
 export type MeState = Omit<ProfileState, "posts">;
-
 const initialState: MeState = {
   id: "",
   username: "",
@@ -23,17 +21,20 @@ export const meSlice = createSlice({
   name: "me",
   initialState,
   reducers: {
+    onMe: (state, action) => {
+      return action.payload;
+    },
     onMeRemove: () => {
       return initialState;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchMe.fulfilled, (state, action) => {
-      return action.payload;
-    });
+    onMeProfileUpdate: (state, action) => {
+      const { profileImage } = action.payload;
+
+      state.profileImage = profileImage;
+    },
   },
 });
 
-export const { onMeRemove } = meSlice.actions;
+export const { onMe, onMeRemove, onMeProfileUpdate } = meSlice.actions;
 
 export default meSlice.reducer;

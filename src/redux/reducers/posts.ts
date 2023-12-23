@@ -1,27 +1,34 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { PostState } from "./post";
-import { fetchPosts } from "../thunk/posts";
 
-interface PostsState {
-  isUpdatedOnce: boolean;
-  value: PostState[];
-}
-
-const initialState: PostsState = {
-  isUpdatedOnce: false,
-  value: [],
-};
+const initialState: PostState[] = [];
 
 export const postsSlice = createSlice({
   name: "posts",
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(fetchPosts.fulfilled, (state, action) => {
-      return { isUpdatedOnce: true, value: action.payload };
-    });
+  reducers: {
+    onPosts: (state, action) => {
+      return action.payload;
+    },
+    onPostsAdd: (state, action) => {
+      state.unshift(action.payload);
+    },
+    onPostsLiked: (state, action) => {
+      const { isExists, userId, postId } = action.payload;
+
+      const post = state.find((post) => post.id === postId);
+      if (!post) return;
+
+      if (!isExists) {
+        post.likedIds.push(userId);
+      } else {
+        post.likedIds = post.likedIds.filter((id) => id !== userId);
+      }
+    },
   },
 });
+
+export const { onPosts, onPostsAdd, onPostsLiked } = postsSlice.actions;
 
 export default postsSlice.reducer;

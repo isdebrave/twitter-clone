@@ -4,9 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { fetchFollow } from "../redux/thunk/follow";
 import { AppDispatch, RootState } from "../redux/store";
+import useMe from "./useMe";
+import useProfile from "./useProfile";
+import { KeyedMutator } from "swr";
 
-const useFollow = () => {
+const useFollow = (mutateProfile: KeyedMutator<any>) => {
   const { userId } = useParams();
+  const { mutate: mutateMe } = useMe();
 
   const me = useSelector((state: RootState) => state.me);
 
@@ -26,7 +30,15 @@ const useFollow = () => {
 
     if (userId) {
       dispatch(
-        fetchFollow({ isFollowing, followerId, userId, dispatch, navigate })
+        fetchFollow({
+          isFollowing,
+          followerId,
+          userId,
+          dispatch,
+          navigate,
+          mutateMe,
+          mutateProfile,
+        })
       );
     }
   };
