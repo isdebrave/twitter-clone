@@ -26,9 +26,29 @@ export const postsSlice = createSlice({
         post.likedIds = post.likedIds.filter((id) => id !== userId);
       }
     },
+    onPostsProfileUpdate: (state, action) => {
+      const { profileImage, userId } = action.payload;
+
+      for (const post of state) {
+        if (post.user.id === userId) {
+          post.user.profileImage = profileImage;
+        }
+      }
+    },
+    onPostsDelete: (state, action) => {
+      const { postId } = action.payload;
+
+      return state.filter((post) => post.id !== postId);
+    },
   },
 });
 
-export const { onPosts, onPostsAdd, onPostsLiked } = postsSlice.actions;
+export const {
+  onPosts,
+  onPostsAdd,
+  onPostsLiked,
+  onPostsProfileUpdate,
+  onPostsDelete,
+} = postsSlice.actions;
 
 export default postsSlice.reducer;

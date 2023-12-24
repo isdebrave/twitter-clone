@@ -69,6 +69,28 @@ export const profileSlice = createSlice({
         state.posts.forEach((post) => (post.user.profileImage = profileImage));
       }
     },
+    onProfileFollowAdd: (state, action) => {
+      const { meId, userId, profileId } = action.payload;
+
+      if (profileId === meId) {
+        state.followingIds.push(userId);
+      }
+
+      if (profileId === userId) {
+        state.followerIds.push(meId);
+      }
+    },
+    onProfileFollowDelete: (state, action) => {
+      const { meId, userId, profileId } = action.payload;
+
+      if (profileId === meId) {
+        state.followingIds = state.followingIds.filter((id) => id !== userId);
+      }
+
+      if (profileId === userId) {
+        state.followerIds = state.followerIds.filter((id) => id !== meId);
+      }
+    },
   },
 });
 
@@ -78,6 +100,8 @@ export const {
   onProfilePostsLiked,
   onProfilePostsAdd,
   onProfileUpdate,
+  onProfileFollowAdd,
+  onProfileFollowDelete,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

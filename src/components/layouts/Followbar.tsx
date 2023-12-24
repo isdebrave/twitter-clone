@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { bgBlack, hoverLightWhite, textWhite } from "../../constants/colors";
 
@@ -9,17 +9,30 @@ import useFollowList from "../../hooks/useFollowList";
 import useFollow from "../../hooks/useFollow";
 import useProfile from "../../hooks/useProfile";
 import { mouseEnterHandler, mouseLeaveHandler } from "../../helpers/mouse";
+import { useDispatch, useSelector } from "react-redux";
+import { onFollowList } from "../../redux/reducers/followList";
+import { RootState } from "../../redux/store";
 
 const Followbar = () => {
+  const { data } = useFollowList();
+  const { isFollowing, followHandler } = useFollow();
+  const { userId } = useParams();
+
+  const followList = useSelector((state: RootState) => state.followList);
+
   const navigate = useNavigate();
-  const { followList } = useFollowList();
-  const { mutate } = useProfile();
-  const { isFollowing, followHandler } = useFollow(mutate);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!data) return;
+
+    dispatch(onFollowList(data));
+  }, [data, dispatch]);
 
   return (
     <div className="sticky top-3 ml-8 my-3 py-3 rounded-lg bg-gray-100">
       <h3 className="font-bold text-xl px-3 mb-5">Who to follow</h3>
-      {followList?.map((user) => (
+      {followList.map((user) => (
         <div
           key={user.id}
           onClick={() => navigate(user.id)}
@@ -45,7 +58,11 @@ const Followbar = () => {
               <button
                 onMouseEnter={(e) => mouseEnterHandler(e, isFollowing, user.id)}
                 onMouseLeave={mouseLeaveHandler}
-                onClick={(e) => e && followHandler(e, user.id)}
+                onClick={(e) =>
+                  e &&
+                  userId &&
+                  followHandler({ e, userId: user.id, profileId: userId })
+                }
                 className={`
                   py-2
                   px-5 

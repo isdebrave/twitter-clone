@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { bgWhite, hoverGray, textBlack } from "../constants/colors";
@@ -19,10 +19,11 @@ import { RootState } from "../redux/store";
 import { onProfile } from "../redux/reducers/profile";
 
 const Profile = () => {
-  const { data, mutate } = useProfile();
-  const { isFollowing, followHandler } = useFollow(mutate);
-  const profileModal = useProfileModal();
+  const { data } = useProfile();
+  const { isFollowing, followHandler } = useFollow();
+  const { userId: profileId } = useParams();
 
+  const profileModal = useProfileModal();
   const me = useSelector((state: RootState) => state.me);
   const profile = useSelector((state: RootState) => state.profile);
 
@@ -54,7 +55,7 @@ const Profile = () => {
       return profileModal.onOpen();
     }
 
-    return followHandler(e, profile.id);
+    return profileId && followHandler({ e, userId: profile.id, profileId });
   };
 
   return (

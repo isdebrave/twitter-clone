@@ -1,45 +1,48 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
-import { fetchFollow } from "../redux/thunk/follow";
-import { AppDispatch, RootState } from "../redux/store";
-import useMe from "./useMe";
-import useProfile from "./useProfile";
-import { KeyedMutator } from "swr";
+import { RootState } from "../redux/store";
+import {
+  onProfileFollowAdd,
+  onProfileFollowDelete,
+} from "../redux/reducers/profile";
+import { onMeFollowingAdd, onMeFollowingDelete } from "../redux/reducers/me";
 
-const useFollow = (mutateProfile: KeyedMutator<any>) => {
-  const { userId } = useParams();
-  const { mutate: mutateMe } = useMe();
+interface FollowHandlerProps {
+  (props: { e: React.MouseEvent; userId: string; profileId: string }): void;
+}
 
+const useFollow = () => {
   const me = useSelector((state: RootState) => state.me);
 
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const isFollowing = (followerId: string) => {
-    if (me.followingIds.includes(followerId)) {
+  const isFollowing = (userId: string) => {
+    if (me.followingIds.includes(userId)) {
       return true;
     }
 
     return false;
   };
 
-  const followHandler = (e: React.MouseEvent, followerId: string) => {
+  const followHandler: FollowHandlerProps = ({ e, userId, profileId }) => {
     e.stopPropagation();
 
-    if (userId) {
-      dispatch(
-        fetchFollow({
-          isFollowing,
-          followerId,
-          userId,
-          dispatch,
-          navigate,
-          mutateMe,
-          mutateProfile,
-        })
-      );
+    try {
+      if (!profileId) return;
+
+      if (!isFollowing(userId)) {
+        axios.post("/user/follow", { followerId: userId });
+        dispatch(onProfileFollowAdd({ meId: me.id, userId, profileId }));
+        dispatch(onMeFollowingAdd({ userId }));
+      } else {
+        axios.delete("/user/follow", { data: { followerId: userId } });
+        dispatch(onProfileFollowDelete({ meId: me.id, userId, profileId }));
+        dispatch(onMeFollowingDelete({ userId }));
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

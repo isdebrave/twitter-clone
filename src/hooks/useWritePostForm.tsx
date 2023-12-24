@@ -53,11 +53,11 @@ const useWritePostForm = (
   const bodyContent = (
     <div className="px-6">
       <div className="flex gap-3 mb-4">
-        <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
+        <div className="w-[40px] h-[40px] flex rounded-full overflow-hidden">
           <img
             src={src(me.profileImage)}
             alt="ProfileImage"
-            className="w-full"
+            className="w-full object-cover"
           />
         </div>
         <textarea

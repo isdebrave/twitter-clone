@@ -32,12 +32,12 @@ const SidebarProfile = () => {
           lg:px-4 
         "
       >
-        <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
+        <div className="w-[40px] h-[40px] flex rounded-full overflow-hidden">
           <img
             src={src(me.profileImage)}
             alt="ProfileImage"
             referrerPolicy="no-referrer"
-            className="w-full"
+            className="w-full object-cover"
           />
         </div>
 

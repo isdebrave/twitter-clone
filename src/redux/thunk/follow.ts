@@ -3,7 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 import { AppDispatch } from "../store";
-import { fetchProfile } from "./profile";
+// import { fetchProfile } from "./profile";
 import { KeyedMutator } from "swr";
 
 interface DataType {

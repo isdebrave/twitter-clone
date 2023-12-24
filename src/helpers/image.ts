@@ -1,5 +1,5 @@
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export const src = (image: string) => {
   // coverImage는 ""면 src를 호출하지 않는다.

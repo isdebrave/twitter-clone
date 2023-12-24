@@ -6,16 +6,13 @@ import { useNavigate } from "react-router-dom";
 import PostsItem from "./PostsItem";
 import Icon from "../Icon";
 
-import {
-  clickDispatchHandler,
-  clickNavigateHandler,
-} from "../../helpers/click";
+import { clickNavigateHandler } from "../../helpers/click";
 import { src } from "../../helpers/image";
+
+import useLiked from "../../hooks/useLiked";
 
 import { AppDispatch, RootState } from "../../redux/store";
 import { PostState } from "../../redux/reducers/post";
-import { fetchPostLiked } from "../../redux/thunk/post";
-import useLiked from "../../hooks/useLiked";
 
 interface PostsProps {
   posts: PostState[];
@@ -25,7 +22,6 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
   const me = useSelector((state: RootState) => state.me);
   const { likedHandler } = useLiked();
 
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const isHeartFill = (array: string[], meId: string) => {
@@ -59,6 +55,7 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
                 className="
                   w-[40px] 
                   h-[40px] 
+                  flex
                   rounded-full 
                   overflow-hidden 
                   hover:brightness-90 
@@ -68,7 +65,8 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
                 <img
                   src={src(post.user.profileImage)}
                   alt="ProfileImage"
-                  className="w-full"
+                  referrerPolicy="no-referrer"
+                  className="w-full object-cover"
                 />
               </div>
 

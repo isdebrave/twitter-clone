@@ -17,6 +17,11 @@ export const store = configureStore({
     post,
   },
   devTools: process.env.NODE_ENV !== "production",
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      immutableCheck: false,
+      serializableCheck: false,
+    }),
 });
 
 export type AppDispatch = typeof store.dispatch;

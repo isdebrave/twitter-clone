@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { IoEllipsisHorizontal, IoTrashSharp } from "react-icons/io5";
+import axios from "axios";
 
 import {
   clickDispatchHandler,
@@ -10,7 +11,7 @@ import {
 import { src } from "../../helpers/image";
 
 import { AppDispatch, RootState } from "../../redux/store";
-import { fetchDeletePost } from "../../redux/thunk/post";
+import { onPostsDelete } from "../../redux/reducers/posts";
 
 interface PostProfile {
   href: string;
@@ -37,8 +38,19 @@ const PostProfile: React.FC<PostProfile> = ({
     const onCloseBox = () => setShowBox(false);
 
     window.addEventListener("click", onCloseBox);
+
     return () => window.removeEventListener("click", onCloseBox);
   }, []);
+
+  const deleteHandler = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    axios.delete("/post", { data: { postId: post.id } });
+
+    dispatch(onPostsDelete({ postId: post.id }));
+
+    return navigate("/home");
+  };
 
   return (
     <div className="flex items-center gap-3">
@@ -47,13 +59,18 @@ const PostProfile: React.FC<PostProfile> = ({
           className="
             w-[40px] 
             h-[40px] 
+            flex
             rounded-full 
             overflow-hidden 
             hover:brightness-90 
             transition
           "
         >
-          <img src={src(profileImage)} alt="ProfileImage" className="w-full" />
+          <img
+            src={src(profileImage)}
+            alt="ProfileImage"
+            className="w-full object-cover"
+          />
         </div>
       </Link>
 
@@ -86,13 +103,7 @@ const PostProfile: React.FC<PostProfile> = ({
 
             {showBox && (
               <div
-                onClick={(e) =>
-                  clickDispatchHandler(e, dispatch, fetchDeletePost, {
-                    postId: post.id,
-                    dispatch,
-                    navigate,
-                  })
-                }
+                onClick={deleteHandler}
                 className="
                   absolute
                   -top-1 

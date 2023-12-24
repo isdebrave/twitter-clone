@@ -32,9 +32,25 @@ export const meSlice = createSlice({
 
       state.profileImage = profileImage;
     },
+    onMeFollowingAdd: (state, action) => {
+      const { userId } = action.payload;
+
+      state.followingIds.push(userId);
+    },
+    onMeFollowingDelete: (state, action) => {
+      const { userId } = action.payload;
+
+      state.followingIds = state.followingIds.filter((id) => id !== userId);
+    },
   },
 });
 
-export const { onMe, onMeRemove, onMeProfileUpdate } = meSlice.actions;
+export const {
+  onMe,
+  onMeRemove,
+  onMeProfileUpdate,
+  onMeFollowingAdd,
+  onMeFollowingDelete,
+} = meSlice.actions;
 
 export default meSlice.reducer;

@@ -21,7 +21,7 @@ const useLiked = () => {
     e.stopPropagation();
 
     try {
-      axios.post(`/post/liked`, { postId });
+      axios.post("/post/liked", { postId });
 
       let likedIds;
 

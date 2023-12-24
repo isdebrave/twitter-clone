@@ -1,18 +1,15 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import useSWRImmutable from "swr/immutable";
 
-import { fetchFollowList } from "../redux/thunk/followList";
-import { AppDispatch, RootState } from "../redux/store";
+import fetcher from "../libs/fetcher";
 
 const useFollowList = () => {
-  const followList = useSelector((state: RootState) => state.followList);
-  const dispatch = useDispatch<AppDispatch>();
+  const { data, mutate } = useSWRImmutable("/user/all", fetcher, {
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
-  useEffect(() => {
-    dispatch(fetchFollowList());
-  }, [dispatch]);
-
-  return { followList };
+  return { data, mutate };
 };
 
 export default useFollowList;

@@ -20,6 +20,8 @@ import useProfileModal from "../../hooks/useProfileModal";
 import { AppDispatch, RootState } from "../../redux/store";
 import { onProfileUpdate } from "../../redux/reducers/profile";
 import { onMeProfileUpdate } from "../../redux/reducers/me";
+import { onPostsProfileUpdate } from "../../redux/reducers/posts";
+import { onPostProfileUpdate } from "../../redux/reducers/post";
 
 const ProfileModal = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -212,7 +214,22 @@ const ProfileModal = () => {
       );
 
       if (profileImage) {
-        dispatch(onMeProfileUpdate({ profileImage: profileImagePreview }));
+        dispatch(
+          onMeProfileUpdate({
+            profileImage: profileImagePreview,
+          })
+        );
+        dispatch(
+          onPostsProfileUpdate({
+            profileImage: profileImagePreview,
+            userId: profile.id,
+          })
+        );
+        dispatch(
+          onPostProfileUpdate({
+            profileImage: profileImagePreview,
+          })
+        );
       }
 
       profileModal.onClose();

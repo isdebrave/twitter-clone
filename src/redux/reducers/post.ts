@@ -63,9 +63,15 @@ export const postSlice = createSlice({
     onPostViews: (state) => {
       state.views++;
     },
+    onPostProfileUpdate: (state, action) => {
+      const { profileImage } = action.payload;
+
+      state.user.profileImage = profileImage;
+    },
   },
 });
 
-export const { onPost, onPostLiked, onPostViews } = postSlice.actions;
+export const { onPost, onPostLiked, onPostViews, onPostProfileUpdate } =
+  postSlice.actions;
 
 export default postSlice.reducer;

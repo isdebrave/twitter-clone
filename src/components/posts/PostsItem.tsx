@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNowStrict } from "date-fns";
 import { IoEllipsisHorizontal, IoTrashSharp } from "react-icons/io5";
+import axios from "axios";
 
 import ImageCard from "../ImageCard";
 
@@ -14,7 +15,7 @@ import {
 import { src } from "../../helpers/image";
 
 import { AppDispatch, RootState } from "../../redux/store";
-import { fetchDeletePost } from "../../redux/thunk/post";
+import { onPostsDelete } from "../../redux/reducers/posts";
 
 interface PostsItemProps {
   onClick: (e: React.MouseEvent) => void;
@@ -46,8 +47,19 @@ const PostsItem: React.FC<PostsItemProps> = ({
     const onCloseBox = () => setShowBox(false);
 
     window.addEventListener("click", onCloseBox);
+
     return () => window.removeEventListener("click", onCloseBox);
   }, []);
+
+  const deleteHandler = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    axios.delete("/post", { data: { postId } });
+
+    dispatch(onPostsDelete({ postId }));
+
+    return navigate("/home");
+  };
 
   return (
     <>
@@ -83,13 +95,7 @@ const PostsItem: React.FC<PostsItemProps> = ({
 
             {showBox && (
               <div
-                onClick={(e) =>
-                  clickDispatchHandler(e, dispatch, fetchDeletePost, {
-                    postId,
-                    dispatch,
-                    navigate,
-                  })
-                }
+                onClick={deleteHandler}
                 className="
                   absolute
                   -top-1 

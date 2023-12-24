@@ -23,7 +23,8 @@ const UserHero: React.FC<UserHeroProps> = ({ coverImage, profileImage }) => {
       <div
         className="
           w-[130px] 
-          h-[130px] 
+          h-[130px]
+          flex 
           border-4 
           border-white 
           rounded-full 
@@ -37,11 +38,11 @@ const UserHero: React.FC<UserHeroProps> = ({ coverImage, profileImage }) => {
         <img
           src={src(profileImage)}
           alt="ProfileImage"
+          referrerPolicy="no-referrer"
           className="
             w-full 
-            h-full 
-            rounded-full 
             object-cover 
+            rounded-full 
             hover:brightness-90 
             transition
           "
