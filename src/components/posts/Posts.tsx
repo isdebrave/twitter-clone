@@ -1,17 +1,18 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { BiHeart, BiMessageRounded, BiSolidHeart } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 
 import PostsItem from "./PostsItem";
 import Icon from "../Icon";
 
-import { clickNavigateHandler } from "../../helpers/click";
+import { stopPropagationHandler } from "../../helpers/event";
 import { src } from "../../helpers/image";
 
 import useLiked from "../../hooks/useLiked";
+import useCommentModal from "../../hooks/useCommentModal";
 
-import { AppDispatch, RootState } from "../../redux/store";
+import { RootState } from "../../redux/store";
 import { PostState } from "../../redux/reducers/post";
 
 interface PostsProps {
@@ -19,8 +20,10 @@ interface PostsProps {
 }
 
 const Posts: React.FC<PostsProps> = ({ posts }) => {
-  const me = useSelector((state: RootState) => state.me);
   const { likedHandler } = useLiked();
+  const commentModal = useCommentModal();
+
+  const me = useSelector((state: RootState) => state.me);
 
   const navigate = useNavigate();
 
@@ -38,10 +41,8 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
         <div
           key={post.id}
           onClick={(e) =>
-            clickNavigateHandler(
-              e,
-              navigate,
-              `/${post.user.id}/status/${post.id}`
+            stopPropagationHandler(e, () =>
+              navigate(`/${post.user.id}/status/${post.id}`)
             )
           }
           className="cursor-pointer"
@@ -50,7 +51,7 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
             <div className="flex gap-3">
               <div
                 onClick={(e) =>
-                  clickNavigateHandler(e, navigate, `/${post.user.id}`)
+                  stopPropagationHandler(e, () => navigate(`/${post.user.id}`))
                 }
                 className="
                   w-[40px] 
@@ -73,7 +74,9 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
               <div className="flex-1">
                 <PostsItem
                   onClick={(e) =>
-                    clickNavigateHandler(e, navigate, `/${post.user.id}`)
+                    stopPropagationHandler(e, () =>
+                      navigate(`/${post.user.id}`)
+                    )
                   }
                   username={post.user.username}
                   userId={post.user.id}
@@ -85,7 +88,12 @@ const Posts: React.FC<PostsProps> = ({ posts }) => {
 
                 <div className="flex gap-10">
                   <Icon
-                    onClick={() => {}}
+                    onClick={(e) =>
+                      stopPropagationHandler(e, () => {
+                        commentModal.onPost(post);
+                        commentModal.onOpen();
+                      })
+                    }
                     icon={BiMessageRounded}
                     length={post.comments.length}
                     textHover="group-hover:text-sky-500"

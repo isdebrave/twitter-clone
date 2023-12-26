@@ -57,6 +57,11 @@ export const profileSlice = createSlice({
     onProfilePostsAdd: (state, action) => {
       state.posts.unshift(action.payload);
     },
+    onProfilePostsDelete: (state, action) => {
+      const { postId } = action.payload;
+
+      state.posts = state.posts.filter((post) => post.id !== postId);
+    },
     onProfileUpdate: (state, action) => {
       const { coverImage, profileImage, username, bio } = action.payload;
 
@@ -70,26 +75,36 @@ export const profileSlice = createSlice({
       }
     },
     onProfileFollowAdd: (state, action) => {
-      const { meId, userId, profileId } = action.payload;
+      const { meId, followerId, profileId } = action.payload;
 
       if (profileId === meId) {
-        state.followingIds.push(userId);
+        state.followingIds.push(followerId);
       }
 
-      if (profileId === userId) {
+      if (profileId === followerId) {
         state.followerIds.push(meId);
       }
     },
     onProfileFollowDelete: (state, action) => {
-      const { meId, userId, profileId } = action.payload;
+      const { meId, followerId, profileId } = action.payload;
 
       if (profileId === meId) {
-        state.followingIds = state.followingIds.filter((id) => id !== userId);
+        state.followingIds = state.followingIds.filter(
+          (id) => id !== followerId
+        );
       }
 
-      if (profileId === userId) {
+      if (profileId === followerId) {
         state.followerIds = state.followerIds.filter((id) => id !== meId);
       }
+    },
+    onProfileCommentAdd: (state, action) => {
+      const { postId } = action.payload;
+
+      const post = state.posts.find((post) => post.id === postId);
+
+      if (!post) return;
+      post.comments.unshift(action.payload);
     },
   },
 });
@@ -99,9 +114,11 @@ export const {
   onProfileRemove,
   onProfilePostsLiked,
   onProfilePostsAdd,
+  onProfilePostsDelete,
   onProfileUpdate,
   onProfileFollowAdd,
   onProfileFollowDelete,
+  onProfileCommentAdd,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

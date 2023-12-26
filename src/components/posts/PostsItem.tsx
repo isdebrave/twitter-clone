@@ -7,15 +7,12 @@ import axios from "axios";
 
 import ImageCard from "../ImageCard";
 
-import {
-  clickDispatchHandler,
-  clickNavigateHandler,
-  clickSetFunctionHandler,
-} from "../../helpers/click";
+import { stopPropagationHandler } from "../../helpers/event";
 import { src } from "../../helpers/image";
 
 import { AppDispatch, RootState } from "../../redux/store";
 import { onPostsDelete } from "../../redux/reducers/posts";
+import { onProfilePostsDelete } from "../../redux/reducers/profile";
 
 interface PostsItemProps {
   onClick: (e: React.MouseEvent) => void;
@@ -57,8 +54,7 @@ const PostsItem: React.FC<PostsItemProps> = ({
     axios.delete("/post", { data: { postId } });
 
     dispatch(onPostsDelete({ postId }));
-
-    return navigate("/home");
+    dispatch(onProfilePostsDelete({ postId }));
   };
 
   return (
@@ -76,9 +72,7 @@ const PostsItem: React.FC<PostsItemProps> = ({
         {me.id === userId && (
           <>
             <div
-              onClick={(e) =>
-                clickSetFunctionHandler<boolean>(e, setShowBox, true)
-              }
+              onClick={(e) => stopPropagationHandler(e, () => setShowBox(true))}
               className="
                 absolute 
                 -top-1 
@@ -127,13 +121,11 @@ const PostsItem: React.FC<PostsItemProps> = ({
       {images.length > 0 && (
         <ImageCard
           onClick={(e) =>
-            clickNavigateHandler(
-              e,
-              navigate,
-              `/${userId.slice(0, 10)}/status/${postId}/photo`
+            stopPropagationHandler(e, () =>
+              navigate(`/${userId.slice(0, 10)}/status/${postId}/photo`)
             )
           }
-          imagesLength={images.length}
+          imagesCount={images.length}
         >
           {images.map((image, idx) => (
             <div

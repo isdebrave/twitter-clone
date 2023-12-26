@@ -15,10 +15,12 @@ import { onPost, onPostViews } from "../redux/reducers/post";
 
 import usePost from "../hooks/usePost";
 import useLiked from "../hooks/useLiked";
+import useCommentModal from "../hooks/useCommentModal";
 
 const Feed = () => {
   const { data } = usePost();
   const { likedHandler } = useLiked();
+  const commentModal = useCommentModal();
 
   const me = useSelector((state: RootState) => state.me);
   const post = useSelector((state: RootState) => state.post);
@@ -71,7 +73,7 @@ const Feed = () => {
         <div className="mb-3">
           <PostBody
             body={post.body}
-            imagesLength={post.images.length}
+            imagesCount={post.images.length}
             images={post.images}
           />
         </div>
@@ -79,7 +81,7 @@ const Feed = () => {
         <hr className="mt-3 mb-1" />
         <div className="flex justify-around">
           <Icon
-            onClick={() => {}}
+            onClick={commentModal.onOpen}
             icon={BiMessageRounded}
             length={post.comments.length}
             textHover="group-hover:text-sky-500"

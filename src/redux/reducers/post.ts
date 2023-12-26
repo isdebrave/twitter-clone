@@ -68,10 +68,18 @@ export const postSlice = createSlice({
 
       state.user.profileImage = profileImage;
     },
+    onPostCommentAdd: (state, action) => {
+      state.comments.unshift(action.payload);
+    },
   },
 });
 
-export const { onPost, onPostLiked, onPostViews, onPostProfileUpdate } =
-  postSlice.actions;
+export const {
+  onPost,
+  onPostLiked,
+  onPostViews,
+  onPostProfileUpdate,
+  onPostCommentAdd,
+} = postSlice.actions;
 
 export default postSlice.reducer;

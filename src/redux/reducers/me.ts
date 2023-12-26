@@ -33,14 +33,14 @@ export const meSlice = createSlice({
       state.profileImage = profileImage;
     },
     onMeFollowingAdd: (state, action) => {
-      const { userId } = action.payload;
+      const { followerId } = action.payload;
 
-      state.followingIds.push(userId);
+      state.followingIds.push(followerId);
     },
     onMeFollowingDelete: (state, action) => {
-      const { userId } = action.payload;
+      const { followerId } = action.payload;
 
-      state.followingIds = state.followingIds.filter((id) => id !== userId);
+      state.followingIds = state.followingIds.filter((id) => id !== followerId);
     },
   },
 });

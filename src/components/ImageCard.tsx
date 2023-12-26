@@ -2,21 +2,21 @@ import React from "react";
 
 interface ImageCardProps {
   onClick: (e: React.MouseEvent) => void;
-  imagesLength: number;
+  imagesCount: number;
   children: React.ReactElement[];
 }
 
 const ImageCard: React.FC<ImageCardProps> = ({
   onClick,
-  imagesLength,
+  imagesCount,
   children,
 }) => {
-  if (imagesLength === 1 || imagesLength === 2) {
+  if (imagesCount === 1 || imagesCount === 2) {
     return (
       <div
         onClick={onClick}
         className={`
-          ${imagesLength === 2 && "h-[280px]"}
+          ${imagesCount === 2 && "h-[280px]"}
           flex 
           gap-1 
           border 

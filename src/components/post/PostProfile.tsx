@@ -4,11 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { IoEllipsisHorizontal, IoTrashSharp } from "react-icons/io5";
 import axios from "axios";
 
-import {
-  clickDispatchHandler,
-  clickSetFunctionHandler,
-} from "../../helpers/click";
+import { stopPropagationHandler } from "../../helpers/event";
 import { src } from "../../helpers/image";
+
+import useCommentModal from "../../hooks/useCommentModal";
 
 import { AppDispatch, RootState } from "../../redux/store";
 import { onPostsDelete } from "../../redux/reducers/posts";
@@ -18,6 +17,7 @@ interface PostProfile {
   profileImage: string;
   username: string;
   userId: string;
+  noEllipsis?: boolean;
 }
 
 const PostProfile: React.FC<PostProfile> = ({
@@ -25,8 +25,10 @@ const PostProfile: React.FC<PostProfile> = ({
   profileImage,
   username,
   userId,
+  noEllipsis,
 }) => {
   const [showBox, setShowBox] = useState(false);
+  const commentModal = useCommentModal();
 
   const me = useSelector((state: RootState) => state.me);
   const post = useSelector((state: RootState) => state.post);
@@ -65,6 +67,7 @@ const PostProfile: React.FC<PostProfile> = ({
             hover:brightness-90 
             transition
           "
+          onClick={commentModal.onClose}
         >
           <img
             src={src(profileImage)}
@@ -75,31 +78,33 @@ const PostProfile: React.FC<PostProfile> = ({
       </Link>
 
       <div className="flex flex-col flex-auto relative">
-        <Link to={href}>
+        <Link to={href} className="w-fit" onClick={commentModal.onClose}>
           <span className="font-bold hover:underline">{username}</span>
         </Link>
         <span className="text-gray-500">@{userId.slice(0, 10)}</span>
 
         {me.id === userId && (
           <>
-            <div
-              onClick={(e) =>
-                clickSetFunctionHandler<boolean>(e, setShowBox, true)
-              }
-              className="
-                absolute 
-                -top-1 
-                right-0
-                p-2 
-                rounded-full 
-                text-gray-600 
-                hover:text-sky-500 
-                hover:bg-sky-100
-                cursor-pointer
-              "
-            >
-              <IoEllipsisHorizontal size={18} />
-            </div>
+            {!noEllipsis && (
+              <div
+                onClick={(e) =>
+                  stopPropagationHandler(e, () => setShowBox(true))
+                }
+                className="
+                  absolute 
+                  -top-1 
+                  right-0
+                  p-2 
+                  rounded-full 
+                  text-gray-600 
+                  hover:text-sky-500 
+                  hover:bg-sky-100
+                  cursor-pointer
+                "
+              >
+                <IoEllipsisHorizontal size={18} />
+              </div>
+            )}
 
             {showBox && (
               <div

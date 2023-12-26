@@ -3,13 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import fetcher from "../libs/fetcher";
-import useSWR from "swr";
 
 const useProfile = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
 
-  const { data, mutate } = useSWR(
+  const { data, mutate } = useSWRImmutable(
     userId ? `/user/profile/${userId}` : null,
     fetcher,
     {

@@ -40,6 +40,15 @@ export const postsSlice = createSlice({
 
       return state.filter((post) => post.id !== postId);
     },
+    onPostsCommentAdd: (state, action) => {
+      const { postId } = action.payload;
+
+      const post = state.find((post) => post.id === postId);
+
+      if (!post) return;
+
+      post.comments.unshift(action.payload);
+    },
   },
 });
 
@@ -49,6 +58,7 @@ export const {
   onPostsLiked,
   onPostsProfileUpdate,
   onPostsDelete,
+  onPostsCommentAdd,
 } = postsSlice.actions;
 
 export default postsSlice.reducer;

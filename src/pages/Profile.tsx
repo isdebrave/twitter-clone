@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { bgWhite, hoverGray, textBlack } from "../constants/colors";
 
@@ -16,11 +16,10 @@ import useProfileModal from "../hooks/useProfileModal";
 import { mouseEnterHandler, mouseLeaveHandler } from "../helpers/mouse";
 
 import { RootState } from "../redux/store";
-import { onProfile } from "../redux/reducers/profile";
 
 const Profile = () => {
   const { data } = useProfile();
-  const { isFollowing, followHandler } = useFollow();
+  const { isFollowing, followHandler, sanitizeFollowId } = useFollow();
   const { userId: profileId } = useParams();
 
   const profileModal = useProfileModal();
@@ -28,15 +27,14 @@ const Profile = () => {
   const profile = useSelector((state: RootState) => state.profile);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!data) return;
 
-    if (profile.id !== data.id) {
-      dispatch(onProfile(data));
+    if (profileId && profile.id !== data.id) {
+      sanitizeFollowId(data, profileId);
     }
-  }, [profile, data, dispatch]);
+  }, [profile, data, sanitizeFollowId, profileId]);
 
   const buttonLabel = () => {
     if (profile.id === me.id) {
@@ -55,7 +53,7 @@ const Profile = () => {
       return profileModal.onOpen();
     }
 
-    return profileId && followHandler({ e, userId: profile.id, profileId });
+    return profileId && followHandler({ e, followerId: profile.id, profileId });
   };
 
   return (

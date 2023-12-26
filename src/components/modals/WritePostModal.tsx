@@ -1,54 +1,147 @@
 import React, { useState } from "react";
-import { FieldValues, SubmitHandler } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
-import { useDispatch } from "react-redux";
-import toast from "react-hot-toast";
-import axios, { AxiosError } from "axios";
+import { useSelector } from "react-redux";
+import { MdAddPhotoAlternate } from "react-icons/md";
 
 import Modal from "./Modal";
+import Button from "../Button";
 
-import useWritePostForm from "../../hooks/useWritePostForm";
+import { bgBlue, hoverDarkBlue, textWhite } from "../../constants/colors";
+
+import { addImageHandler, removeImageHandler, src } from "../../helpers/image";
+
 import useWritePostModal from "../../hooks/useWritePostModal";
+import useWriteForm from "../../hooks/useWriteForm";
 
+import { RootState } from "../../redux/store";
 import { onPostsAdd } from "../../redux/reducers/posts";
 import { onProfilePostsAdd } from "../../redux/reducers/profile";
 
 const WritePostModal = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
+
+  const {
+    handleSubmit,
+    imageFiles,
+    imagesPreview,
+    register,
+    setImageFiles,
+    setImagesPreview,
+    keyDownHandler,
+    imagesInputRef,
+    onSubmit,
+    resetAll,
+  } = useWriteForm();
   const writePostModal = useWritePostModal();
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const formData = new FormData();
-    for (const file of imageFiles) {
-      formData.append("bodyImages", file);
-    }
-    formData.append("body", data.body);
+  const me = useSelector((state: RootState) => state.me);
 
-    try {
-      setIsLoading(true);
+  const bodyContent = (
+    <div className="px-6">
+      <div className="flex gap-3 mb-4">
+        <div className="w-[40px] h-[40px] flex rounded-full overflow-hidden">
+          <img
+            src={src(me.profileImage)}
+            alt="ProfileImage"
+            className="w-full object-cover"
+          />
+        </div>
+        <textarea
+          placeholder="What is happening?!"
+          {...register("body", { required: true })}
+          rows={2}
+          className="
+            flex-auto 
+            resize-none 
+            outline-none 
+            text-xl 
+            placeholder-gray-500
+          "
+          onKeyDown={keyDownHandler}
+        ></textarea>
+      </div>
+      <hr className="my-3" />
+    </div>
+  );
 
-      // async 말고 react-hook-form에서 바로 가져오기
-      const response = await axios.post("/post", formData);
+  const footerContent = (
+    <div className="px-6">
+      <form
+        encType="multipart/form-data"
+        className="flex justify-between items-center"
+      >
+        <label
+          htmlFor="bodyImages"
+          className="block p-2 rounded-full hover:bg-sky-100 cursor-pointer"
+        >
+          <MdAddPhotoAlternate className="text-sky-500" size={24} />
+        </label>
+        <input
+          ref={imagesInputRef}
+          type="file"
+          id="bodyImages"
+          name="bodyImages"
+          hidden
+          multiple
+          accept="image/*"
+          onChange={(e) =>
+            addImageHandler(
+              e,
+              (file) => setImageFiles((cur) => [...cur, file]),
+              (data) => setImagesPreview((cur) => [...cur, data]),
+              imageFiles
+            )
+          }
+        />
+        <Button
+          onClick={handleSubmit((data) =>
+            onSubmit({
+              data,
+              fetchUrl: "/post",
+              actionArray: [onPostsAdd, onProfilePostsAdd],
+              onClose: writePostModal.onClose,
+            })
+          )}
+          bgColor={bgBlue}
+          textColor={textWhite}
+          hoverColor={hoverDarkBlue}
+          label="Post"
+          bold
+          fit
+        />
+      </form>
 
-      dispatch(onPostsAdd(response.data));
-      dispatch(onProfilePostsAdd(response.data));
-
-      writePostModal.onClose();
-      resetAll();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast.error(error.response?.data);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const { resetAll, imageFiles, bodyContent, footerContent } = useWritePostForm(
-    onSubmit,
-    true
+      {imagesPreview.length > 0 && (
+        <>
+          <hr className="my-3" />
+          <div className="flex gap-3">
+            {imagesPreview.map((src, idx) => (
+              <div
+                key={src + idx}
+                className="w-[50px] h-[50px] flex cursor-pointer"
+                onClick={(e) =>
+                  removeImageHandler(
+                    e,
+                    imagesInputRef,
+                    (fileArray) => setImageFiles(fileArray!),
+                    (dataArray) => setImagesPreview(dataArray!),
+                    imageFiles,
+                    imagesPreview
+                  )
+                }
+              >
+                <img
+                  data-idx={idx}
+                  src={src}
+                  alt="BodyImages"
+                  className="w-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   );
 
   return (

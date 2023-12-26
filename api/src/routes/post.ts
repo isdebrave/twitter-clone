@@ -10,6 +10,7 @@ import {
   deletePost,
   liked,
   views,
+  comment,
 } from "../controllers/post";
 
 if (!fs.existsSync("uploads/bodyImages")) {
@@ -45,6 +46,7 @@ const fileFilter = (
 };
 
 const bodyImagesUpload = multer({ storage, fileFilter });
+const commentFormData = multer();
 
 const postRouter = express.Router();
 
@@ -57,5 +59,7 @@ postRouter.delete("/", deletePost);
 postRouter.post("/liked", liked);
 
 postRouter.post("/views", views);
+
+postRouter.post("/:postId/comment", commentFormData.none(), comment);
 
 export default postRouter;

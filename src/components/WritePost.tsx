@@ -1,42 +1,136 @@
 import React from "react";
-import { FieldValues, SubmitHandler } from "react-hook-form";
-import axios, { AxiosError } from "axios";
-import { useDispatch } from "react-redux";
-import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { MdAddPhotoAlternate } from "react-icons/md";
 
-import useWritePostForm from "../hooks/useWritePostForm";
-
+import { RootState } from "../redux/store";
 import { onPostsAdd } from "../redux/reducers/posts";
 import { onProfilePostsAdd } from "../redux/reducers/profile";
 
+import { addImageHandler, removeImageHandler, src } from "../helpers/image";
+
+import Button from "./Button";
+import { bgBlue, hoverDarkBlue, textWhite } from "../constants/colors";
+import useWriteForm from "../hooks/useWriteForm";
+
 const WritePost = () => {
-  const dispatch = useDispatch();
-
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const formData = new FormData();
-    for (const file of imageFiles) {
-      formData.append("bodyImages", file);
-    }
-    formData.append("body", data.body);
-
-    try {
-      const response = await axios.post("/post", formData);
-
-      dispatch(onPostsAdd(response.data));
-      dispatch(onProfilePostsAdd(response.data));
-
-      resetAll();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast.error(error.response?.data);
-      }
-    }
-  };
-
-  const { resetAll, imageFiles, bodyContent, footerContent } = useWritePostForm(
+  const {
+    handleSubmit,
+    imageFiles,
+    imagesPreview,
+    register,
+    setImageFiles,
+    setImagesPreview,
+    keyDownHandler,
+    imagesInputRef,
     onSubmit,
-    false
+  } = useWriteForm();
+
+  const me = useSelector((state: RootState) => state.me);
+
+  const bodyContent = (
+    <div className="px-6">
+      <div className="flex gap-3 mb-4">
+        <div className="w-[40px] h-[40px] flex rounded-full overflow-hidden">
+          <img
+            src={src(me.profileImage)}
+            alt="ProfileImage"
+            className="w-full object-cover"
+          />
+        </div>
+        <textarea
+          placeholder="What is happening?!"
+          {...register("body", { required: true })}
+          rows={2}
+          className="
+            flex-auto 
+            resize-none 
+            outline-none 
+            text-xl 
+            placeholder-gray-500
+          "
+          onKeyDown={keyDownHandler}
+        ></textarea>
+      </div>
+    </div>
+  );
+
+  const footerContent = (
+    <div className="px-6">
+      <form
+        encType="multipart/form-data"
+        className="flex justify-between items-center"
+      >
+        <label
+          htmlFor="bodyImages"
+          className="block p-2 rounded-full hover:bg-sky-100 cursor-pointer"
+        >
+          <MdAddPhotoAlternate className="text-sky-500" size={24} />
+        </label>
+        <input
+          ref={imagesInputRef}
+          type="file"
+          id="bodyImages"
+          name="bodyImages"
+          hidden
+          multiple
+          accept="image/*"
+          onChange={(e) =>
+            addImageHandler(
+              e,
+              (file) => setImageFiles((cur) => [...cur, file]),
+              (data) => setImagesPreview((cur) => [...cur, data]),
+              imageFiles
+            )
+          }
+        />
+        <Button
+          onClick={handleSubmit((data) =>
+            onSubmit({
+              data,
+              fetchUrl: "/post",
+              actionArray: [onPostsAdd, onProfilePostsAdd],
+            })
+          )}
+          bgColor={bgBlue}
+          textColor={textWhite}
+          hoverColor={hoverDarkBlue}
+          label="Post"
+          bold
+          fit
+        />
+      </form>
+
+      {imagesPreview.length > 0 && (
+        <>
+          <hr className="my-3" />
+          <div className="flex gap-3">
+            {imagesPreview.map((src, idx) => (
+              <div
+                key={src + idx}
+                className="w-[50px] h-[50px] flex cursor-pointer"
+                onClick={(e) =>
+                  removeImageHandler(
+                    e,
+                    imagesInputRef,
+                    (fileArray) => setImageFiles(fileArray!),
+                    (dataArray) => setImagesPreview(dataArray!),
+                    imageFiles,
+                    imagesPreview
+                  )
+                }
+              >
+                <img
+                  data-idx={idx}
+                  src={src}
+                  alt="BodyImages"
+                  className="w-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   );
 
   return (

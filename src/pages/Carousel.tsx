@@ -11,11 +11,13 @@ import { RootState } from "../redux/store";
 import axios from "axios";
 
 const Carousel = () => {
-  const { postId } = useParams();
-  const posts = useSelector((state: RootState) => state.posts);
   const [images, setImages] = useState<string[]>([]);
-  const navigate = useNavigate();
   const sliderRef = useRef<Slider>(null);
+
+  const posts = useSelector((state: RootState) => state.posts);
+
+  const { postId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const post = posts.find((post) => post.id === postId);

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { Post, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import path from "path";
 
 import prisma from "../libs/prismadb";
@@ -189,6 +189,41 @@ export const views = async (
     });
 
     return res.status(200).json();
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const comment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { body, postId } = req.body;
+
+    if (req.session.meId) {
+      const comment = await prisma.comment.create({
+        data: {
+          body,
+          userId: req.session.meId,
+          postId,
+        },
+        include: {
+          user: true,
+        },
+      });
+
+      type SafeUser = Omit<User, "hashedPassword" | "name" | "birth">;
+      const user = comment.user;
+      const { hashedPassword, name, birth, ...userObj } = user;
+      (comment.user as SafeUser) = userObj;
+
+      return res.status(201).json(comment);
+    } else {
+      return res.status(401).json("권한이 없습니다. 로그인을 다시 해주세요.");
+    }
   } catch (error) {
     console.log(error);
     next(error);

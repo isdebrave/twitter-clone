@@ -38,11 +38,11 @@ const Followbar = () => {
           onClick={() => navigate(user.id)}
           className="px-3 py-2 flex items-center gap-3 hover:bg-gray-200 cursor-pointer"
         >
-          <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
+          <div className="w-[40px] h-[40px] flex rounded-full overflow-hidden">
             <img
               src={src(user.profileImage)}
               alt="UserImage"
-              className="w-full"
+              className="w-full object-cover"
             />
           </div>
 
@@ -61,7 +61,7 @@ const Followbar = () => {
                 onClick={(e) =>
                   e &&
                   userId &&
-                  followHandler({ e, userId: user.id, profileId: userId })
+                  followHandler({ e, followerId: user.id, profileId: userId })
                 }
                 className={`
                   py-2
