@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { CommentsState } from "./comments";
+import { CommentState } from "./comments";
 import { ProfileState } from "./profile";
 
 type UserState = ProfileState;
@@ -15,7 +15,7 @@ export interface PostState {
   userId: string;
   likedIds: string[];
   user: UserState;
-  comments: CommentsState[];
+  comments: CommentState[];
 }
 
 const initialState: PostState = {
@@ -71,6 +71,13 @@ export const postSlice = createSlice({
     onPostCommentAdd: (state, action) => {
       state.comments.unshift(action.payload);
     },
+    onPostCommentDelete: (state, action) => {
+      const { commentId } = action.payload;
+
+      state.comments = state.comments.filter(
+        (comment) => comment.id !== commentId
+      );
+    },
   },
 });
 
@@ -80,6 +87,7 @@ export const {
   onPostViews,
   onPostProfileUpdate,
   onPostCommentAdd,
+  onPostCommentDelete,
 } = postSlice.actions;
 
 export default postSlice.reducer;

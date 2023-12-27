@@ -5,30 +5,38 @@ import { formatDistanceToNowStrict } from "date-fns";
 import { IoEllipsisHorizontal, IoTrashSharp } from "react-icons/io5";
 import axios from "axios";
 
-import ImageCard from "../ImageCard";
+import ImageCard from "./ImageCard";
 
-import { stopPropagationHandler } from "../../helpers/event";
-import { src } from "../../helpers/image";
+import { stopPropagationHandler } from "../helpers/event";
+import { src } from "../helpers/image";
 
-import { AppDispatch, RootState } from "../../redux/store";
-import { onPostsDelete } from "../../redux/reducers/posts";
-import { onProfilePostsDelete } from "../../redux/reducers/profile";
+import { AppDispatch, RootState } from "../redux/store";
+import { onPostsCommentDelete, onPostsDelete } from "../redux/reducers/posts";
+import {
+  onProfilePostsCommentDelete,
+  onProfilePostsDelete,
+} from "../redux/reducers/profile";
+import { onPostCommentDelete } from "../redux/reducers/post";
 
-interface PostsItemProps {
+interface ListsItemProps {
   onClick: (e: React.MouseEvent) => void;
   username: string;
   userId: string;
+  isPosts: boolean;
   postId: string;
+  commentId?: string;
   createdAt: string;
   body: string;
   images: string[];
 }
 
-const PostsItem: React.FC<PostsItemProps> = ({
+const ListsItem: React.FC<ListsItemProps> = ({
   onClick,
   username,
   userId,
+  isPosts,
   postId,
+  commentId,
   createdAt,
   body,
   images,
@@ -51,21 +59,33 @@ const PostsItem: React.FC<PostsItemProps> = ({
   const deleteHandler = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    axios.delete("/post", { data: { postId } });
+    if (isPosts) {
+      axios.delete("/post", { data: { postId } });
 
-    dispatch(onPostsDelete({ postId }));
-    dispatch(onProfilePostsDelete({ postId }));
+      dispatch(onPostsDelete({ postId }));
+      dispatch(onProfilePostsDelete({ postId }));
+    } else {
+      axios.delete(`/post/${postId}/comment`, { data: { commentId } });
+
+      dispatch(onPostCommentDelete({ commentId }));
+      dispatch(onPostsCommentDelete({ postId, commentId }));
+      dispatch(onProfilePostsCommentDelete({ postId, commentId }));
+    }
   };
 
   return (
     <>
       <div className="relative">
         <div className="space-x-2">
-          <span className="font-bold hover:underline" onClick={onClick}>
+          <span
+            className="font-bold hover:underline cursor-pointer"
+            onClick={onClick}
+          >
             {username}
           </span>
           <span className="text-gray-500">
-            @{userId} ▪ {formatDistanceToNowStrict(new Date(createdAt))}
+            @{userId.slice(0, 10)} ▪{" "}
+            {formatDistanceToNowStrict(new Date(createdAt))}
           </span>
         </div>
 
@@ -82,6 +102,7 @@ const PostsItem: React.FC<PostsItemProps> = ({
                 text-gray-600 
                 hover:text-sky-500 
                 hover:bg-sky-100
+                cursor-pointer
               "
             >
               <IoEllipsisHorizontal size={18} />
@@ -105,6 +126,7 @@ const PostsItem: React.FC<PostsItemProps> = ({
                   hover:bg-slate-100
                   w-[300px]
                   gap-2
+                  cursor-pointer
                 "
                 style={{ boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)" }}
               >
@@ -149,4 +171,4 @@ const PostsItem: React.FC<PostsItemProps> = ({
   );
 };
 
-export default PostsItem;
+export default ListsItem;

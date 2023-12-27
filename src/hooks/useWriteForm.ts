@@ -53,8 +53,6 @@ const useWriteForm = () => {
     try {
       const response = await axios.post(fetchUrl, formData);
 
-      console.log(response.data);
-
       actionArray.forEach((action) => dispatch(action(response.data)));
 
       onClose && onClose();

@@ -9,6 +9,7 @@ import PostProfile from "../components/post/PostProfile";
 import PostBody from "../components/post/PostBody";
 import PostFooter from "../components/post/PostFooter";
 import Icon from "../components/Icon";
+import WriteComment from "../components/comments/WriteComment";
 
 import { RootState } from "../redux/store";
 import { onPost, onPostViews } from "../redux/reducers/post";
@@ -16,6 +17,7 @@ import { onPost, onPostViews } from "../redux/reducers/post";
 import usePost from "../hooks/usePost";
 import useLiked from "../hooks/useLiked";
 import useCommentModal from "../hooks/useCommentModal";
+import Lists from "../components/Lists";
 
 const Feed = () => {
   const { data } = usePost();
@@ -40,8 +42,9 @@ const Feed = () => {
 
     if (post.id !== data.id) {
       dispatch(onPost(data));
+      commentModal.onPost(data);
     }
-  }, [post, data, dispatch]);
+  }, [post, data, dispatch, commentModal]);
 
   useEffect(() => {
     if (!data) return;
@@ -102,6 +105,9 @@ const Feed = () => {
           />
         </div>
         <hr className="mt-1 mb-3" />
+        <WriteComment />
+        <hr className="my-3" />
+        <Lists lists={post.comments} />
       </div>
     </>
   );

@@ -9,6 +9,10 @@ export const posts = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { page, limit } = req.query;
+
+  if (!page || !limit) return;
+
   try {
     const posts = await prisma.post.findMany({
       include: {
@@ -16,6 +20,8 @@ export const posts = async (
         comments: true,
       },
       orderBy: { createdAt: "desc" },
+      skip: +page * +limit,
+      take: +limit,
     });
 
     type SafeUser = Omit<User, "hashedPassword" | "name" | "birth">;
@@ -42,7 +48,11 @@ export const post = async (req: Request, res: Response) => {
       },
       include: {
         user: true,
-        comments: true,
+        comments: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
@@ -195,7 +205,7 @@ export const views = async (
   }
 };
 
-export const comment = async (
+export const registerComment = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -221,6 +231,29 @@ export const comment = async (
       (comment.user as SafeUser) = userObj;
 
       return res.status(201).json(comment);
+    } else {
+      return res.status(401).json("권한이 없습니다. 로그인을 다시 해주세요.");
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const deleteComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { commentId } = req.body;
+
+  try {
+    if (req.session.meId) {
+      await prisma.comment.delete({
+        where: { id: commentId },
+      });
+
+      return res.status(200).json();
     } else {
       return res.status(401).json("권한이 없습니다. 로그인을 다시 해주세요.");
     }

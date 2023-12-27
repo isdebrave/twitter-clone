@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import WritePost from "../components/WritePost";
-import Posts from "../components/posts/Posts";
+import Lists from "../components/Lists";
 
 import usePosts from "../hooks/usePosts";
 
@@ -10,14 +10,14 @@ import { onPosts } from "../redux/reducers/posts";
 import { RootState } from "../redux/store";
 
 const Home = () => {
-  const { data } = usePosts();
+  const { data, size, setSize } = usePosts();
   const dispatch = useDispatch();
   const posts = useSelector((state: RootState) => state.posts);
 
   useEffect(() => {
     if (!data) return;
 
-    if (posts.length === 0) {
+    if (posts.length !== data.length) {
       dispatch(onPosts(data));
     }
   }, [posts, data, dispatch]);
@@ -28,7 +28,7 @@ const Home = () => {
         <WritePost />
         <hr className="my-3" />
       </div>
-      <Posts posts={posts} />
+      <Lists lists={posts} size={size} setSize={setSize} />
     </>
   );
 };

@@ -7,7 +7,7 @@ import { bgWhite, hoverGray, textBlack } from "../constants/colors";
 import ProfileHero from "../components/profile/ProfileHero";
 import MainHeading from "../components/MainHeading";
 import ProfileBio from "../components/profile/ProfileBio";
-import Posts from "../components/posts/Posts";
+import Posts from "../components/Lists";
 
 import useProfile from "../hooks/useProfile";
 import useFollow from "../hooks/useFollow";
@@ -103,7 +103,7 @@ const Profile = () => {
         followerIdsLength={profile.followerIds.length}
       />
       <hr className="my-3" />
-      <Posts posts={profile.posts} />
+      <Posts lists={profile.posts} />
     </>
   );
 };

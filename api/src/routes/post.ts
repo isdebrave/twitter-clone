@@ -10,7 +10,8 @@ import {
   deletePost,
   liked,
   views,
-  comment,
+  registerComment,
+  deleteComment,
 } from "../controllers/post";
 
 if (!fs.existsSync("uploads/bodyImages")) {
@@ -60,6 +61,7 @@ postRouter.post("/liked", liked);
 
 postRouter.post("/views", views);
 
-postRouter.post("/:postId/comment", commentFormData.none(), comment);
+postRouter.post("/:postId/comment", commentFormData.none(), registerComment);
+postRouter.delete("/:postId/comment", deleteComment);
 
 export default postRouter;

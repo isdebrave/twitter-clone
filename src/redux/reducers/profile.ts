@@ -98,13 +98,25 @@ export const profileSlice = createSlice({
         state.followerIds = state.followerIds.filter((id) => id !== meId);
       }
     },
-    onProfileCommentAdd: (state, action) => {
+    onProfilePostsCommentAdd: (state, action) => {
       const { postId } = action.payload;
 
       const post = state.posts.find((post) => post.id === postId);
 
       if (!post) return;
+
       post.comments.unshift(action.payload);
+    },
+    onProfilePostsCommentDelete: (state, action) => {
+      const { postId, commentId } = action.payload;
+
+      const post = state.posts.find((post) => post.id === postId);
+
+      if (!post) return;
+
+      post.comments = post.comments.filter(
+        (comment) => comment.id !== commentId
+      );
     },
   },
 });
@@ -118,7 +130,8 @@ export const {
   onProfileUpdate,
   onProfileFollowAdd,
   onProfileFollowDelete,
-  onProfileCommentAdd,
+  onProfilePostsCommentAdd,
+  onProfilePostsCommentDelete,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

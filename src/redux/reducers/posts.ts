@@ -49,6 +49,17 @@ export const postsSlice = createSlice({
 
       post.comments.unshift(action.payload);
     },
+    onPostsCommentDelete: (state, action) => {
+      const { postId, commentId } = action.payload;
+
+      const post = state.find((post) => post.id === postId);
+
+      if (!post) return;
+
+      post.comments = post.comments.filter(
+        (comment) => comment.id !== commentId
+      );
+    },
   },
 });
 
@@ -59,6 +70,7 @@ export const {
   onPostsProfileUpdate,
   onPostsDelete,
   onPostsCommentAdd,
+  onPostsCommentDelete,
 } = postsSlice.actions;
 
 export default postsSlice.reducer;

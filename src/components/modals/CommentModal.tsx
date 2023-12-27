@@ -18,24 +18,14 @@ import useWriteForm from "../../hooks/useWriteForm";
 import { RootState } from "../../redux/store";
 import { onPostCommentAdd } from "../../redux/reducers/post";
 import { onPostsCommentAdd } from "../../redux/reducers/posts";
-import { onProfileCommentAdd } from "../../redux/reducers/profile";
+import { onProfilePostsCommentAdd } from "../../redux/reducers/profile";
 import { MdAddPhotoAlternate } from "react-icons/md";
 
 const CommentModal = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    imagesInputRef,
-    setImageFiles,
-    setImagesPreview,
-    imageFiles,
-    imagesPreview,
-    handleSubmit,
-    register,
-    keyDownHandler,
-    onSubmit,
-    resetAll,
-  } = useWriteForm();
+  const { handleSubmit, register, keyDownHandler, onSubmit, resetAll } =
+    useWriteForm();
   const commentModal = useCommentModal();
   const post = commentModal.post;
 
@@ -106,7 +96,7 @@ const CommentModal = () => {
               actionArray: [
                 onPostCommentAdd,
                 onPostsCommentAdd,
-                onProfileCommentAdd,
+                onProfilePostsCommentAdd,
               ],
               onClose: commentModal.onClose,
               postId: post.id,

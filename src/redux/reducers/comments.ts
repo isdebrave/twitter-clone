@@ -1,15 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface CommentsState {
+import { ProfileState } from "./profile";
+
+type UserState = ProfileState;
+
+export interface CommentState {
   id: string;
   body: string;
   createdAt: string;
   updatedAt: string;
   userId: string;
   postId: string;
+  user: UserState;
 }
 
-const initialState: CommentsState[] = [];
+const initialState: CommentState[] = [];
 
 export const commentsSlice = createSlice({
   name: "comments",
