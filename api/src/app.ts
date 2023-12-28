@@ -8,6 +8,7 @@ import path from "path";
 import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
 import postRouter from "./routes/post";
+import notificationRouter from "./routes/notification";
 
 const app = express();
 
@@ -29,9 +30,10 @@ app.use(
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/post", postRouter);
+app.use("/notification", notificationRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  res.status(500).json(err.message);
+  res.status(500).json("서버 에러: 나중에 다시 시도해주세요.");
 });
 
 app.listen(8080, () => console.log("✅ Listening..."));

@@ -1,7 +1,6 @@
-import { CommentState } from "../redux/reducers/comments";
-import { PostState } from "../redux/reducers/post";
+import { PostCommentState, PostState } from "../redux/reducers/post";
 
-const getKey = <T extends PostState[] | CommentState[]>(
+const getKey = <T extends PostState[] | PostCommentState[]>(
   pageIndex: number,
   previousPageData: T
 ) => {

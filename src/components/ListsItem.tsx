@@ -17,14 +17,16 @@ import {
   onProfilePostsDelete,
 } from "../redux/reducers/profile";
 import { onPostCommentDelete } from "../redux/reducers/post";
+import toast from "react-hot-toast";
 
 interface ListsItemProps {
   onClick: (e: React.MouseEvent) => void;
+  isDummy: (postId: string | number) => boolean;
   username: string;
   userId: string;
   isPosts: boolean;
   postId: string;
-  commentId?: string;
+  commentId: string;
   createdAt: string;
   body: string;
   images: string[];
@@ -32,6 +34,7 @@ interface ListsItemProps {
 
 const ListsItem: React.FC<ListsItemProps> = ({
   onClick,
+  isDummy,
   username,
   userId,
   isPosts,
@@ -92,7 +95,19 @@ const ListsItem: React.FC<ListsItemProps> = ({
         {me.id === userId && (
           <>
             <div
-              onClick={(e) => stopPropagationHandler(e, () => setShowBox(true))}
+              onClick={(e) =>
+                stopPropagationHandler(e, () => {
+                  if (isPosts && isDummy(postId)) {
+                    return toast.error("포스트 등록 중입니다.");
+                  }
+
+                  if (!isPosts && isDummy(commentId)) {
+                    return toast.error("댓글 등록 중입니다.");
+                  }
+
+                  setShowBox(true);
+                })
+              }
               className="
                 absolute 
                 -top-1 

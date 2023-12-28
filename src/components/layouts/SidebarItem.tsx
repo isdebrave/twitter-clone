@@ -1,5 +1,6 @@
 import React from "react";
 import { IconType } from "react-icons";
+import { BsDot } from "react-icons/bs";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface SidebarItemProps {
@@ -7,6 +8,7 @@ interface SidebarItemProps {
   faIcon: IconType;
   label: string;
   href: string;
+  alert?: boolean;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -14,6 +16,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   faIcon: FaIcon,
   label,
   href,
+  alert,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,9 +34,13 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         items-center 
         gap-4 
         text-xl
+        relative
       "
     >
       {location.pathname === href ? <FaIcon size={32} /> : <Icon size={32} />}
+      {alert ? (
+        <BsDot className="text-sky-500 absolute -top-4 left-1" size={60} />
+      ) : null}
       <span
         className={`
           hidden 

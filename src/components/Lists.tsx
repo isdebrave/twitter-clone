@@ -14,11 +14,11 @@ import useCommentModal from "../hooks/useCommentModal";
 import useIntersected from "../hooks/useIntersected";
 
 import { RootState } from "../redux/store";
-import { PostState } from "../redux/reducers/post";
-import { CommentState } from "../redux/reducers/comments";
+import { PostCommentState, PostState } from "../redux/reducers/post";
+import toast from "react-hot-toast";
 
 interface ListsProps {
-  lists: PostState[] | CommentState[];
+  lists: PostState[] | PostCommentState[];
   size?: number;
   setSize?: (
     size: number | ((_size: number) => number)
@@ -55,7 +55,6 @@ const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
       observer.unobserve(div);
 
       if (setSize && size) {
-        console.log("hi");
         setSize(size + 1);
       }
     });
@@ -74,6 +73,8 @@ const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
     return false;
   };
 
+  const isDummy = (id: number | string) => typeof id === "number";
+
   return (
     <>
       {lists.map((list, idx) => (
@@ -83,9 +84,13 @@ const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
           onClick={
             isPosts
               ? (e) =>
-                  stopPropagationHandler(e, () =>
-                    navigate(`/${list.user.id}/status/${list.id}`)
-                  )
+                  stopPropagationHandler(e, () => {
+                    if (isDummy(list.id)) {
+                      return toast.error("포스트 등록 중입니다.");
+                    }
+
+                    navigate(`/${list.user.id}/status/${list.id}`);
+                  })
               : undefined
           }
           className={isPosts ? "cursor-pointer" : ""}
@@ -127,15 +132,16 @@ const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
                       navigate(`/${list.user.id}`)
                     )
                   }
+                  isDummy={isDummy}
                   username={list.user.username}
                   userId={list.user.id}
                   isPosts={isPosts}
                   postId={
                     isPosts
                       ? (list as PostState).id
-                      : (list as CommentState).postId
+                      : (list as PostCommentState).postId
                   }
-                  commentId={!isPosts ? (list as CommentState).id : undefined}
+                  commentId={!isPosts ? (list as PostCommentState).id : ""}
                   createdAt={list.createdAt}
                   body={list.body}
                   images={isPosts ? (list as PostState).images : []}
@@ -146,6 +152,10 @@ const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
                     <Icon
                       onClick={(e) =>
                         stopPropagationHandler(e, () => {
+                          if (isDummy(list.id)) {
+                            return toast.error("포스트 등록 중입니다.");
+                          }
+
                           commentModal.onPost(list as PostState);
                           commentModal.onOpen();
                         })
@@ -157,7 +167,15 @@ const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
                       textColor="text-gray-500"
                     />
                     <Icon
-                      onClick={(e) => likedHandler(e, list.id)}
+                      onClick={(e) =>
+                        stopPropagationHandler(e, () => {
+                          if (isDummy(list.id)) {
+                            return toast.error("포스트 등록 중입니다.");
+                          }
+
+                          likedHandler(e, list.id);
+                        })
+                      }
                       icon={
                         isHeartFill((list as PostState).likedIds, me.id)
                           ? BiSolidHeart

@@ -12,7 +12,13 @@ export const postsSlice = createSlice({
       return action.payload;
     },
     onPostsAdd: (state, action) => {
-      state.unshift(action.payload);
+      const { options, data } = action.payload;
+
+      if (!data) {
+        state.unshift(options);
+      } else {
+        state[0] = data;
+      }
     },
     onPostsLiked: (state, action) => {
       const { isExists, userId, postId } = action.payload;
@@ -41,13 +47,25 @@ export const postsSlice = createSlice({
       return state.filter((post) => post.id !== postId);
     },
     onPostsCommentAdd: (state, action) => {
-      const { postId } = action.payload;
+      const { options, data } = action.payload;
 
-      const post = state.find((post) => post.id === postId);
+      if (!data) {
+        const { postId } = options;
 
-      if (!post) return;
+        const post = state.find((post) => post.id === postId);
 
-      post.comments.unshift(action.payload);
+        if (!post) return;
+
+        post.comments.unshift(options);
+      } else {
+        const { postId } = data;
+
+        const post = state.find((post) => post.id === postId);
+
+        if (!post) return;
+
+        post.comments[0] = data;
+      }
     },
     onPostsCommentDelete: (state, action) => {
       const { postId, commentId } = action.payload;

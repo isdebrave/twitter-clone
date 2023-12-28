@@ -7,7 +7,7 @@ import Button from "../Button";
 
 import { bgBlue, hoverDarkBlue, textWhite } from "../../constants/colors";
 
-import { addImageHandler, removeImageHandler, src } from "../../helpers/image";
+import { src } from "../../helpers/image";
 
 import PostBody from "../post/PostBody";
 import PostProfile from "../post/PostProfile";
@@ -19,17 +19,16 @@ import { RootState } from "../../redux/store";
 import { onPostCommentAdd } from "../../redux/reducers/post";
 import { onPostsCommentAdd } from "../../redux/reducers/posts";
 import { onProfilePostsCommentAdd } from "../../redux/reducers/profile";
-import { MdAddPhotoAlternate } from "react-icons/md";
 
 const CommentModal = () => {
   const [isLoading, setIsLoading] = useState(false);
 
+  const me = useSelector((state: RootState) => state.me);
+
   const { handleSubmit, register, keyDownHandler, onSubmit, resetAll } =
-    useWriteForm();
+    useWriteForm({ body: "" });
   const commentModal = useCommentModal();
   const post = commentModal.post;
-
-  const me = useSelector((state: RootState) => state.me);
 
   if (!post) return;
 

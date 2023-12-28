@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { MdAddPhotoAlternate } from "react-icons/md";
+import { AxiosResponse } from "axios";
 
 import Modal from "./Modal";
 import Button from "../Button";
@@ -20,6 +21,8 @@ import { onProfilePostsAdd } from "../../redux/reducers/profile";
 const WritePostModal = () => {
   const [isLoading, setIsLoading] = useState(false);
 
+  const me = useSelector((state: RootState) => state.me);
+
   const {
     handleSubmit,
     imageFiles,
@@ -31,10 +34,9 @@ const WritePostModal = () => {
     imagesInputRef,
     onSubmit,
     resetAll,
-  } = useWriteForm();
+    watchAllFields,
+  } = useWriteForm({ body: "" });
   const writePostModal = useWritePostModal();
-
-  const me = useSelector((state: RootState) => state.me);
 
   const bodyContent = (
     <div className="px-6">
@@ -63,6 +65,30 @@ const WritePostModal = () => {
       <hr className="my-3" />
     </div>
   );
+
+  const actionArray: Array<
+    (data?: AxiosResponse<any>) => { payload: any; type: any }
+  > = [];
+
+  const options = {
+    id: Date.now(),
+    body: watchAllFields.body,
+    images: imagesPreview,
+    views: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    userId: me.id,
+    likedIds: [],
+    user: {
+      id: me.id,
+      profileImage: me.profileImage,
+      username: me.username,
+    },
+    comments: [],
+  };
+
+  actionArray.push((data) => onPostsAdd({ options, data }));
+  actionArray.push((data) => onProfilePostsAdd({ options, data }));
 
   const footerContent = (
     <div className="px-6">
@@ -98,7 +124,7 @@ const WritePostModal = () => {
             onSubmit({
               data,
               fetchUrl: "/post",
-              actionArray: [onPostsAdd, onProfilePostsAdd],
+              actionArray,
               onClose: writePostModal.onClose,
             })
           )}

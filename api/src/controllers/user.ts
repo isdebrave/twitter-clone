@@ -3,40 +3,43 @@ import { NextFunction, Request, Response } from "express";
 import path from "path";
 
 export const me = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    if (req.session.meId) {
-      const me = await prisma.user.findUnique({
-        where: { id: req.session.meId },
-      });
+  if (!req.session.meId) return res.status(200).json();
 
-      let reducedMe;
-      if (me) {
-        const { hashedPassword, name, birth, ...meObj } = me;
-        reducedMe = meObj;
-      }
-      return res.status(200).json(reducedMe);
-    } else {
-      return res.status(200).json();
-    }
+  try {
+    const me = await prisma.user.findUnique({
+      where: { id: req.session.meId },
+      select: {
+        id: true,
+        username: true,
+        profileImage: true,
+        hasNotification: true,
+        followingIds: true,
+      },
+    });
+
+    if (!me) throw new Error();
+
+    return res.status(200).json(me);
   } catch (error) {
     console.log(error);
     next(error);
   }
 };
 
+// FollowList
 export const users = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  if (!req.session.meId) return res.status(200).json("팔로우 목록이 없습니다.");
+
   try {
-    let users = await prisma.user.findMany();
+    const users = await prisma.user.findMany();
 
-    if (req.session.meId) {
-      users = users.filter((user) => user.id !== req.session.meId);
-    }
+    const followLists = users.filter((user) => user.id !== req.session.meId);
 
-    return res.status(200).json(users);
+    return res.status(200).json(followLists);
   } catch (error) {
     console.log(error);
     next(error);
@@ -59,21 +62,25 @@ export const profile = async (
   }
 
   try {
+    if (!profile) throw new Error();
+
+    const { hashedPassword, name, email, birth, ...profileObj } = profile;
+    profile = profileObj;
+
     const posts = await prisma.post.findMany({
       where: { userId },
       include: {
-        user: true,
-        comments: true,
+        user: {
+          select: {
+            id: true,
+            username: true,
+            profileImage: true,
+          },
+        },
+        comments: { select: { id: true } },
       },
       orderBy: { createdAt: "desc" },
     });
-
-    type SafeUser = Omit<User, "hashedPassword" | "name" | "birth">;
-    for (const post of posts) {
-      const user = post.user;
-      const { hashedPassword, name, birth, ...userObj } = user;
-      (post.user as SafeUser) = userObj;
-    }
 
     type Profile = User & { posts: Post[] };
     (profile as Profile).posts = posts;
@@ -93,22 +100,21 @@ export const updateProfile = async (
   const { username, bio } = JSON.parse(req.body.data);
   const { userId } = req.params;
 
+  if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
+
   let user;
   try {
     user = await prisma.user.findUnique({ where: { id: userId } });
   } catch (error) {
     console.log(error);
-    return res.status(401).json("권한이 없습니다. 다시 로그인 해주세요.");
+    return res.status(400).json("해당 계정이 존재하지 않습니다.");
   }
 
   try {
-    let coverImage;
-    let profileImage;
+    if (!user) throw new Error();
 
-    if (user) {
-      coverImage = user.coverImage;
-      profileImage = user.profileImage;
-    }
+    let coverImage = user.coverImage;
+    let profileImage = user.profileImage;
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
     if (files.coverImage) {
@@ -118,7 +124,7 @@ export const updateProfile = async (
       profileImage = path.join(files.profileImage[0].path);
     }
 
-    const updatedUser = await prisma.user.update({
+    await prisma.user.update({
       where: { id: userId },
       data: {
         username,
@@ -128,7 +134,7 @@ export const updateProfile = async (
       },
     });
 
-    return res.status(200).json(updatedUser);
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
     next(error);
@@ -140,38 +146,26 @@ export const addFollow = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { followerId } = req.body;
+
+  if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
+
   try {
-    const { followerId } = req.body;
+    await prisma.user.update({
+      where: { id: req.session.meId },
+      data: {
+        followingIds: { push: followerId },
+      },
+    });
 
-    if (req.session.meId) {
-      const me = await prisma.user.update({
-        where: {
-          id: req.session.meId,
-        },
-        data: {
-          followingIds: { push: followerId },
-        },
-      });
+    await prisma.user.update({
+      where: { id: followerId },
+      data: {
+        followerIds: { push: req.session.meId },
+      },
+    });
 
-      const follower = await prisma.user.update({
-        where: {
-          id: followerId,
-        },
-        data: {
-          followerIds: { push: req.session.meId },
-        },
-      });
-
-      const { hashedPassword, name, birth, ...meRest } = me;
-      const {
-        hashedPassword: _hashedPassword,
-        name: _name,
-        birth: _birth,
-        ...followerRest
-      } = follower;
-
-      return res.status(200).json({ meRest, followerRest });
-    }
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
     next(error);
@@ -183,42 +177,54 @@ export const removeFollow = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { followerId } = req.body;
+
+  if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
+
+  let me;
   try {
-    const { followerId } = req.body;
+    me = await prisma.user.findUnique({
+      where: { id: req.session.meId },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json("해당 계정이 존재하지 않습니다.");
+  }
 
-    if (req.session.meId) {
-      const me = await prisma.user.findUnique({
-        where: { id: req.session.meId },
-      });
+  let follower;
+  try {
+    follower = await prisma.user.findUnique({
+      where: { id: followerId },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json("팔로우 계정이 존재하지 않습니다.");
+  }
 
-      if (me) {
-        const updatedFollowingIds = me.followingIds.filter(
-          (userId) => userId !== followerId
-        );
+  try {
+    if (!me) throw new Error();
 
-        await prisma.user.update({
-          where: { id: req.session.meId },
-          data: { followingIds: updatedFollowingIds },
-        });
-      }
+    const updatedFollowingIds = me.followingIds.filter(
+      (userId) => userId !== followerId
+    );
 
-      const follower = await prisma.user.findUnique({
-        where: { id: followerId },
-      });
+    await prisma.user.update({
+      where: { id: req.session.meId },
+      data: { followingIds: updatedFollowingIds },
+    });
 
-      if (follower) {
-        const updatedFollowerIds = follower.followerIds.filter(
-          (userId) => userId !== req.session.meId
-        );
+    if (!follower) throw new Error();
 
-        await prisma.user.update({
-          where: { id: followerId },
-          data: { followerIds: updatedFollowerIds },
-        });
-      }
+    const updatedFollowerIds = follower.followerIds.filter(
+      (userId) => userId !== req.session.meId
+    );
 
-      return res.status(200).json();
-    }
+    await prisma.user.update({
+      where: { id: followerId },
+      data: { followerIds: updatedFollowerIds },
+    });
+
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
     next(error);

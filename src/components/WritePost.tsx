@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { MdAddPhotoAlternate } from "react-icons/md";
+import { AxiosResponse } from "axios";
 
 import { RootState } from "../redux/store";
 import { onPostsAdd } from "../redux/reducers/posts";
@@ -13,6 +14,8 @@ import { bgBlue, hoverDarkBlue, textWhite } from "../constants/colors";
 import useWriteForm from "../hooks/useWriteForm";
 
 const WritePost = () => {
+  const me = useSelector((state: RootState) => state.me);
+
   const {
     handleSubmit,
     imageFiles,
@@ -23,9 +26,8 @@ const WritePost = () => {
     keyDownHandler,
     imagesInputRef,
     onSubmit,
-  } = useWriteForm();
-
-  const me = useSelector((state: RootState) => state.me);
+    watchAllFields,
+  } = useWriteForm({ body: "" });
 
   const bodyContent = (
     <div className="px-6">
@@ -53,6 +55,30 @@ const WritePost = () => {
       </div>
     </div>
   );
+
+  const actionArray: Array<
+    (data?: AxiosResponse<any>) => { payload: any; type: any }
+  > = [];
+
+  const options = {
+    id: Date.now(),
+    body: watchAllFields.body,
+    images: imagesPreview,
+    views: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    userId: me.id,
+    likedIds: [],
+    user: {
+      id: me.id,
+      profileImage: me.profileImage,
+      username: me.username,
+    },
+    comments: [],
+  };
+
+  actionArray.push((data) => onPostsAdd({ options, data }));
+  actionArray.push((data) => onProfilePostsAdd({ options, data }));
 
   const footerContent = (
     <div className="px-6">
@@ -88,7 +114,7 @@ const WritePost = () => {
             onSubmit({
               data,
               fetchUrl: "/post",
-              actionArray: [onPostsAdd, onProfilePostsAdd],
+              actionArray,
             })
           )}
           bgColor={bgBlue}

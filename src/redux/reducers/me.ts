@@ -1,20 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { ProfileState } from "./profile";
+export interface MeState {
+  id: string;
+  username: string;
+  profileImage: string;
+  hasNotification: boolean;
+  followingIds: string[];
+}
 
-export type MeState = Omit<ProfileState, "posts">;
 const initialState: MeState = {
   id: "",
   username: "",
-  email: "",
-  bio: "",
-  coverImage: "",
   profileImage: "",
   hasNotification: false,
-  createdAt: "",
-  updatedAt: "",
   followingIds: [],
-  followerIds: [],
 };
 
 export const meSlice = createSlice({

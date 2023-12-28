@@ -1,9 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { CommentState } from "./comments";
-import { ProfileState } from "./profile";
+import { MeState } from "./me";
 
-type UserState = ProfileState;
+type PostUserState = Omit<MeState, "hasNotification" | "followingIds">;
+
+// registerComment 시, commentId만 받아옴.
+// registerPost 시, postId만 받아옴.
+
+export type PostCommentState = {
+  id: string;
+  body: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  postId: string;
+  user: PostUserState;
+};
 
 export interface PostState {
   id: string;
@@ -14,8 +26,8 @@ export interface PostState {
   updatedAt: string;
   userId: string;
   likedIds: string[];
-  user: UserState;
-  comments: CommentState[];
+  user: PostUserState;
+  comments: PostCommentState[];
 }
 
 const initialState: PostState = {
@@ -30,16 +42,7 @@ const initialState: PostState = {
   user: {
     id: "",
     username: "",
-    email: "",
-    bio: "",
-    coverImage: "",
     profileImage: "",
-    hasNotification: false,
-    createdAt: "",
-    updatedAt: "",
-    followingIds: [],
-    followerIds: [],
-    posts: [],
   },
   comments: [],
 };
@@ -69,7 +72,13 @@ export const postSlice = createSlice({
       state.user.profileImage = profileImage;
     },
     onPostCommentAdd: (state, action) => {
-      state.comments.unshift(action.payload);
+      const { options, data } = action.payload;
+
+      if (!data) {
+        state.comments.unshift(options);
+      } else {
+        state.comments[0] = data;
+      }
     },
     onPostCommentDelete: (state, action) => {
       const { commentId } = action.payload;

@@ -38,6 +38,7 @@ const Sidebar = () => {
       faIcon: GoBellFill,
       label: "Notifications",
       href: "/notifications",
+      alert: me.hasNotification,
     },
     {
       icon: PiUser,
@@ -72,6 +73,7 @@ const Sidebar = () => {
               faIcon={item.faIcon}
               label={item.label}
               href={item.href}
+              alert={item.alert}
             />
           ))}
         </div>

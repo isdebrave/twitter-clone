@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { User } from "@prisma/client";
 import path from "path";
 
 import prisma from "../libs/prismadb";
@@ -16,20 +15,15 @@ export const posts = async (
   try {
     const posts = await prisma.post.findMany({
       include: {
-        user: true,
-        comments: true,
+        user: {
+          select: { id: true, username: true, profileImage: true },
+        },
+        comments: { select: { id: true } },
       },
       orderBy: { createdAt: "desc" },
       skip: +page * +limit,
       take: +limit,
     });
-
-    type SafeUser = Omit<User, "hashedPassword" | "name" | "birth">;
-    for (const post of posts) {
-      const user = post.user;
-      const { hashedPassword, name, birth, ...userObj } = user;
-      (post.user as SafeUser) = userObj;
-    }
 
     return res.status(200).json(posts);
   } catch (error) {
@@ -47,21 +41,16 @@ export const post = async (req: Request, res: Response) => {
         id: postId,
       },
       include: {
-        user: true,
+        user: { select: { id: true, username: true, profileImage: true } },
         comments: {
           include: {
-            user: true,
+            user: { select: { id: true, username: true, profileImage: true } },
           },
         },
       },
     });
 
     if (!post) throw new Error();
-
-    type SafeUser = Omit<User, "hashedPassword" | "name" | "birth">;
-    const user = post.user;
-    const { hashedPassword, name, birth, ...userObj } = user;
-    (post.user as SafeUser) = userObj;
 
     return res.status(200).json(post);
   } catch (error) {
@@ -75,38 +64,31 @@ export const registerPost = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { body } = req.body;
+  const { body } = JSON.parse(req.body.data);
+
+  if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
   try {
-    if (req.session.meId) {
-      const files = req.files as Express.Multer.File[];
+    const files = req.files as Express.Multer.File[];
 
-      const images = [];
-      for (let i = 0; i < files.length; i++) {
-        images.push(path.join(files[i].path));
-      }
-
-      const post = await prisma.post.create({
-        data: {
-          body,
-          images,
-          userId: req.session.meId,
-        },
-        include: {
-          user: true,
-          comments: true,
-        },
-      });
-
-      type SafeUser = Omit<User, "hashedPassword" | "name" | "birth">;
-      const user = post.user;
-      const { hashedPassword, name, birth, ...userObj } = user;
-      (post.user as SafeUser) = userObj;
-
-      return res.status(201).json(post);
-    } else {
-      return res.status(401).json("권한이 없습니다. 로그인을 다시 해주세요.");
+    const images = [];
+    for (let i = 0; i < files.length; i++) {
+      images.push(path.join(files[i].path));
     }
+
+    const post = await prisma.post.create({
+      data: {
+        body,
+        images,
+        userId: req.session.meId,
+      },
+      include: {
+        user: { select: { id: true, username: true, profileImage: true } },
+        comments: { select: { id: true } },
+      },
+    });
+
+    return res.status(201).json(post);
   } catch (error) {
     console.log(error);
     next(error);
@@ -120,16 +102,14 @@ export const deletePost = async (
 ) => {
   const { postId } = req.body;
 
-  try {
-    if (req.session.meId) {
-      await prisma.post.delete({
-        where: { id: postId },
-      });
+  if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
-      return res.status(200).json();
-    } else {
-      return res.status(401).json("권한이 없습니다. 로그인을 다시 해주세요.");
-    }
+  try {
+    await prisma.post.delete({
+      where: { id: postId },
+    });
+
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
     next(error);
@@ -143,38 +123,39 @@ export const liked = async (
 ) => {
   const { postId } = req.body;
 
+  if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
+
+  let post;
   try {
-    const post = await prisma.post.findUnique({
-      where: {
-        id: postId,
+    post = await prisma.post.findUnique({
+      where: { id: postId },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json("해당 게시물이 존재하지 않습니다.");
+  }
+
+  try {
+    if (!post) return res.status(400).json("해당 게시물이 존재하지 않습니다.");
+
+    const idx = post.likedIds.findIndex(
+      (userId) => userId === req.session.meId
+    );
+
+    if (idx === -1) {
+      post.likedIds.push(req.session.meId);
+    } else {
+      post.likedIds.splice(idx, 1);
+    }
+
+    await prisma.post.update({
+      where: { id: postId },
+      data: {
+        likedIds: post.likedIds,
       },
     });
 
-    let idx;
-    if (post && req.session.meId) {
-      idx = post.likedIds.findIndex((userId) => userId === req.session.meId);
-
-      if (idx === -1) {
-        post.likedIds.push(req.session.meId);
-      } else {
-        post.likedIds.splice(idx, 1);
-      }
-
-      await prisma.post.update({
-        where: {
-          id: postId,
-        },
-        data: {
-          likedIds: post.likedIds,
-        },
-      });
-    }
-
-    if (idx === -1) {
-      res.status(200).json("ADD");
-    } else {
-      res.status(200).json("REMOVE");
-    }
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
     next(error);
@@ -190,9 +171,7 @@ export const views = async (
 
   try {
     await prisma.post.update({
-      where: {
-        id: postId,
-      },
+      where: { id: postId },
       data: {
         views: { increment: 1 },
       },
@@ -210,30 +189,24 @@ export const registerComment = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { postId } = req.body;
+  const { body } = JSON.parse(req.body.data);
+
+  if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
+
   try {
-    const { body, postId } = req.body;
+    const comment = await prisma.comment.create({
+      data: {
+        body,
+        userId: req.session.meId,
+        postId,
+      },
+      include: {
+        user: { select: { id: true, username: true, profileImage: true } },
+      },
+    });
 
-    if (req.session.meId) {
-      const comment = await prisma.comment.create({
-        data: {
-          body,
-          userId: req.session.meId,
-          postId,
-        },
-        include: {
-          user: true,
-        },
-      });
-
-      type SafeUser = Omit<User, "hashedPassword" | "name" | "birth">;
-      const user = comment.user;
-      const { hashedPassword, name, birth, ...userObj } = user;
-      (comment.user as SafeUser) = userObj;
-
-      return res.status(201).json(comment);
-    } else {
-      return res.status(401).json("권한이 없습니다. 로그인을 다시 해주세요.");
-    }
+    return res.status(201).json(comment);
   } catch (error) {
     console.log(error);
     next(error);
@@ -247,16 +220,14 @@ export const deleteComment = async (
 ) => {
   const { commentId } = req.body;
 
-  try {
-    if (req.session.meId) {
-      await prisma.comment.delete({
-        where: { id: commentId },
-      });
+  if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
-      return res.status(200).json();
-    } else {
-      return res.status(401).json("권한이 없습니다. 로그인을 다시 해주세요.");
-    }
+  try {
+    await prisma.comment.delete({
+      where: { id: commentId },
+    });
+
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
     next(error);

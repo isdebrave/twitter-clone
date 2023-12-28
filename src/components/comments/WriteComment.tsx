@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { AxiosResponse } from "axios";
 
 import useWriteForm from "../../hooks/useWriteForm";
 import useCommentModal from "../../hooks/useCommentModal";
@@ -20,8 +21,8 @@ const WriteComment = () => {
   const post = useSelector((state: RootState) => state.post);
   const commentModal = useCommentModal();
 
-  const { handleSubmit, register, keyDownHandler, onSubmit, resetAll } =
-    useWriteForm();
+  const { handleSubmit, register, keyDownHandler, onSubmit, watchAllFields } =
+    useWriteForm({ body: "" });
 
   const bodyContent = (
     <div className="flex gap-3 mb-4">
@@ -48,6 +49,28 @@ const WriteComment = () => {
     </div>
   );
 
+  const actionArray: Array<
+    (data?: AxiosResponse<any>) => { payload: any; type: any }
+  > = [];
+
+  const options = {
+    id: Date.now(),
+    body: watchAllFields.body,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    userId: me.id,
+    postId: post.id,
+    user: {
+      id: me.id,
+      profileImage: me.profileImage,
+      username: me.username,
+    },
+  };
+
+  actionArray.push((data) => onPostCommentAdd({ options, data }));
+  actionArray.push((data) => onPostsCommentAdd({ options, data }));
+  actionArray.push((data) => onProfilePostsCommentAdd({ options, data }));
+
   const footerContent = (
     <div className="px-6">
       <form
@@ -59,11 +82,7 @@ const WriteComment = () => {
             onSubmit({
               data,
               fetchUrl: `/post/${post.id}/comment`,
-              actionArray: [
-                onPostCommentAdd,
-                onPostsCommentAdd,
-                onProfilePostsCommentAdd,
-              ],
+              actionArray,
               onClose: commentModal.onClose,
               postId: post.id,
             })

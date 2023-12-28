@@ -14,7 +14,6 @@ import { bgBlack, hoverLightWhite, textWhite } from "../../constants/colors";
 import { addImageHandler, removeImageHandler, src } from "../../helpers/image";
 import { namePattern } from "../../helpers/pattern";
 
-import useReactHookForm from "../../hooks/useReactHookForm";
 import useProfileModal from "../../hooks/useProfileModal";
 
 import { AppDispatch, RootState } from "../../redux/store";
@@ -22,20 +21,37 @@ import { onProfileUpdate } from "../../redux/reducers/profile";
 import { onMeProfileUpdate } from "../../redux/reducers/me";
 import { onPostsProfileUpdate } from "../../redux/reducers/posts";
 import { onPostProfileUpdate } from "../../redux/reducers/post";
+import useWritePostModal from "../../hooks/useWritePostModal";
+import useWriteForm from "../../hooks/useWriteForm";
 
 const ProfileModal = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const coverImageInputRef = useRef<HTMLInputElement>(null);
-  const profileModal = useProfileModal();
+  // const coverImageInputRef = useRef<HTMLInputElement>(null);
 
-  const [coverImagePreview, setCoverImagePreview] = useState("");
-  const [profileImagePreview, setProfileImagePreview] = useState("");
-  const [coverImage, setCoverImage] = useState<File | null>(null);
-  const [profileImage, setProfileImage] = useState<File | null>(null);
+  // const [coverImagePreview, setCoverImagePreview] = useState("");
+  // const [profileImagePreview, setProfileImagePreview] = useState("");
+  // const [coverImage, setCoverImage] = useState<File | null>(null);
+  // const [profileImage, setProfileImage] = useState<File | null>(null);
 
   const profile = useSelector((state: RootState) => state.profile);
 
-  const dispatch = useDispatch<AppDispatch>();
+  const {
+    coverImageInputRef,
+    coverImagePreview,
+    setCoverImagePreview,
+    profileImagePreview,
+    setProfileImagePreview,
+    setCoverImage,
+    profileImage,
+    setProfileImage,
+    register,
+    errors,
+    handleSubmit,
+    onSubmit,
+    resetAll,
+    watchAllFields,
+  } = useWriteForm({ username: profile.username, bio: profile.bio }, "PATCH");
+  const profileModal = useProfileModal();
 
   const extendedSrc = (imagePreview: string, image: string) => {
     if (imagePreview.length > 0) return imagePreview;
@@ -184,63 +200,95 @@ const ProfileModal = () => {
     </form>
   );
 
-  const { register, handleSubmit, errors, watchAllFields, initializedForm } =
-    useReactHookForm({ username: "", bio: "" }, profile);
+  // const { register, handleSubmit, errors, watchAllFields, initializedForm } =
+  //   useReactHookForm({ username: "", bio: "" }, profile);
 
-  const resetAll = () => {
-    setCoverImagePreview("");
-    setProfileImagePreview("");
-    setCoverImage(null);
-    setProfileImage(null);
-    initializedForm();
-  };
+  // const resetAll = () => {
+  //   setCoverImagePreview("");
+  //   setProfileImagePreview("");
+  //   setCoverImage(null);
+  //   setProfileImage(null);
+  //   initializedForm();
+  // };
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    const formData = new FormData();
-    coverImage && formData.append("coverImage", coverImage);
-    profileImage && formData.append("profileImage", profileImage);
-    formData.append("data", JSON.stringify(data));
+  // const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  //   const formData = new FormData();
+  //   coverImage && formData.append("coverImage", coverImage);
+  //   profileImage && formData.append("profileImage", profileImage);
+  //   formData.append("data", JSON.stringify(data));
 
-    try {
-      axios.patch(`/user/profile/${profile.id}`, formData);
+  //   try {
+  //     axios.patch(`/user/profile/${profile.id}`, formData);
 
-      dispatch(
-        onProfileUpdate({
-          coverImage: coverImagePreview,
-          profileImage: profileImagePreview,
-          username: watchAllFields.username,
-          bio: watchAllFields.bio,
-        })
-      );
+  // dispatch(
+  //   onProfileUpdate({
+  //     coverImage: coverImagePreview,
+  //     profileImage: profileImagePreview,
+  //     username: watchAllFields.username,
+  //     bio: watchAllFields.bio,
+  //   })
+  // );
 
-      if (profileImage) {
-        dispatch(
-          onMeProfileUpdate({
-            profileImage: profileImagePreview,
-          })
-        );
-        dispatch(
-          onPostsProfileUpdate({
-            profileImage: profileImagePreview,
-            userId: profile.id,
-          })
-        );
-        dispatch(
-          onPostProfileUpdate({
-            profileImage: profileImagePreview,
-          })
-        );
-      }
+  // if (profileImage) {
+  //   dispatch(
+  //     onMeProfileUpdate({
+  //       profileImage: profileImagePreview,
+  //     })
+  //   );
+  //   dispatch(
+  //     onPostsProfileUpdate({
+  //       profileImage: profileImagePreview,
+  //       userId: profile.id,
+  //     })
+  //   );
+  //   dispatch(
+  //     onPostProfileUpdate({
+  //       profileImage: profileImagePreview,
+  //     })
+  //   );
+  // }
 
-      profileModal.onClose();
-      resetAll();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast.error(error.response?.data);
-      }
-    }
-  };
+  //     profileModal.onClose();
+  //     resetAll();
+  //   } catch (error) {
+  //     if (error instanceof AxiosError) {
+  //       console.log(error);
+  //       toast.error(error.response?.data);
+  //     }
+  //   }
+  // };
+
+  const actionArray: Array<() => { payload: any; type: any }> = [];
+
+  actionArray.push(
+    onProfileUpdate.bind(null, {
+      coverImage: coverImagePreview,
+      profileImage: profileImagePreview,
+      username: watchAllFields.username,
+      bio: watchAllFields.bio,
+    })
+  );
+
+  if (profileImage) {
+    actionArray.push(
+      onMeProfileUpdate.bind(null, {
+        profileImage: profileImagePreview,
+      })
+    );
+
+    actionArray.push(
+      onPostsProfileUpdate.bind(null, {
+        profileImage: profileImagePreview,
+        userId: profile.id,
+      })
+    );
+
+    actionArray.push(
+      onPostProfileUpdate.bind(null, {
+        profileImage: profileImagePreview,
+      })
+    );
+  }
 
   const footerContent = (
     <div className="px-4 space-y-4">
@@ -264,7 +312,14 @@ const ProfileModal = () => {
       />
       <div className="flex justify-end">
         <Button
-          onClick={handleSubmit(onSubmit)}
+          onClick={handleSubmit((data) =>
+            onSubmit({
+              data,
+              fetchUrl: `/user/profile/${profile.id}`,
+              actionArray,
+              onClose: profileModal.onClose,
+            })
+          )}
           bgColor={bgBlack}
           textColor={textWhite}
           hoverColor={hoverLightWhite}

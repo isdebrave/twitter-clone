@@ -5,7 +5,6 @@ import { PostState } from "./post";
 export interface ProfileState {
   id: string;
   username: string;
-  email: string;
   bio: string;
   coverImage: string;
   profileImage: string;
@@ -20,7 +19,6 @@ export interface ProfileState {
 const initialState: ProfileState = {
   id: "",
   username: "",
-  email: "",
   bio: "",
   coverImage: "",
   profileImage: "",
@@ -55,7 +53,13 @@ export const profileSlice = createSlice({
       }
     },
     onProfilePostsAdd: (state, action) => {
-      state.posts.unshift(action.payload);
+      const { options, data } = action.payload;
+
+      if (!data) {
+        state.posts.unshift(options);
+      } else {
+        state.posts[0] = data;
+      }
     },
     onProfilePostsDelete: (state, action) => {
       const { postId } = action.payload;
@@ -99,13 +103,25 @@ export const profileSlice = createSlice({
       }
     },
     onProfilePostsCommentAdd: (state, action) => {
-      const { postId } = action.payload;
+      const { options, data } = action.payload;
 
-      const post = state.posts.find((post) => post.id === postId);
+      if (!data) {
+        const { postId } = options;
 
-      if (!post) return;
+        const post = state.posts.find((post) => post.id === postId);
 
-      post.comments.unshift(action.payload);
+        if (!post) return;
+
+        post.comments.unshift(options);
+      } else {
+        const { postId } = data;
+
+        const post = state.posts.find((post) => post.id === postId);
+
+        if (!post) return;
+
+        post.comments[0] = data;
+      }
     },
     onProfilePostsCommentDelete: (state, action) => {
       const { postId, commentId } = action.payload;
