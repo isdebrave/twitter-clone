@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import me from "./reducers/me";
 import followList from "./reducers/followList";
 import posts from "./reducers/posts";
+import notifications from "./reducers/notifications";
 import profile from "./reducers/profile";
 import post from "./reducers/post";
 
@@ -11,6 +12,7 @@ export const store = configureStore({
     me,
     followList,
     posts,
+    notifications,
     profile,
     post,
   },

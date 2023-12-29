@@ -6,13 +6,13 @@ import Lists from "../components/Lists";
 
 import usePosts from "../hooks/usePosts";
 
-import { onPosts } from "../redux/reducers/posts";
 import { RootState } from "../redux/store";
+import { onPosts } from "../redux/reducers/posts";
 
 const Home = () => {
   const { data, size, setSize } = usePosts();
-  const dispatch = useDispatch();
   const posts = useSelector((state: RootState) => state.posts);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!data) return;

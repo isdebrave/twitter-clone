@@ -19,14 +19,21 @@ import { RootState } from "../../redux/store";
 import { onPostCommentAdd } from "../../redux/reducers/post";
 import { onPostsCommentAdd } from "../../redux/reducers/posts";
 import { onProfilePostsCommentAdd } from "../../redux/reducers/profile";
+import { AxiosResponse } from "axios";
 
-const CommentModal = () => {
+const WriteCommentModal = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const me = useSelector((state: RootState) => state.me);
 
-  const { handleSubmit, register, keyDownHandler, onSubmit, resetAll } =
-    useWriteForm({ body: "" });
+  const {
+    handleSubmit,
+    register,
+    keyDownHandler,
+    onSubmit,
+    resetAll,
+    watchAllFields,
+  } = useWriteForm({ body: "" });
   const commentModal = useCommentModal();
   const post = commentModal.post;
 
@@ -81,6 +88,28 @@ const CommentModal = () => {
     </div>
   );
 
+  const actionArray: Array<
+    (data?: AxiosResponse<any>) => { payload: any; type: any }
+  > = [];
+
+  const options = {
+    id: Date.now(),
+    body: watchAllFields.body,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    userId: me.id,
+    postId: post.id,
+    user: {
+      id: me.id,
+      profileImage: me.profileImage,
+      username: me.username,
+    },
+  };
+
+  actionArray.push((data) => onPostCommentAdd({ options, data }));
+  actionArray.push((data) => onPostsCommentAdd({ options, data }));
+  actionArray.push((data) => onProfilePostsCommentAdd({ options, data }));
+
   const footerContent = (
     <div className="px-6">
       <form
@@ -92,13 +121,10 @@ const CommentModal = () => {
             onSubmit({
               data,
               fetchUrl: `/post/${post.id}/comment`,
-              actionArray: [
-                onPostCommentAdd,
-                onPostsCommentAdd,
-                onProfilePostsCommentAdd,
-              ],
+              actionArray,
+              shouldCommentAlert: true,
               onClose: commentModal.onClose,
-              postId: post.id,
+              post,
             })
           )}
           bgColor={bgBlue}
@@ -125,4 +151,4 @@ const CommentModal = () => {
   );
 };
 
-export default CommentModal;
+export default WriteCommentModal;

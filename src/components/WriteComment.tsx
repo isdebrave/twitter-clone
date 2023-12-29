@@ -2,19 +2,19 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { AxiosResponse } from "axios";
 
-import useWriteForm from "../../hooks/useWriteForm";
-import useCommentModal from "../../hooks/useCommentModal";
+import useWriteForm from "../hooks/useWriteForm";
+import useCommentModal from "../hooks/useCommentModal";
 
-import { src } from "../../helpers/image";
+import { src } from "../helpers/image";
 
-import Button from "../Button";
+import Button from "./Button";
 
-import { bgBlue, hoverDarkBlue, textWhite } from "../../constants/colors";
+import { bgBlue, hoverDarkBlue, textWhite } from "../constants/colors";
 
-import { RootState } from "../../redux/store";
-import { onPostCommentAdd } from "../../redux/reducers/post";
-import { onPostsCommentAdd } from "../../redux/reducers/posts";
-import { onProfilePostsCommentAdd } from "../../redux/reducers/profile";
+import { RootState } from "../redux/store";
+import { onPostCommentAdd } from "../redux/reducers/post";
+import { onPostsCommentAdd } from "../redux/reducers/posts";
+import { onProfilePostsCommentAdd } from "../redux/reducers/profile";
 
 const WriteComment = () => {
   const me = useSelector((state: RootState) => state.me);
@@ -83,8 +83,9 @@ const WriteComment = () => {
               data,
               fetchUrl: `/post/${post.id}/comment`,
               actionArray,
+              shouldCommentAlert: true,
               onClose: commentModal.onClose,
-              postId: post.id,
+              post,
             })
           )}
           bgColor={bgBlue}

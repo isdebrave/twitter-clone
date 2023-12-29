@@ -9,7 +9,7 @@ import PostProfile from "../components/post/PostProfile";
 import PostBody from "../components/post/PostBody";
 import PostFooter from "../components/post/PostFooter";
 import Icon from "../components/Icon";
-import WriteComment from "../components/comments/WriteComment";
+import WriteComment from "../components/WriteComment";
 
 import { RootState } from "../redux/store";
 import { onPost, onPostViews } from "../redux/reducers/post";
@@ -92,7 +92,7 @@ const Feed = () => {
             textColor="text-gray-500"
           />
           <Icon
-            onClick={(e) => likedHandler(e, post.id)}
+            onClick={(e) => likedHandler(e, post)}
             icon={isHeartFill(post.likedIds, me.id) ? BiSolidHeart : BiHeart}
             length={post.likedIds.length}
             textHover="group-hover:text-rose-500"

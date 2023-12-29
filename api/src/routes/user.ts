@@ -10,6 +10,7 @@ import {
   updateProfile,
   addFollow,
   removeFollow,
+  deleteAlert,
 } from "../controllers/user";
 
 if (!fs.existsSync("uploads/profile")) {
@@ -58,5 +59,7 @@ userRouter.patch(
 );
 userRouter.post("/follow", addFollow);
 userRouter.delete("/follow", removeFollow);
+
+userRouter.delete("/alert", deleteAlert);
 
 export default userRouter;

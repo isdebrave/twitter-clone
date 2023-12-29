@@ -19,3 +19,55 @@ export const notifications = async (
     next(error);
   }
 };
+
+export const registerNotification = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { body, userId } = req.body;
+
+  if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
+
+  try {
+    await prisma.notification.create({
+      data: {
+        body,
+        userId,
+      },
+    });
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        hasNotification: true,
+      },
+    });
+
+    return res.status(201).json();
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const deleteNotification = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { notificationId } = req.body;
+
+  if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
+
+  try {
+    await prisma.notification.delete({
+      where: { id: notificationId },
+    });
+
+    return res.status(200).json();
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};

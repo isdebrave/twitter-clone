@@ -9,7 +9,7 @@ const useNotifications = () => {
   const me = useSelector((state: RootState) => state.me);
 
   const { data } = useSWRImmutable(
-    `/notification/all?userId=${me.id}`,
+    me.id ? `/notification/all?userId=${me.id}` : null,
     fetcher,
     { onError: (error) => console.log(error) }
   );

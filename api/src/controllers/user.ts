@@ -230,3 +230,27 @@ export const removeFollow = async (
     next(error);
   }
 };
+
+export const deleteAlert = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = req.body;
+
+  if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
+
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        hasNotification: false,
+      },
+    });
+
+    return res.status(200).json();
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};

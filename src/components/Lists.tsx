@@ -173,7 +173,7 @@ const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
                             return toast.error("포스트 등록 중입니다.");
                           }
 
-                          likedHandler(e, list.id);
+                          likedHandler(e, list as PostState);
                         })
                       }
                       icon={

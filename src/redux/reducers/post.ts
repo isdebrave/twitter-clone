@@ -4,9 +4,6 @@ import { MeState } from "./me";
 
 type PostUserState = Omit<MeState, "hasNotification" | "followingIds">;
 
-// registerComment 시, commentId만 받아옴.
-// registerPost 시, postId만 받아옴.
-
 export type PostCommentState = {
   id: string;
   body: string;

@@ -1,17 +1,18 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import { bgBlack, hoverLightWhite, textWhite } from "../../constants/colors";
 
 import { src } from "../../helpers/image";
+import { mouseEnterHandler, mouseLeaveHandler } from "../../helpers/mouse";
 
 import useFollowList from "../../hooks/useFollowList";
 import useFollow from "../../hooks/useFollow";
 import useProfile from "../../hooks/useProfile";
-import { mouseEnterHandler, mouseLeaveHandler } from "../../helpers/mouse";
-import { useDispatch, useSelector } from "react-redux";
-import { onFollowList } from "../../redux/reducers/followList";
+
 import { RootState } from "../../redux/store";
+import { onFollowList } from "../../redux/reducers/followList";
 
 const Followbar = () => {
   const { data } = useFollowList();

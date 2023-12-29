@@ -41,6 +41,9 @@ export const meSlice = createSlice({
 
       state.followingIds = state.followingIds.filter((id) => id !== followerId);
     },
+    onMeAlertDelete: (state) => {
+      state.hasNotification = false;
+    },
   },
 });
 
@@ -50,6 +53,7 @@ export const {
   onMeProfileUpdate,
   onMeFollowingAdd,
   onMeFollowingDelete,
+  onMeAlertDelete,
 } = meSlice.actions;
 
 export default meSlice.reducer;

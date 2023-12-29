@@ -1,13 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import toast from "react-hot-toast";
+
+import { RootState } from "../redux/store";
+import { PostState } from "../redux/reducers/post";
 
 const useWriteForm = (
   defaultValues: FieldValues,
   method: "POST" | "PATCH" = "POST"
 ) => {
+  const me = useSelector((state: RootState) => state.me);
+
   const imagesInputRef = useRef<HTMLInputElement>(null);
   const coverImageInputRef = useRef<HTMLInputElement>(null);
 
@@ -61,17 +66,24 @@ const useWriteForm = (
     actionArray: Array<
       (data?: AxiosResponse<any>) => { payload: any; type: any }
     >;
+    shouldCommentAlert?: boolean;
     onClose?: () => void;
-    postId?: string;
-    profileId?: string;
+    post?: PostState;
   }) => {
-    const { data, fetchUrl, actionArray, onClose, postId } = props;
+    const {
+      data,
+      fetchUrl,
+      actionArray,
+      shouldCommentAlert = false,
+      onClose,
+      post,
+    } = props;
 
     const formData = new FormData();
     for (const file of imageFiles) {
       formData.append("bodyImages", file);
     }
-    postId && formData.append("postId", postId);
+    post && formData.append("postId", post.id);
     coverImage && formData.append("coverImage", coverImage);
     profileImage && formData.append("profileImage", profileImage);
     formData.append("data", JSON.stringify(data));
@@ -88,6 +100,16 @@ const useWriteForm = (
         const response = await axios.post(fetchUrl, formData);
 
         actionArray.forEach((action) => dispatch(action(response.data)));
+
+        if (shouldCommentAlert && post) {
+          axios.post("/notification", {
+            body: `${me.username} 님이 ${post.id.slice(
+              0,
+              10
+            )} 포스트에 댓글을 작성했습니다.`,
+            userId: post.user.id,
+          });
+        }
       } else {
         axios.patch(fetchUrl, formData);
 
