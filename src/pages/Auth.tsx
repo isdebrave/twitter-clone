@@ -32,7 +32,18 @@ const Auth = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center h-full w-fit mx-auto lg:w-full lg:flex-row">
+    <div
+      className="
+        flex
+        flex-col 
+        items-center 
+        h-full 
+        w-fit 
+        mx-auto 
+        lg:w-full 
+        lg:flex-row
+      "
+    >
       <div
         className="
           w-full

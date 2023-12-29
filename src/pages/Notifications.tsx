@@ -16,7 +16,7 @@ import {
 import { onMeAlertDelete } from "../redux/reducers/me";
 
 const Notifications = () => {
-  const { data } = useNotifications();
+  const { data, mutate } = useNotifications();
 
   const notifications = useSelector((state: RootState) => state.notifications);
   const me = useSelector((state: RootState) => state.me);
@@ -27,10 +27,15 @@ const Notifications = () => {
   useEffect(() => {
     if (!data) return;
 
-    if (notifications.length === 0) {
-      dispatch(onNotifications(data));
-    }
-  }, [data, notifications.length, dispatch]);
+    dispatch(onNotifications(data));
+
+    return () => {
+      axios
+        .get(`/notification/all?userId=${me.id}`)
+        .then((response) => mutate(response.data))
+        .catch((error) => console.log(error));
+    };
+  }, [data, dispatch, mutate, me.id]);
 
   useEffect(() => {
     if (me.hasNotification === true) {

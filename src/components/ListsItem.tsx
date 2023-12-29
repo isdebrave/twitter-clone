@@ -86,8 +86,10 @@ const ListsItem: React.FC<ListsItemProps> = ({
           >
             {username}
           </span>
+          <span className="text-gray-500 hidden sm:inline-block">
+            @{userId.slice(0, 10)} ▪
+          </span>
           <span className="text-gray-500">
-            @{userId.slice(0, 10)} ▪{" "}
             {formatDistanceToNowStrict(new Date(createdAt))}
           </span>
         </div>

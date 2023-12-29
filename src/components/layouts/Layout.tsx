@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 import Sidebar from "./Sidebar";
 import Followbar from "./Followbar";
@@ -16,6 +17,7 @@ import { onMe } from "../../redux/reducers/me";
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { data } = useMe();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   useEffect(() => {
     if (!data) return;
@@ -49,10 +51,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Sidebar />
       </div>
 
-      <div className="sm:hidden flex items-center py-3 px-6 relative">
-        <MobileProfile />
-        <MobileLogo />
-      </div>
+      {location.pathname === "/home" && (
+        <div className="sm:hidden flex items-center py-3 px-6 relative">
+          <MobileProfile />
+          <MobileLogo />
+        </div>
+      )}
 
       <div className="sm:col-span-2 sm:border-r">{children}</div>
 

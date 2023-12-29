@@ -28,10 +28,11 @@ const Home = () => {
 
   return (
     <>
-      <div className="mt-4">
+      <div className="hidden sm:block mt-4">
         <WritePost />
         <hr className="my-3" />
       </div>
+      <hr className="sm:hidden" />
       <Lists lists={posts} size={size} setSize={setSize} />
     </>
   );

@@ -32,7 +32,7 @@ const Carousel = () => {
     speed: 500,
     slidesToScroll: 1,
     slidesToShow: 1,
-    swipe: false,
+    swipe: true,
   };
 
   return (

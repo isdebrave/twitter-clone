@@ -50,16 +50,19 @@ const useLiked = () => {
         })
       );
 
-      likedIds = profile.posts.find(
-        (post) => post.id === clickedPost.id
-      )!.likedIds;
-      dispatch(
-        onProfilePostsLiked({
-          isExists: isExists(likedIds, me.id),
-          userId: me.id,
-          postId: clickedPost.id,
-        })
-      );
+      if (profile.posts.length > 0) {
+        likedIds = profile.posts.find(
+          (post) => post.id === clickedPost.id
+        )!.likedIds;
+
+        dispatch(
+          onProfilePostsLiked({
+            isExists: isExists(likedIds, me.id),
+            userId: me.id,
+            postId: clickedPost.id,
+          })
+        );
+      }
     } catch (error) {
       console.log(error);
     }

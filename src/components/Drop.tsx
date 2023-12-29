@@ -11,6 +11,7 @@ const Drop: React.FC<DropProps> = ({ userId, top }) => {
   return (
     <div
       className={`
+        z-10
         py-3 
         rounded-2xl 
         absolute 

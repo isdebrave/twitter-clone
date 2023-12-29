@@ -9,7 +9,7 @@ const MobilePostButton = () => {
   const writePostModal = useWritePostModal();
 
   return (
-    <div className="absolute right-3 bottom-16">
+    <div className="fixed right-3 bottom-16">
       <button
         onClick={writePostModal.onOpen}
         className={`
