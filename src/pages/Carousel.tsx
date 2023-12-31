@@ -3,12 +3,12 @@ import Slider from "react-slick";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { IoClose, IoArrowBack, IoArrowForward } from "react-icons/io5";
+import axios from "axios";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import { RootState } from "../redux/store";
-import axios from "axios";
 import { PostState } from "../redux/reducers/post";
 
 const Carousel = () => {
@@ -27,7 +27,7 @@ const Carousel = () => {
     let data: PostState | undefined = post;
 
     // posts
-    if (data.images.length === 0) {
+    if (data.images.length === 0 || postId !== data.id) {
       data = posts.find((post) => post.id === postId);
     }
 

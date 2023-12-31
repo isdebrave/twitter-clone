@@ -23,7 +23,10 @@ const useLiked = () => {
     try {
       axios.post("/post/liked", { postId: clickedPost.id });
 
-      if (!isExists(clickedPost.likedIds, me.id)) {
+      if (
+        clickedPost.user.id !== me.id &&
+        !isExists(clickedPost.likedIds, me.id)
+      ) {
         axios.post("/notification", {
           body: `${me.username} 님이 ${clickedPost.id.slice(
             0,

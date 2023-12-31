@@ -17,7 +17,7 @@ const Home = () => {
   useEffect(() => {
     if (!data) return;
 
-    if (posts.length !== data.length) {
+    if (posts.length === 0) {
       dispatch(onPosts(data));
     }
   }, [posts, data, dispatch]);

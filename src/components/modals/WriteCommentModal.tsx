@@ -122,7 +122,7 @@ const WriteCommentModal = () => {
               data,
               fetchUrl: `/post/${post.id}/comment`,
               actionArray,
-              shouldCommentAlert: true,
+              shouldCommentAlert: post.user.id !== me.id,
               onClose: commentModal.onClose,
               post,
             })
