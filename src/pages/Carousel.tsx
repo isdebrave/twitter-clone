@@ -9,23 +9,37 @@ import "slick-carousel/slick/slick-theme.css";
 
 import { RootState } from "../redux/store";
 import axios from "axios";
+import { PostState } from "../redux/reducers/post";
 
 const Carousel = () => {
   const [images, setImages] = useState<string[]>([]);
   const sliderRef = useRef<Slider>(null);
 
+  const post = useSelector((state: RootState) => state.post);
   const posts = useSelector((state: RootState) => state.posts);
+  const profile = useSelector((state: RootState) => state.profile);
 
   const { postId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const post = posts.find((post) => post.id === postId);
+    // post
+    let data: PostState | undefined = post;
 
-    if (post) {
-      setImages(post.images);
+    // posts
+    if (data.images.length === 0) {
+      data = posts.find((post) => post.id === postId);
     }
-  }, [postId, posts]);
+
+    // profile
+    if (!data) {
+      data = profile.posts.find((post) => post.id === postId);
+    }
+
+    if (data) {
+      setImages(data.images);
+    }
+  }, [post, postId, posts, profile.posts]);
 
   const settings = {
     infinite: true,

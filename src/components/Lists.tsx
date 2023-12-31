@@ -1,38 +1,36 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { BiHeart, BiMessageRounded, BiSolidHeart } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import ListsItem from "./ListsItem";
 import Icon from "./Icon";
 
 import { stopPropagationHandler } from "../helpers/event";
 import { src } from "../helpers/image";
+import { isDummy, isHeartFill } from "../helpers/post";
 
 import useLiked from "../hooks/useLiked";
 import useCommentModal from "../hooks/useCommentModal";
-import useIntersected from "../hooks/useIntersected";
 
 import { RootState } from "../redux/store";
 import { PostCommentState, PostState } from "../redux/reducers/post";
-import toast from "react-hot-toast";
 
 interface ListsProps {
   lists: PostState[] | PostCommentState[];
-  size?: number;
   setSize?: (
     size: number | ((_size: number) => number)
   ) => Promise<any[] | undefined>;
-  isLoading?: boolean;
+  isValidating?: boolean;
 }
 
-const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
+const Lists: React.FC<ListsProps> = ({ lists, setSize, isValidating }) => {
   const [isPosts, setIsPosts] = useState(false);
-  const [div, setDiv] = useState<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
 
   const { likedHandler } = useLiked();
   const commentModal = useCommentModal();
-  const intersected = useIntersected();
 
   const me = useSelector((state: RootState) => state.me);
 
@@ -46,40 +44,29 @@ const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
     }
   }, [lists]);
 
-  const ref = useCallback((div: HTMLDivElement) => setDiv(div), []);
   useEffect(() => {
-    if (!div) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSize && setSize((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.5 }
+    );
 
-    const observer = new IntersectionObserver((entries) => {
-      // const entry = entries[0];
-      observer.unobserve(div);
+    const instance = ref.current;
+    instance && observer.observe(instance);
 
-      if (setSize && size) {
-        setSize(size + 1);
-      }
-    });
-
-    observer.observe(div);
-
-    return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [div]);
-
-  const isHeartFill = (array: string[], meId: string) => {
-    if (array.includes(meId)) {
-      return true;
-    }
-
-    return false;
-  };
-
-  const isDummy = (id: number | string) => typeof id === "number";
+    return () => {
+      instance && observer.unobserve(instance);
+      observer && observer.disconnect();
+    };
+  }, [setSize]);
 
   return (
     <>
-      {lists.map((list, idx) => (
+      {lists.map((list) => (
         <div
-          ref={idx === lists.length - 2 ? ref : null}
           key={list.id}
           onClick={
             isPosts
@@ -107,15 +94,15 @@ const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
                   stopPropagationHandler(e, () => navigate(`/${list.user.id}`))
                 }
                 className="
-                w-[40px]
-                h-[40px]
-                flex
-                rounded-full
-                overflow-hidden
-                hover:brightness-90
-                transition
-                cursor-pointer
-              "
+                  w-[40px]
+                  h-[40px]
+                  flex
+                  rounded-full
+                  overflow-hidden
+                  hover:brightness-90
+                  transition
+                  cursor-pointer
+                "
               >
                 <img
                   src={src(list.user.profileImage)}
@@ -132,7 +119,6 @@ const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
                       navigate(`/${list.user.id}`)
                     )
                   }
-                  isDummy={isDummy}
                   username={list.user.username}
                   userId={list.user.id}
                   isPosts={isPosts}
@@ -197,9 +183,9 @@ const Lists: React.FC<ListsProps> = ({ lists, size, setSize, isLoading }) => {
           </div>
         </div>
       ))}
-      {size && setSize && (
-        <button onClick={() => setSize(size + 1)}>Load More</button>
-      )}
+
+      {isValidating && <p>Loading...</p>}
+      <div ref={ref} style={{ border: "1px solid red", height: "10px" }}></div>
     </>
   );
 };

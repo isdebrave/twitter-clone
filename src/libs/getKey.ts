@@ -2,11 +2,12 @@ import { PostCommentState, PostState } from "../redux/reducers/post";
 
 const getKey = <T extends PostState[] | PostCommentState[]>(
   pageIndex: number,
-  previousPageData: T
+  previousPageData: T,
+  pathname: string | null
 ) => {
   if (previousPageData && !previousPageData.length) return null;
 
-  return `/post/all?page=${pageIndex}&limit=4`;
+  return `${pathname}?page=${pageIndex}&limit=7`;
 };
 
 export default getKey;

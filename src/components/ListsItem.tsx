@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNowStrict } from "date-fns";
 import { IoEllipsisHorizontal, IoTrashSharp } from "react-icons/io5";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 import ImageCard from "./ImageCard";
 
 import { stopPropagationHandler } from "../helpers/event";
 import { src } from "../helpers/image";
+import { isDummy } from "../helpers/post";
 
 import { AppDispatch, RootState } from "../redux/store";
 import { onPostsCommentDelete, onPostsDelete } from "../redux/reducers/posts";
@@ -17,11 +19,9 @@ import {
   onProfilePostsDelete,
 } from "../redux/reducers/profile";
 import { onPostCommentDelete } from "../redux/reducers/post";
-import toast from "react-hot-toast";
 
 interface ListsItemProps {
   onClick: (e: React.MouseEvent) => void;
-  isDummy: (postId: string | number) => boolean;
   username: string;
   userId: string;
   isPosts: boolean;
@@ -34,7 +34,6 @@ interface ListsItemProps {
 
 const ListsItem: React.FC<ListsItemProps> = ({
   onClick,
-  isDummy,
   username,
   userId,
   isPosts,

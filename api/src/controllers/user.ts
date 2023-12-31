@@ -80,6 +80,8 @@ export const profile = async (
         comments: { select: { id: true } },
       },
       orderBy: { createdAt: "desc" },
+      // skip: +page * +limit,
+      // take: +limit,
     });
 
     type Profile = User & { posts: Post[] };
@@ -249,6 +251,29 @@ export const deleteAlert = async (
     });
 
     return res.status(200).json();
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const search = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { value } = req.body;
+
+    const users = await prisma.user.findMany({
+      where: {
+        username: {
+          contains: value,
+        },
+      },
+    });
+
+    return res.status(200).json(users);
   } catch (error) {
     console.log(error);
     next(error);

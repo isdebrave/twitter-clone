@@ -10,21 +10,19 @@ import { RootState } from "../redux/store";
 import { onPosts } from "../redux/reducers/posts";
 
 const Home = () => {
-  const { data, size, setSize } = usePosts();
+  const { data, setSize, isValidating } = usePosts();
   const posts = useSelector((state: RootState) => state.posts);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (!data) return;
 
-    if (posts.length === 0) {
+    if (posts.length !== data.length) {
       dispatch(onPosts(data));
     }
-
-    // if (posts.length !== data.length) {
-    //   dispatch(onPosts(data));
-    // }
   }, [posts, data, dispatch]);
+
+  if (posts.length === 0) return;
 
   return (
     <>
@@ -33,7 +31,7 @@ const Home = () => {
         <hr className="my-3" />
       </div>
       <hr className="sm:hidden" />
-      <Lists lists={posts} size={size} setSize={setSize} />
+      <Lists lists={posts} setSize={setSize} isValidating={isValidating} />
     </>
   );
 };
