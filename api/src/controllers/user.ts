@@ -32,8 +32,6 @@ export const users = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (!req.session.meId) return res.status(200).json("팔로우 목록이 없습니다.");
-
   try {
     const users = await prisma.user.findMany();
 

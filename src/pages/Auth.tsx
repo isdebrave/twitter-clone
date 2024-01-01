@@ -25,12 +25,6 @@ const Auth = () => {
   const loginModal = useLoginModal();
   const registerModal = useRegisterModal();
 
-  useEffect(() => {
-    if (localStorage.getItem("auth")) {
-      localStorage.removeItem("auth");
-    }
-  }, []);
-
   return (
     <div
       className="

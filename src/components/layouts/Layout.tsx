@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import { useLocation } from "react-router-dom";
 
 import Sidebar from "./Sidebar";
@@ -10,20 +9,8 @@ import MobileLogo from "./mobile/MobileLogo";
 import MobilePostButton from "./mobile/MobilePostButton";
 import MobileNavbar from "./mobile/MobileNavbar";
 
-import useMe from "../../hooks/useMe";
-
-import { onMe } from "../../redux/reducers/me";
-
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { data } = useMe();
-  const dispatch = useDispatch();
   const location = useLocation();
-
-  useEffect(() => {
-    if (!data) return;
-
-    dispatch(onMe(data));
-  }, [data, dispatch]);
 
   return (
     <div
