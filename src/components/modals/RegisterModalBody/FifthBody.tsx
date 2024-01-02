@@ -5,7 +5,6 @@ import Heading from "../../Heading";
 import Input from "../../Input";
 
 interface FifthBodyProps {
-  disabled: boolean;
   register: UseFormRegister<FieldValues>;
   errors?: FieldErrors;
   password: string;
@@ -18,7 +17,6 @@ const passwordPattern = {
 };
 
 const FifthBody: React.FC<FifthBodyProps> = ({
-  disabled,
   register,
   errors,
   password,
@@ -36,7 +34,6 @@ const FifthBody: React.FC<FifthBodyProps> = ({
       <Input
         id="password"
         label="비밀번호"
-        disabled={disabled}
         register={register}
         errors={errors}
         required

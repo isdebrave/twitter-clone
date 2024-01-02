@@ -3,7 +3,6 @@ import { IconType } from "react-icons";
 import { UseFormReset, FieldValues } from "react-hook-form";
 
 interface ModalProps {
-  disabled: boolean;
   isOpen: boolean;
   onClose: () => void;
   step?: number;
@@ -15,7 +14,6 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({
-  disabled,
   isOpen,
   onClose,
   step,
@@ -26,10 +24,6 @@ const Modal: React.FC<ModalProps> = ({
   reset,
 }) => {
   const closeHandler = () => {
-    if (disabled) {
-      return;
-    }
-
     if (reset) {
       if (step) {
         if (step === 1) {

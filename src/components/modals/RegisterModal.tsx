@@ -5,6 +5,7 @@ import { IoClose } from "react-icons/io5";
 import { IoMdArrowBack } from "react-icons/io";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import { ClipLoader } from "react-spinners";
 
 import Modal from "./Modal";
 import Button from "../Button";
@@ -21,10 +22,11 @@ import {
   hoverDarkBlue,
   hoverLightWhite,
   textWhite,
-} from "../../constants/colors";
+} from "../../helpers/colors";
 
 import useRegisterModal from "../../hooks/useRegisterModal";
 import useLoginModal from "../../hooks/useLoginModal";
+import useMe from "../../hooks/useMe";
 
 enum STEPS {
   FIRST = 1,
@@ -35,10 +37,11 @@ enum STEPS {
 }
 
 const RegisterModal = () => {
-  const [isEmail, setIsEmail] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isEmail, setIsEmail] = useState(true);
   const [step, setStep] = useState(STEPS.FIRST);
 
+  const { mutate } = useMe();
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
 
@@ -63,6 +66,7 @@ const RegisterModal = () => {
       birth: "",
       code: "",
       password: "",
+      checked: false,
     },
   });
 
@@ -72,6 +76,13 @@ const RegisterModal = () => {
   const onBack = () => setStep((cur) => cur - 1);
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    if (step === STEPS.SECOND) {
+      const checked = data.checked;
+      if (!checked) {
+        return toast.error("체크 박스를 눌러주세요.");
+      }
+    }
+
     if (step === STEPS.FOURTH) {
       try {
         await axios.post("/auth/email/code", { code: data.code });
@@ -89,20 +100,20 @@ const RegisterModal = () => {
     }
 
     try {
-      setIsLoading(true);
+      registerModal.onClose();
 
+      setIsLoading(true);
       await axios.post("/auth/register", data);
+      await mutate();
+      setIsLoading(false);
 
       localStorage.setItem("auth", "true");
-      registerModal.onClose();
       navigate("/home");
     } catch (error) {
       if (error instanceof AxiosError) {
         console.log(error);
         toast.error(error?.response?.data);
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -111,7 +122,6 @@ const RegisterModal = () => {
     bodyContent = (
       <div className="px-10 lg:px-20">
         <FirstBody
-          disabled={isLoading}
           isEmail={isEmail}
           onEmail={() => setIsEmail((cur) => !cur)}
           name={data.name}
@@ -132,6 +142,7 @@ const RegisterModal = () => {
     bodyContent = (
       <div className="px-10 lg:px-20">
         <SecondBody
+          register={register}
           setValue={setValue}
           year={data.year}
           month={data.month}
@@ -145,7 +156,6 @@ const RegisterModal = () => {
     bodyContent = (
       <div className="px-10 lg:px-20">
         <ThirdBody
-          disabled={isLoading}
           isEmail={isEmail}
           name={data.name}
           id={data.id}
@@ -162,7 +172,6 @@ const RegisterModal = () => {
       <div className="px-10 lg:px-20">
         <FourthBody
           id={data.id}
-          disabled={isLoading}
           register={register}
           isEmail={isEmail}
           errors={errors}
@@ -175,7 +184,6 @@ const RegisterModal = () => {
     bodyContent = (
       <div className="px-10 lg:px-20">
         <FifthBody
-          disabled={isLoading}
           register={register}
           errors={errors}
           password={data.password}
@@ -212,17 +220,36 @@ const RegisterModal = () => {
   );
 
   return (
-    <Modal
-      disabled={isLoading}
-      isOpen={registerModal.isOpen}
-      onClose={step === STEPS.FIRST ? registerModal.onClose : onBack}
-      icon={step === STEPS.FIRST ? IoClose : IoMdArrowBack}
-      step={step}
-      title={`5단계 중 ${step}단계`}
-      body={bodyContent}
-      footer={footerContent}
-      reset={reset}
-    />
+    <>
+      {isLoading && (
+        <div
+          className=" 
+            fixed 
+            z-20 
+            inset-0 
+            flex
+            justify-center 
+            items-center 
+            bg-neutral-800/70
+          "
+        >
+          <div className="flex flex-col items-center">
+            <ClipLoader color="lightblue" size={80} />
+            <span className="text-white">Loading...</span>
+          </div>
+        </div>
+      )}
+      <Modal
+        isOpen={registerModal.isOpen}
+        onClose={step === STEPS.FIRST ? registerModal.onClose : onBack}
+        icon={step === STEPS.FIRST ? IoClose : IoMdArrowBack}
+        step={step}
+        title={`5단계 중 ${step}단계`}
+        body={bodyContent}
+        footer={footerContent}
+        reset={reset}
+      />
+    </>
   );
 };
 

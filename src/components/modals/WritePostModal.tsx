@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { IoClose } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { MdAddPhotoAlternate } from "react-icons/md";
@@ -7,8 +7,7 @@ import { AxiosResponse } from "axios";
 import Modal from "./Modal";
 import Button from "../Button";
 
-import { bgBlue, hoverDarkBlue, textWhite } from "../../constants/colors";
-
+import { bgBlue, hoverDarkBlue, textWhite } from "../../helpers/colors";
 import { addImageHandler, removeImageHandler, src } from "../../helpers/image";
 
 import useWritePostModal from "../../hooks/useWritePostModal";
@@ -19,8 +18,6 @@ import { onPostsAdd } from "../../redux/reducers/posts";
 import { onProfilePostsAdd } from "../../redux/reducers/profile";
 
 const WritePostModal = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
   const me = useSelector((state: RootState) => state.me);
 
   const {
@@ -172,7 +169,6 @@ const WritePostModal = () => {
 
   return (
     <Modal
-      disabled={isLoading}
       isOpen={writePostModal.isOpen}
       onClose={writePostModal.onClose}
       icon={IoClose}

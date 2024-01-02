@@ -11,7 +11,6 @@ interface InputProps {
   id: string;
   type?: string;
   label: string;
-  disabled: boolean;
   register: UseFormRegister<FieldValues>;
   required?: boolean;
   pattern?: patternProps;
@@ -25,7 +24,6 @@ const Input: React.FC<InputProps> = ({
   id,
   type,
   label,
-  disabled,
   register,
   required,
   pattern,
@@ -39,7 +37,6 @@ const Input: React.FC<InputProps> = ({
       <input
         id={id}
         type={type}
-        disabled={disabled}
         onClick={onClick}
         {...register(id, { required, pattern })}
         value={value}

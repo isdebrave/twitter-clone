@@ -19,13 +19,21 @@ import { PostCommentState, PostState } from "../redux/reducers/post";
 
 interface ListsProps {
   lists: PostState[] | PostCommentState[];
-  setSize?: (
+  setSize: (
     size: number | ((_size: number) => number)
   ) => Promise<any[] | undefined>;
-  isValidating?: boolean;
+  isValidating: boolean;
+  setPageIndex: React.Dispatch<React.SetStateAction<number>>;
+  size: any;
 }
 
-const Lists: React.FC<ListsProps> = ({ lists, setSize, isValidating }) => {
+const Lists: React.FC<ListsProps> = ({
+  lists,
+  setSize,
+  isValidating,
+  setPageIndex,
+  size,
+}) => {
   const [isPosts, setIsPosts] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -48,7 +56,8 @@ const Lists: React.FC<ListsProps> = ({ lists, setSize, isValidating }) => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setSize && setSize((prev) => prev + 1);
+          setSize((prev) => prev + 1);
+          // setPageIndex(0);
         }
       },
       { threshold: 0.5 }
@@ -61,7 +70,7 @@ const Lists: React.FC<ListsProps> = ({ lists, setSize, isValidating }) => {
       instance && observer.unobserve(instance);
       observer && observer.disconnect();
     };
-  }, [setSize]);
+  }, [setSize, setPageIndex]);
 
   return (
     <>

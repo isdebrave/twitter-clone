@@ -6,7 +6,6 @@ import Heading from "../../Heading";
 import Input from "../../Input";
 
 interface ThirdBodyProps {
-  disabled: boolean;
   isEmail: boolean;
   name: string;
   id: string;
@@ -16,7 +15,6 @@ interface ThirdBodyProps {
 }
 
 const ThirdBody: React.FC<ThirdBodyProps> = ({
-  disabled,
   isEmail,
   name,
   id,
@@ -30,7 +28,6 @@ const ThirdBody: React.FC<ThirdBodyProps> = ({
       <Input
         id="name"
         label="이름"
-        disabled={disabled}
         register={register}
         validatedBadge
         onClick={onClick}
@@ -39,7 +36,6 @@ const ThirdBody: React.FC<ThirdBodyProps> = ({
       <Input
         id="id"
         label={isEmail ? "이메일" : "휴대폰"}
-        disabled={disabled}
         register={register}
         validatedBadge
         onClick={onClick}
@@ -48,7 +44,6 @@ const ThirdBody: React.FC<ThirdBodyProps> = ({
       <Input
         id="birth"
         label="생년월일"
-        disabled={disabled}
         register={register}
         validatedBadge
         onClick={onClick}

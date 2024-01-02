@@ -8,12 +8,16 @@ import { onPostsAdd } from "../redux/reducers/posts";
 import { onProfilePostsAdd } from "../redux/reducers/profile";
 
 import { addImageHandler, removeImageHandler, src } from "../helpers/image";
+import { bgBlue, hoverDarkBlue, textWhite } from "../helpers/colors";
 
 import Button from "./Button";
-import { bgBlue, hoverDarkBlue, textWhite } from "../constants/colors";
 import useWriteForm from "../hooks/useWriteForm";
 
-const WritePost = () => {
+interface WritePostProps {
+  setPageIndex: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const WritePost: React.FC<WritePostProps> = ({ setPageIndex }) => {
   const me = useSelector((state: RootState) => state.me);
 
   const {
@@ -115,6 +119,7 @@ const WritePost = () => {
               data,
               fetchUrl: "/post",
               actionArray,
+              setPageIndex,
             })
           )}
           bgColor={bgBlue}

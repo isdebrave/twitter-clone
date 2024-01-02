@@ -1,38 +1,25 @@
-import React, { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { IoClose, IoCameraOutline } from "react-icons/io5";
-import { FieldValues, SubmitHandler } from "react-hook-form";
-import axios, { AxiosError } from "axios";
-import toast from "react-hot-toast";
 
 import Modal from "./Modal";
 import Input from "../Input";
 import Button from "../Button";
 
-import { bgBlack, hoverLightWhite, textWhite } from "../../constants/colors";
-
+import { bgBlack, hoverLightWhite, textWhite } from "../../helpers/colors";
 import { addImageHandler, removeImageHandler, src } from "../../helpers/image";
 import { namePattern } from "../../helpers/pattern";
 
 import useProfileModal from "../../hooks/useProfileModal";
+import useWriteForm from "../../hooks/useWriteForm";
 
-import { AppDispatch, RootState } from "../../redux/store";
+import { RootState } from "../../redux/store";
 import { onProfileUpdate } from "../../redux/reducers/profile";
 import { onMeProfileUpdate } from "../../redux/reducers/me";
 import { onPostsProfileUpdate } from "../../redux/reducers/posts";
 import { onPostProfileUpdate } from "../../redux/reducers/post";
-import useWritePostModal from "../../hooks/useWritePostModal";
-import useWriteForm from "../../hooks/useWriteForm";
 
 const ProfileModal = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  // const coverImageInputRef = useRef<HTMLInputElement>(null);
-
-  // const [coverImagePreview, setCoverImagePreview] = useState("");
-  // const [profileImagePreview, setProfileImagePreview] = useState("");
-  // const [coverImage, setCoverImage] = useState<File | null>(null);
-  // const [profileImage, setProfileImage] = useState<File | null>(null);
-
   const profile = useSelector((state: RootState) => state.profile);
 
   const {
@@ -200,64 +187,6 @@ const ProfileModal = () => {
     </form>
   );
 
-  // const { register, handleSubmit, errors, watchAllFields, initializedForm } =
-  //   useReactHookForm({ username: "", bio: "" }, profile);
-
-  // const resetAll = () => {
-  //   setCoverImagePreview("");
-  //   setProfileImagePreview("");
-  //   setCoverImage(null);
-  //   setProfileImage(null);
-  //   initializedForm();
-  // };
-
-  // const onSubmit: SubmitHandler<FieldValues> = (data) => {
-  //   const formData = new FormData();
-  //   coverImage && formData.append("coverImage", coverImage);
-  //   profileImage && formData.append("profileImage", profileImage);
-  //   formData.append("data", JSON.stringify(data));
-
-  //   try {
-  //     axios.patch(`/user/profile/${profile.id}`, formData);
-
-  // dispatch(
-  //   onProfileUpdate({
-  //     coverImage: coverImagePreview,
-  //     profileImage: profileImagePreview,
-  //     username: watchAllFields.username,
-  //     bio: watchAllFields.bio,
-  //   })
-  // );
-
-  // if (profileImage) {
-  //   dispatch(
-  //     onMeProfileUpdate({
-  //       profileImage: profileImagePreview,
-  //     })
-  //   );
-  //   dispatch(
-  //     onPostsProfileUpdate({
-  //       profileImage: profileImagePreview,
-  //       userId: profile.id,
-  //     })
-  //   );
-  //   dispatch(
-  //     onPostProfileUpdate({
-  //       profileImage: profileImagePreview,
-  //     })
-  //   );
-  // }
-
-  //     profileModal.onClose();
-  //     resetAll();
-  //   } catch (error) {
-  //     if (error instanceof AxiosError) {
-  //       console.log(error);
-  //       toast.error(error.response?.data);
-  //     }
-  //   }
-  // };
-
   const actionArray: Array<() => { payload: any; type: any }> = [];
 
   actionArray.push(
@@ -295,7 +224,6 @@ const ProfileModal = () => {
       <Input
         id="username"
         label="username"
-        disabled={isLoading}
         register={register}
         errors={errors}
         pattern={namePattern}
@@ -305,7 +233,6 @@ const ProfileModal = () => {
       <Input
         id="bio"
         label="bio"
-        disabled={isLoading}
         register={register}
         errors={errors}
         value={watchAllFields.bio || ""}
@@ -333,7 +260,6 @@ const ProfileModal = () => {
 
   return (
     <Modal
-      disabled={isLoading}
       isOpen={profileModal.isOpen}
       onClose={profileModal.onClose}
       icon={IoClose}

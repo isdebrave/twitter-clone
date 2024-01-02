@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { IoClose } from "react-icons/io5";
 
 import Modal from "./Modal";
 import Button from "../Button";
 
-import { bgBlue, hoverDarkBlue, textWhite } from "../../constants/colors";
-
+import { bgBlue, hoverDarkBlue, textWhite } from "../../helpers/colors";
 import { src } from "../../helpers/image";
 
 import PostBody from "../post/PostBody";
@@ -22,8 +21,6 @@ import { onProfilePostsCommentAdd } from "../../redux/reducers/profile";
 import { AxiosResponse } from "axios";
 
 const WriteCommentModal = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
   const me = useSelector((state: RootState) => state.me);
 
   const {
@@ -140,7 +137,6 @@ const WriteCommentModal = () => {
 
   return (
     <Modal
-      disabled={isLoading}
       isOpen={commentModal.isOpen}
       onClose={commentModal.onClose}
       icon={IoClose}

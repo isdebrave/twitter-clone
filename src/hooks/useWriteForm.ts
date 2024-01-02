@@ -69,6 +69,7 @@ const useWriteForm = (
     shouldCommentAlert?: boolean;
     onClose?: () => void;
     post?: PostState;
+    setPageIndex?: React.Dispatch<React.SetStateAction<number>>;
   }) => {
     const {
       data,
@@ -77,6 +78,7 @@ const useWriteForm = (
       shouldCommentAlert = false,
       onClose,
       post,
+      setPageIndex,
     } = props;
 
     const formData = new FormData();
@@ -92,6 +94,7 @@ const useWriteForm = (
       if (method === "POST") {
         // 더미 데이터
         actionArray.forEach((action) => dispatch(action()));
+        setPageIndex && setPageIndex((prev) => prev + 1);
 
         resetAll();
         onClose && onClose();

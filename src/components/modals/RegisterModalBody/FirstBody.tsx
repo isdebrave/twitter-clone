@@ -12,6 +12,12 @@ import Heading from "../../Heading";
 import Input from "../../Input";
 import Select from "../../Select";
 
+import {
+  emailPattern,
+  namePattern,
+  phonePattern,
+} from "../../../helpers/pattern";
+
 const months: string[] = [];
 for (let i = 1; i <= 12; i++) {
   months.push(i + "월");
@@ -27,23 +33,7 @@ for (let i = new Date().getFullYear(); i >= 1903; i--) {
   years.push(i + "");
 }
 
-const namePattern = {
-  value: /^[가-힣]{2,4}|[a-zA-Z]{2,10}\s[a-zA-Z]{2,10}$/,
-  message: "이름을 입력해 주세요.",
-};
-
-const phonePattern = {
-  value: /^[0-9]{3}[-]+[0-9]{4}[-]+[0-9]{4}$/,
-  message: "올바른 휴대폰 번호를 입력해 주세요.",
-};
-
-const emailPattern = {
-  value: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/,
-  message: "올바른 이메일을 입력해 주세요.",
-};
-
 interface FirstBodyProps {
-  disabled: boolean;
   isEmail: boolean;
   onEmail: () => void;
   name: string;
@@ -58,7 +48,6 @@ interface FirstBodyProps {
 }
 
 const FirstBody: React.FC<FirstBodyProps> = ({
-  disabled,
   isEmail,
   onEmail,
   name,
@@ -81,7 +70,7 @@ const FirstBody: React.FC<FirstBodyProps> = ({
     if (isEmail && regex.test(email)) {
       axios.post("/auth/email/exist", { id }).catch((error) => {
         if (error instanceof AxiosError) {
-          setError("id", { message: error?.response?.data });
+          setError("id", { message: error.response?.data });
         }
         return;
       });
@@ -115,7 +104,6 @@ const FirstBody: React.FC<FirstBodyProps> = ({
       <Input
         id="name"
         label="이름"
-        disabled={disabled}
         register={register}
         errors={errors}
         required
@@ -125,21 +113,20 @@ const FirstBody: React.FC<FirstBodyProps> = ({
       <Input
         id="id"
         label={isEmail ? "이메일" : "휴대폰"}
-        disabled={disabled}
         register={register}
         errors={errors}
         required
         pattern={isEmail ? emailPattern : phonePattern}
         value={id}
       />
-      <div className="text-end">
+      {/* <div className="text-end">
         <button
           onClick={onEmail}
           className="inline-block text-sky-500 hover:underline cursor-pointer"
         >
           대신 {isEmail ? "휴대폰" : "이메일"} 사용하기
         </button>
-      </div>
+      </div> */}
 
       <div className="mb-20">
         <Heading

@@ -6,10 +6,9 @@ import useWriteForm from "../hooks/useWriteForm";
 import useCommentModal from "../hooks/useCommentModal";
 
 import { src } from "../helpers/image";
+import { bgBlue, hoverDarkBlue, textWhite } from "../helpers/colors";
 
 import Button from "./Button";
-
-import { bgBlue, hoverDarkBlue, textWhite } from "../constants/colors";
 
 import { RootState } from "../redux/store";
 import { onPostCommentAdd } from "../redux/reducers/post";

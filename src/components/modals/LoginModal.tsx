@@ -7,6 +7,7 @@ import { IoClose } from "react-icons/io5";
 import { BsTwitterX } from "react-icons/bs";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { ClipLoader } from "react-spinners";
 
 import Modal from "./Modal";
 import Heading from "../Heading";
@@ -20,14 +21,15 @@ import {
   hoverLightWhite,
   textBlack,
   textWhite,
-} from "../../constants/colors";
+} from "../../helpers/colors";
 
 import useLoginModal from "../../hooks/useLoginModal";
 import useRegisterModal from "../../hooks/useRegisterModal";
+import useMe from "../../hooks/useMe";
 
 const LoginModal = () => {
   const [isLoading, setIsLoading] = useState(false);
-
+  const { mutate } = useMe();
   const loginModal = useLoginModal();
   const registerModal = useRegisterModal();
 
@@ -45,20 +47,20 @@ const LoginModal = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
-      setIsLoading(true);
+      loginModal.onClose();
 
+      setIsLoading(true);
       await axios.post("/auth/login", data);
+      await mutate();
+      setIsLoading(false);
 
       localStorage.setItem("auth", "true");
-      loginModal.onClose();
       navigate("/home");
     } catch (error) {
       if (error instanceof AxiosError) {
         console.log(error);
-        toast.error(error?.response?.data);
+        toast.error(error.response?.data);
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -108,8 +110,7 @@ const LoginModal = () => {
           <div className="mb-20 space-y-3">
             <Input
               id="id"
-              label="휴대폰 번호, 이메일 주소 또는 사용자 아이디"
-              disabled={isLoading}
+              label="이메일 주소"
               register={register}
               errors={errors}
               required
@@ -119,7 +120,6 @@ const LoginModal = () => {
               id="password"
               label="비밀번호"
               type="password"
-              disabled={isLoading}
               register={register}
               errors={errors}
               required
@@ -148,7 +148,7 @@ const LoginModal = () => {
         large
         bold
       />
-      <Button
+      {/* <Button
         onClick={() => {}}
         bgColor={bgWhite}
         textColor={textBlack}
@@ -156,7 +156,7 @@ const LoginModal = () => {
         label="비밀번호를 잊으셨나요?"
         large
         bold
-      />
+      /> */}
       <p className="text-center">
         계정이 없으신가요?{" "}
         <button onClick={clickHandler} className="text-sky-500 hover:underline">
@@ -167,16 +167,35 @@ const LoginModal = () => {
   );
 
   return (
-    <Modal
-      disabled={isLoading}
-      isOpen={loginModal.isOpen}
-      onClose={loginModal.onClose}
-      title={BsTwitterX}
-      body={bodyContent}
-      footer={footerContent}
-      icon={IoClose}
-      reset={reset}
-    />
+    <>
+      {isLoading && (
+        <div
+          className=" 
+            fixed 
+            z-20 
+            inset-0 
+            flex
+            justify-center 
+            items-center 
+            bg-neutral-800/70
+          "
+        >
+          <div className="flex flex-col items-center">
+            <ClipLoader color="lightblue" size={80} />
+            <span className="text-white">Loading...</span>
+          </div>
+        </div>
+      )}
+      <Modal
+        isOpen={loginModal.isOpen}
+        onClose={loginModal.onClose}
+        title={BsTwitterX}
+        body={bodyContent}
+        footer={footerContent}
+        icon={IoClose}
+        reset={reset}
+      />
+    </>
   );
 };
 

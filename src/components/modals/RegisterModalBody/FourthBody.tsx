@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect } from "react";
 import { UseFormRegister, FieldValues, FieldErrors } from "react-hook-form";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 import Heading from "../../Heading";
 import Input from "../../Input";
 
 interface FourthBodyProps {
-  disabled: boolean;
   id: string;
   register: UseFormRegister<FieldValues>;
   isEmail: boolean;
@@ -14,19 +14,23 @@ interface FourthBodyProps {
 }
 
 const FourthBody: React.FC<FourthBodyProps> = ({
-  disabled,
   id,
   register,
   isEmail,
   errors,
 }) => {
-  const authHandler = useCallback(() => {
-    axios
-      .post(isEmail ? "/auth/email" : "/auth/phone", { id })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [id, isEmail]);
+  const authHandler = useCallback(
+    (again?: boolean) => {
+      if (again) {
+        toast.success("다시 보내드렸습니다.\n잠시 후 확인해보세요.");
+      }
+
+      axios
+        .post(isEmail ? "/auth/email" : "/auth/phone", { id })
+        .catch((error) => console.log(error));
+    },
+    [id, isEmail]
+  );
 
   useEffect(() => {
     authHandler();
@@ -37,7 +41,7 @@ const FourthBody: React.FC<FourthBodyProps> = ({
       이메일을 받지 못했으면{" "}
       <button
         className="text-sky-500 hover:underline cursor-pointer text-sm"
-        onClick={authHandler}
+        onClick={authHandler.bind(null, true)}
       >
         여기
       </button>
@@ -50,7 +54,7 @@ const FourthBody: React.FC<FourthBodyProps> = ({
       SMS을 받지 못했으면{" "}
       <button
         className="text-sky-500 hover:underline cursor-pointer text-sm"
-        onClick={authHandler}
+        onClick={authHandler.bind(null, true)}
       >
         여기
       </button>
@@ -71,7 +75,6 @@ const FourthBody: React.FC<FourthBodyProps> = ({
       <Input
         id="code"
         label="인증 코드"
-        disabled={disabled}
         register={register}
         errors={errors}
         required

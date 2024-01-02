@@ -14,7 +14,7 @@ import {
   hoverDarkBlue,
   hoverGray,
   hoverLightBlue,
-} from "../constants/colors";
+} from "../helpers/colors";
 
 import Button from "../components/Button";
 

@@ -107,7 +107,7 @@ const Feed = () => {
         <hr className="mt-1 mb-3" />
         <WriteComment />
         <hr className="my-3" />
-        <Lists lists={post.comments} />
+        {/* <Lists lists={post.comments} /> */}
       </div>
     </>
   );

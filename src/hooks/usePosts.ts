@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useSWRInfinite from "swr/infinite";
 // import useSWRImmutable from "swr/immutable";
 
@@ -13,17 +13,14 @@ const usePosts = () => {
   //   },
   // });
 
-  const { data, setSize, isValidating } = useSWRInfinite(
-    (idx, prev) => getKey(idx, prev, "/post/all"),
+  const [pageIndex, setPageIndex] = useState(0);
+  const { data, size, setSize, isValidating } = useSWRInfinite(
+    (idx) => getKey({ idx, pageIndex }, "/post/all"),
     fetcher,
-    {
-      onError: (error) => {
-        console.log(error);
-      },
-    }
+    { onError: (error) => console.log(error) }
   );
 
-  return { data: data?.flat(), setSize, isValidating };
+  return { data: data?.flat(), size, setSize, isValidating, setPageIndex };
 };
 
 export default usePosts;

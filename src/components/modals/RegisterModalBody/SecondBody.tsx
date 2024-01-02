@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { UseFormSetValue, FieldValues } from "react-hook-form";
+import { UseFormSetValue, FieldValues, UseFormRegister } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 import Heading from "../../Heading";
 
 interface SecondBodyProps {
+  register: UseFormRegister<FieldValues>;
   setValue: UseFormSetValue<FieldValues>;
   year: string;
   month: string;
@@ -12,6 +13,7 @@ interface SecondBodyProps {
 }
 
 const SecondBody: React.FC<SecondBodyProps> = ({
+  register,
   setValue,
   year,
   month,
@@ -33,7 +35,11 @@ const SecondBody: React.FC<SecondBodyProps> = ({
           저장할 때 내 이름, 이메일, 휴대폰 번호는 절대 포함되지 않습니다.
         </p>
         <div className="ml-2">
-          <input type="checkbox" className="w-[20px] h-[20px] cursor-pointer" />
+          <input
+            type="checkbox"
+            {...register("checked")}
+            className="w-[20px] h-[20px] cursor-pointer"
+          />
         </div>
       </div>
       <p className="mt-5 mb-20 text-gray-500">

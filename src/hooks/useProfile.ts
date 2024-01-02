@@ -11,7 +11,7 @@ const useProfile = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
 
-  const { data } = useSWRImmutable(
+  const { data, mutate, isValidating } = useSWRImmutable(
     userId ? `/user/profile/${userId}` : null,
     fetcher,
     {
@@ -23,7 +23,7 @@ const useProfile = () => {
     }
   );
 
-  return { data };
+  return { data, mutate, isValidating };
 };
 
 export default useProfile;

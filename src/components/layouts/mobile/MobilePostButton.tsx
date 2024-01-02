@@ -1,7 +1,7 @@
 import React from "react";
 import { FiFeather } from "react-icons/fi";
 
-import { bgBlue, hoverDarkBlue, textWhite } from "../../../constants/colors";
+import { bgBlue, hoverDarkBlue, textWhite } from "../../../helpers/colors";
 
 import useWritePostModal from "../../../hooks/useWritePostModal";
 
