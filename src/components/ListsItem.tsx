@@ -12,7 +12,7 @@ import { stopPropagationHandler } from "../helpers/event";
 import { src } from "../helpers/image";
 import { isDummy } from "../helpers/post";
 
-import { AppDispatch, RootState } from "../redux/store";
+import { RootState } from "../redux/store";
 import { onPostsCommentDelete, onPostsDelete } from "../redux/reducers/posts";
 import {
   onProfilePostsCommentDelete,
@@ -48,7 +48,7 @@ const ListsItem: React.FC<ListsItemProps> = ({
   const me = useSelector((state: RootState) => state.me);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const onCloseBox = () => setShowBox(false);
@@ -58,7 +58,7 @@ const ListsItem: React.FC<ListsItemProps> = ({
     return () => window.removeEventListener("click", onCloseBox);
   }, []);
 
-  const deleteHandler = (e: React.MouseEvent) => {
+  const deleteHandler = async (e: React.MouseEvent) => {
     e.stopPropagation();
 
     if (isPosts) {

@@ -35,15 +35,23 @@ const useWriteForm = (
     formState: { errors },
   } = useForm<FieldValues>();
 
-  const watchAllFields = watch();
-
   useEffect(() => {
-    if (defaultValues.username === watchAllFields.username) return;
+    let isEmpty = true;
+    for (const key in defaultValues) {
+      if (defaultValues[key] !== "") {
+        isEmpty = false;
+        break;
+      }
+    }
+
+    if (isEmpty) return;
+
+    console.log(defaultValues);
 
     for (const key in defaultValues) {
       setValue(key, defaultValues[key]);
     }
-  }, [defaultValues, watchAllFields, setValue]);
+  }, [defaultValues, setValue]);
 
   const resetAll = () => {
     setImagesPreview([]);
@@ -162,7 +170,7 @@ const useWriteForm = (
     keyDownHandler,
     onSubmit,
     resetAll,
-    watchAllFields,
+    watchAllFields: watch(),
   };
 };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { IoClose } from "react-icons/io5";
 
@@ -23,6 +23,10 @@ import { AxiosResponse } from "axios";
 const WriteCommentModal = () => {
   const me = useSelector((state: RootState) => state.me);
 
+  const defaultValues = useMemo(() => {
+    return { body: "" };
+  }, []);
+
   const {
     handleSubmit,
     register,
@@ -30,7 +34,7 @@ const WriteCommentModal = () => {
     onSubmit,
     resetAll,
     watchAllFields,
-  } = useWriteForm({ body: "" });
+  } = useWriteForm(defaultValues);
   const commentModal = useCommentModal();
   const post = commentModal.post;
 

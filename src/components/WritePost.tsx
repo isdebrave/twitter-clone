@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import { AxiosResponse } from "axios";
@@ -20,6 +20,10 @@ interface WritePostProps {
 const WritePost: React.FC<WritePostProps> = ({ setPageIndex }) => {
   const me = useSelector((state: RootState) => state.me);
 
+  const defaultValues = useMemo(() => {
+    return { body: "" };
+  }, []);
+
   const {
     handleSubmit,
     imageFiles,
@@ -31,7 +35,7 @@ const WritePost: React.FC<WritePostProps> = ({ setPageIndex }) => {
     imagesInputRef,
     onSubmit,
     watchAllFields,
-  } = useWriteForm({ body: "" });
+  } = useWriteForm(defaultValues);
 
   const bodyContent = (
     <div className="px-6">

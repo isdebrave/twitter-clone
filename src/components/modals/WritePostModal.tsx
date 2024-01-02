@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { IoClose } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { MdAddPhotoAlternate } from "react-icons/md";
@@ -20,6 +20,10 @@ import { onProfilePostsAdd } from "../../redux/reducers/profile";
 const WritePostModal = () => {
   const me = useSelector((state: RootState) => state.me);
 
+  const defaultValues = useMemo(() => {
+    return { body: "" };
+  }, []);
+
   const {
     handleSubmit,
     imageFiles,
@@ -32,7 +36,7 @@ const WritePostModal = () => {
     onSubmit,
     resetAll,
     watchAllFields,
-  } = useWriteForm({ body: "" });
+  } = useWriteForm(defaultValues);
   const writePostModal = useWritePostModal();
 
   const bodyContent = (

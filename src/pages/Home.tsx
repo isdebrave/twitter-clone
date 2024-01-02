@@ -10,7 +10,8 @@ import { RootState } from "../redux/store";
 import { onPosts } from "../redux/reducers/posts";
 
 const Home = () => {
-  const { data, setSize, isValidating, setPageIndex, size } = usePosts();
+  const { data, setSize, isValidating, setPageIndex, size, mutate } =
+    usePosts();
 
   const posts = useSelector((state: RootState) => state.posts);
 
@@ -21,10 +22,22 @@ const Home = () => {
 
     // console.log(data);
 
+    // console.log(posts);
+
+    // if (posts.length !== data.length) {
+    //   mutate()
+    //     .then((data) => data && dispatch(onPosts(data.flat())))
+    //     .catch((error) => console.log(error));
+    // }
+
     if (posts.length < data.length) {
       dispatch(onPosts(data));
     }
-  }, [posts, data, dispatch]);
+
+    // if (posts.length !== data.length) {
+    //   dispatch(onPosts(data));
+    // }
+  }, [posts, data, dispatch, mutate]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { AxiosResponse } from "axios";
 
@@ -20,8 +20,12 @@ const WriteComment = () => {
   const post = useSelector((state: RootState) => state.post);
   const commentModal = useCommentModal();
 
+  const defaultValues = useMemo(() => {
+    return { body: "" };
+  }, []);
+
   const { handleSubmit, register, keyDownHandler, onSubmit, watchAllFields } =
-    useWriteForm({ body: "" });
+    useWriteForm(defaultValues);
 
   const bodyContent = (
     <div className="flex gap-3 mb-4">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { IoClose, IoCameraOutline } from "react-icons/io5";
 
@@ -22,6 +22,10 @@ import { onPostProfileUpdate } from "../../redux/reducers/post";
 const ProfileModal = () => {
   const profile = useSelector((state: RootState) => state.profile);
 
+  const defaultValues = useMemo(() => {
+    return { username: profile.username, bio: profile.bio };
+  }, [profile]);
+
   const {
     coverImageInputRef,
     coverImagePreview,
@@ -37,7 +41,7 @@ const ProfileModal = () => {
     onSubmit,
     resetAll,
     watchAllFields,
-  } = useWriteForm({ username: profile.username, bio: profile.bio }, "PATCH");
+  } = useWriteForm(defaultValues, "PATCH");
   const profileModal = useProfileModal();
 
   const extendedSrc = (imagePreview: string, image: string) => {
