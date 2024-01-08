@@ -42,15 +42,8 @@ export const post = async (req: Request, res: Response) => {
       },
       include: {
         user: { select: { id: true, username: true, profileImage: true } },
-        comments: {
-          include: {
-            user: { select: { id: true, username: true, profileImage: true } },
-          },
-        },
       },
     });
-
-    if (!post) throw new Error();
 
     return res.status(200).json(post);
   } catch (error) {
@@ -181,6 +174,38 @@ export const views = async (
   } catch (error) {
     console.log(error);
     next(error);
+  }
+};
+
+export const comments = async (req: Request, res: Response) => {
+  const { postId } = req.params;
+  const { page, limit } = req.query;
+
+  if (!page || !limit) return;
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+      include: {
+        comments: {
+          include: {
+            user: { select: { id: true, username: true, profileImage: true } },
+          },
+          orderBy: { createdAt: "desc" },
+          skip: +page * +limit,
+          take: +limit,
+        },
+      },
+    });
+
+    if (!post) throw new Error();
+
+    return res.status(200).json(post.comments);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json("해당 게시물이 존재하지 않습니다.");
   }
 };
 

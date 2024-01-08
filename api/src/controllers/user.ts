@@ -44,28 +44,30 @@ export const users = async (
   }
 };
 
-export const profile = async (
+export const profile = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const profile = await prisma.user.findUnique({ where: { id: userId } });
+    return res.status(200).json(profile);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json("해당 계정이 존재하지 않습니다.");
+  }
+};
+
+export const profilePosts = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const { userId } = req.params;
-  let profile;
+  const { page, limit } = req.query;
+
+  if (!page || !limit) return;
 
   try {
-    profile = await prisma.user.findUnique({ where: { id: userId } });
-  } catch (error) {
-    console.log(error);
-    return res.status(400).json("해당 계정이 존재하지 않습니다.");
-  }
-
-  try {
-    if (!profile) throw new Error();
-
-    const { hashedPassword, name, email, birth, ...profileObj } = profile;
-    profile = profileObj;
-
-    const posts = await prisma.post.findMany({
+    const profilePosts = await prisma.post.findMany({
       where: { userId },
       include: {
         user: {
@@ -78,14 +80,11 @@ export const profile = async (
         comments: { select: { id: true } },
       },
       orderBy: { createdAt: "desc" },
-      // skip: +page * +limit,
-      // take: +limit,
+      skip: +page * +limit,
+      take: +limit,
     });
 
-    type Profile = User & { posts: Post[] };
-    (profile as Profile).posts = posts;
-
-    return res.status(200).json(profile);
+    return res.status(200).json(profilePosts);
   } catch (error) {
     console.log(error);
     next(error);

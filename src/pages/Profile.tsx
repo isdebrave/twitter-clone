@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
@@ -6,25 +6,43 @@ import { ClipLoader } from "react-spinners";
 import ProfileHero from "../components/profile/ProfileHero";
 import MainHeading from "../components/MainHeading";
 import ProfileBio from "../components/profile/ProfileBio";
+import Lists from "../components/Lists";
 
 import useProfile from "../hooks/useProfile";
 import useFollow from "../hooks/useFollow";
 import useProfileModal from "../hooks/useProfileModal";
+import useProfilePageIndex from "../hooks/useProfilePageIndex";
+import useLists from "../hooks/useLists";
 
 import { bgWhite, hoverGray, textBlack } from "../helpers/colors";
 import { mouseEnterHandler, mouseLeaveHandler } from "../helpers/mouse";
 
 import { RootState } from "../redux/store";
-import { onProfile } from "../redux/reducers/profile";
+import { onProfile, onProfilePosts } from "../redux/reducers/profile";
 
 const Profile = () => {
-  const { data, mutate, isValidating } = useProfile();
-  const { isFollowing, followHandler } = useFollow();
+  const [isEnter, setIsEnter] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
   const { userId: profileId } = useParams();
 
-  const profileModal = useProfileModal();
+  const { isFollowing, followHandler } = useFollow();
+  const { data, mutate } = useProfile(profileId);
+
   const me = useSelector((state: RootState) => state.me);
   const profile = useSelector((state: RootState) => state.profile);
+
+  const profilePageIndex = useProfilePageIndex();
+  const pageIndexPlus = profilePageIndex.onPlus;
+  const {
+    data: listsData,
+    isValidating: listsIsValidating,
+    mutate: listsMutate,
+    hasMoreData,
+  } = useLists({
+    pathname: `/user/profile/${profileId}/post/all`,
+    category: "PROFILE",
+  });
+  const profileModal = useProfileModal();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -32,12 +50,38 @@ const Profile = () => {
   useEffect(() => {
     if (!data) return;
 
-    if (profile.id !== data.id) {
+    if (!isLocked && profile.id !== data.id) {
+      setIsLocked(true);
       mutate()
-        .then((data) => dispatch(onProfile(data)))
+        .then((data) => {
+          dispatch(onProfile(data));
+          setIsLocked(false);
+        })
         .catch((error) => console.log(error));
     }
-  }, [profile.id, data, dispatch, mutate]);
+  }, [profile.id, data, dispatch, mutate, isLocked]);
+
+  useEffect(() => {
+    if (hasMoreData && profile.posts.length === 0) {
+      setIsEnter(true);
+    }
+  }, [profile.posts.length, hasMoreData]);
+
+  useEffect(() => {
+    if (!listsData) return;
+
+    if (hasMoreData && isEnter) {
+      listsMutate()
+        .then((data) => {
+          dispatch(onProfilePosts(data));
+          setIsEnter(false);
+          pageIndexPlus();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [isEnter, listsMutate, listsData, dispatch, hasMoreData, pageIndexPlus]);
 
   const buttonLabel = () => {
     if (profile.id === me.id) {
@@ -51,26 +95,26 @@ const Profile = () => {
     return "Follow";
   };
 
-  const clickHandler = (e: React.MouseEvent) => {
+  const clickHandler = () => {
     if (profile.id === me.id) {
       return profileModal.onOpen();
     }
 
-    return profileId && followHandler({ e, followerId: profile.id, profileId });
+    return profileId && followHandler({ followerId: profile.id, profileId });
   };
 
   return (
     <div className="relative h-full">
-      {isValidating ? (
+      {hasMoreData && profile.posts.length === 0 ? (
         <div
           className="
-            absolute 
-            z-50 
-            w-full 
-            h-full 
-            flex 
-            flex-col 
-            items-center 
+            absolute
+            z-50
+            w-full
+            h-full
+            flex
+            flex-col
+            items-center
             justify-center
           "
         >
@@ -98,13 +142,13 @@ const Profile = () => {
               onClick={clickHandler}
               className={`
                 py-2
-                px-5 
-                flex 
-                flex-row 
+                px-5
+                flex
+                flex-row
                 justify-center
-                items-center 
+                items-center
                 border-2
-                rounded-full 
+                rounded-full
                 w-fit
                 transition
                 ${bgWhite}
@@ -124,7 +168,12 @@ const Profile = () => {
             followerIdsLength={profile.followerIds.length}
           />
           <hr className="my-3" />
-          {/* <Posts lists={profile.posts} /> */}
+          <Lists
+            lists={profile.posts}
+            isValidating={listsIsValidating}
+            isEnter={isEnter}
+            setIsEnter={setIsEnter}
+          />
         </>
       )}
     </div>

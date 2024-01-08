@@ -10,6 +10,7 @@ import {
   deletePost,
   liked,
   views,
+  comments,
   registerComment,
   deleteComment,
 } from "../controllers/post";
@@ -61,6 +62,7 @@ postRouter.post("/liked", liked);
 
 postRouter.post("/views", views);
 
+postRouter.get("/:postId/comment/all", comments);
 postRouter.post("/:postId/comment", commentFormData.none(), registerComment);
 postRouter.delete("/:postId/comment", deleteComment);
 

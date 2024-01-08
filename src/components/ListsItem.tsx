@@ -96,19 +96,17 @@ const ListsItem: React.FC<ListsItemProps> = ({
         {me.id === userId && (
           <>
             <div
-              onClick={(e) =>
-                stopPropagationHandler(e, () => {
-                  if (isPosts && isDummy(postId)) {
-                    return toast.error("포스트 등록 중입니다.");
-                  }
+              onClick={stopPropagationHandler(() => {
+                if (isPosts && isDummy(postId)) {
+                  return toast.error("포스트 등록 중입니다.");
+                }
 
-                  if (!isPosts && isDummy(commentId)) {
-                    return toast.error("댓글 등록 중입니다.");
-                  }
+                if (!isPosts && isDummy(commentId)) {
+                  return toast.error("댓글 등록 중입니다.");
+                }
 
-                  setShowBox(true);
-                })
-              }
+                setShowBox(true);
+              })}
               className="
                 absolute 
                 -top-1 
@@ -158,11 +156,9 @@ const ListsItem: React.FC<ListsItemProps> = ({
 
       {images.length > 0 && (
         <ImageCard
-          onClick={(e) =>
-            stopPropagationHandler(e, () =>
-              navigate(`/${userId.slice(0, 10)}/status/${postId}/photo`)
-            )
-          }
+          onClick={stopPropagationHandler(() =>
+            navigate(`/${userId.slice(0, 10)}/status/${postId}/photo`)
+          )}
           imagesCount={images.length}
         >
           {images.map((image, idx) => (

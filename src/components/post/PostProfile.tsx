@@ -87,9 +87,7 @@ const PostProfile: React.FC<PostProfile> = ({
           <>
             {!noEllipsis && (
               <div
-                onClick={(e) =>
-                  stopPropagationHandler(e, () => setShowBox(true))
-                }
+                onClick={stopPropagationHandler(() => setShowBox(true))}
                 className="
                   absolute 
                   -top-1 

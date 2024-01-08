@@ -49,7 +49,10 @@ export const postSlice = createSlice({
   initialState,
   reducers: {
     onPost: (state, action) => {
-      return action.payload;
+      return { ...action.payload, comments: [] };
+    },
+    onPostComments: (state, action) => {
+      state.comments.push(...action.payload);
     },
     onPostLiked: (state, action) => {
       const { isExists, userId } = action.payload;
@@ -89,6 +92,7 @@ export const postSlice = createSlice({
 
 export const {
   onPost,
+  onPostComments,
   onPostLiked,
   onPostViews,
   onPostProfileUpdate,

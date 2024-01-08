@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { BiHeart, BiMessageRounded, BiSolidHeart } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { ClipLoader } from "react-spinners";
 
 import ListsItem from "./ListsItem";
 import Icon from "./Icon";
@@ -19,23 +20,22 @@ import { PostCommentState, PostState } from "../redux/reducers/post";
 
 interface ListsProps {
   lists: PostState[] | PostCommentState[];
-  setSize: (
-    size: number | ((_size: number) => number)
-  ) => Promise<any[] | undefined>;
   isValidating: boolean;
-  setPageIndex: React.Dispatch<React.SetStateAction<number>>;
-  size: any;
+  isEnter: boolean;
+  setIsEnter: React.Dispatch<React.SetStateAction<boolean>>;
+  text?: string;
 }
 
 const Lists: React.FC<ListsProps> = ({
   lists,
-  setSize,
   isValidating,
-  setPageIndex,
-  size,
+  isEnter,
+  setIsEnter,
+  text,
 }) => {
   const [isPosts, setIsPosts] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [node, setNode] = useState<HTMLDivElement>();
+  const ref = useCallback((node: HTMLDivElement) => setNode(node), []);
 
   const { likedHandler } = useLiked();
   const commentModal = useCommentModal();
@@ -55,53 +55,59 @@ const Lists: React.FC<ListsProps> = ({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setSize((prev) => prev + 1);
-          // setPageIndex(0);
+        if (!isEnter && entry.isIntersecting) {
+          setIsEnter(true);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0 }
     );
 
-    const instance = ref.current;
-    instance && observer.observe(instance);
+    node && observer.observe(node);
 
     return () => {
-      instance && observer.unobserve(instance);
+      node && observer.unobserve(node);
       observer && observer.disconnect();
     };
-  }, [setSize, setPageIndex]);
+  }, [isEnter, setIsEnter, node]);
+
+  if (lists.length === 0) {
+    return (
+      <span className="block text-neutral-500 text-center p-6 text-xl">
+        {text || "포스팅이 없습니다."}
+      </span>
+    );
+  }
 
   return (
     <>
-      {lists.map((list) => (
+      {lists.map((list, idx) => (
         <div
+          ref={idx === lists.length - 2 ? ref : null}
           key={list.id}
           onClick={
             isPosts
-              ? (e) =>
-                  stopPropagationHandler(e, () => {
-                    if (isDummy(list.id)) {
-                      return toast.error("포스트 등록 중입니다.");
-                    }
+              ? stopPropagationHandler(() => {
+                  if (isDummy(list.id)) {
+                    return toast.error("포스트 등록 중입니다.");
+                  }
 
-                    navigate(`/${list.user.id}/status/${list.id}`);
-                  })
+                  navigate(`/${list.user.id}/status/${list.id}`);
+                })
               : undefined
           }
           className={isPosts ? "cursor-pointer" : ""}
         >
           <div
             className={`
-            ${isPosts ? "p-3 px-4" : "py-4"}
-            ${isPosts ? "hover:bg-neutral-300/20" : ""}
-          `}
+              ${isPosts ? "p-3 px-4" : "py-4"}
+              ${isPosts ? "hover:bg-neutral-300/20" : ""}
+            `}
           >
             <div className="flex gap-3">
               <div
-                onClick={(e) =>
-                  stopPropagationHandler(e, () => navigate(`/${list.user.id}`))
-                }
+                onClick={stopPropagationHandler(() =>
+                  navigate(`/${list.user.id}`)
+                )}
                 className="
                   w-[40px]
                   h-[40px]
@@ -123,11 +129,9 @@ const Lists: React.FC<ListsProps> = ({
 
               <div className="flex-1">
                 <ListsItem
-                  onClick={(e) =>
-                    stopPropagationHandler(e, () =>
-                      navigate(`/${list.user.id}`)
-                    )
-                  }
+                  onClick={stopPropagationHandler(() =>
+                    navigate(`/${list.user.id}`)
+                  )}
                   username={list.user.username}
                   userId={list.user.id}
                   isPosts={isPosts}
@@ -145,16 +149,14 @@ const Lists: React.FC<ListsProps> = ({
                 {isPosts && (
                   <div className="flex gap-10">
                     <Icon
-                      onClick={(e) =>
-                        stopPropagationHandler(e, () => {
-                          if (isDummy(list.id)) {
-                            return toast.error("포스트 등록 중입니다.");
-                          }
+                      onClick={stopPropagationHandler(() => {
+                        if (isDummy(list.id)) {
+                          return toast.error("포스트 등록 중입니다.");
+                        }
 
-                          commentModal.onPost(list as PostState);
-                          commentModal.onOpen();
-                        })
-                      }
+                        commentModal.onPost(list as PostState);
+                        commentModal.onOpen();
+                      })}
                       icon={BiMessageRounded}
                       length={(list as PostState).comments.length}
                       textHover="group-hover:text-sky-500"
@@ -162,15 +164,13 @@ const Lists: React.FC<ListsProps> = ({
                       textColor="text-gray-500"
                     />
                     <Icon
-                      onClick={(e) =>
-                        stopPropagationHandler(e, () => {
-                          if (isDummy(list.id)) {
-                            return toast.error("포스트 등록 중입니다.");
-                          }
+                      onClick={stopPropagationHandler(() => {
+                        if (isDummy(list.id)) {
+                          return toast.error("포스트 등록 중입니다.");
+                        }
 
-                          likedHandler(e, list as PostState);
-                        })
-                      }
+                        likedHandler(list as PostState);
+                      })}
                       icon={
                         isHeartFill((list as PostState).likedIds, me.id)
                           ? BiSolidHeart
@@ -193,8 +193,11 @@ const Lists: React.FC<ListsProps> = ({
         </div>
       ))}
 
-      {isValidating && <p>Loading...</p>}
-      <div ref={ref} style={{ border: "1px solid red", height: "10px" }}></div>
+      {isValidating && (
+        <div className="w-full text-center">
+          <ClipLoader color="lightblue" size={50} />
+        </div>
+      )}
     </>
   );
 };

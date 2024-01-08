@@ -38,7 +38,7 @@ const WriteComment = () => {
       </div>
       <textarea
         placeholder="Post your reply"
-        {...register("body", { required: true })}
+        {...register("body")}
         rows={2}
         className="
           flex-auto
@@ -89,6 +89,7 @@ const WriteComment = () => {
               shouldCommentAlert: post.user.id !== me.id,
               onClose: commentModal.onClose,
               post,
+              errorMessage: "댓글을 작성해주세요.",
             })
           )}
           bgColor={bgBlue}

@@ -9,7 +9,7 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     onPosts: (state, action) => {
-      return action.payload;
+      return [...state, ...action.payload];
     },
     onPostsAdd: (state, action) => {
       const { options, data } = action.payload;

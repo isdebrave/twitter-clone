@@ -17,9 +17,7 @@ const useLiked = () => {
     return likedIds.find((id) => id === userId);
   };
 
-  const likedHandler = (e: React.MouseEvent, clickedPost: PostState) => {
-    e.stopPropagation();
-
+  const likedHandler = (clickedPost: PostState) => {
     try {
       axios.post("/post/liked", { postId: clickedPost.id });
 

@@ -51,7 +51,7 @@ const WritePostModal = () => {
         </div>
         <textarea
           placeholder="What is happening?!"
-          {...register("body", { required: true })}
+          {...register("body")}
           rows={2}
           className="
             flex-auto 
@@ -127,6 +127,7 @@ const WritePostModal = () => {
               fetchUrl: "/post",
               actionArray,
               onClose: writePostModal.onClose,
+              errorMessage: "포스트를 작성해주세요.",
             })
           )}
           bgColor={bgBlue}

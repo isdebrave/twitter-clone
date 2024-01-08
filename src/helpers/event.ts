@@ -1,7 +1,6 @@
-export const stopPropagationHandler = (
-  e: React.MouseEvent,
-  callback: () => void
-) => {
-  e.stopPropagation();
-  callback();
+export const stopPropagationHandler = (callback: () => void) => {
+  return (e: React.MouseEvent) => {
+    e.stopPropagation();
+    callback();
+  };
 };

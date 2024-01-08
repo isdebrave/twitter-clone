@@ -1,18 +1,14 @@
 import useSWRImmutable from "swr/immutable";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import fetcher from "../libs/fetcher";
-import useSWRInfinite from "swr/infinite";
-import getKey from "../libs/getKey";
-import { ProfileState } from "../redux/reducers/profile";
 
-const useProfile = () => {
-  const { userId } = useParams();
+const useProfile = (profileId: string | undefined) => {
   const navigate = useNavigate();
 
-  const { data, mutate, isValidating } = useSWRImmutable(
-    userId ? `/user/profile/${userId}` : null,
+  const { data, mutate } = useSWRImmutable(
+    profileId ? `/user/profile/${profileId}` : null,
     fetcher,
     {
       onError: (error) => {
@@ -23,7 +19,7 @@ const useProfile = () => {
     }
   );
 
-  return { data, mutate, isValidating };
+  return { data, mutate };
 };
 
 export default useProfile;

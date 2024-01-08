@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { src } from "../../helpers/image";
 import { bgBlack, hoverLightWhite, textWhite } from "../../helpers/colors";
 import { mouseEnterHandler, mouseLeaveHandler } from "../../helpers/mouse";
+import { stopPropagationHandler } from "../../helpers/event";
 
 import useFollowList from "../../hooks/useFollowList";
 import useFollow from "../../hooks/useFollow";
 
 import { RootState } from "../../redux/store";
 import { onFollowList } from "../../redux/reducers/followList";
-import { stopPropagationHandler } from "../../helpers/event";
 
 const Followbar = () => {
   const { data } = useFollowList();
@@ -66,16 +66,13 @@ const Followbar = () => {
                       mouseEnterHandler(e, isFollowing, user.id)
                     }
                     onMouseLeave={mouseLeaveHandler}
-                    onClick={(e) =>
-                      stopPropagationHandler(e, () =>
-                        followHandler({
-                          e,
-                          followerId: user.id,
-                          profileId:
-                            profile.id.length === 0 ? user.id : profile.id,
-                        })
-                      )
-                    }
+                    onClick={stopPropagationHandler(() =>
+                      followHandler({
+                        followerId: user.id,
+                        profileId:
+                          profile.id.length === 0 ? user.id : profile.id,
+                      })
+                    )}
                     className={`
                       py-2
                       px-5 

@@ -7,6 +7,7 @@ import {
   me,
   users,
   profile,
+  profilePosts,
   updateProfile,
   addFollow,
   removeFollow,
@@ -53,6 +54,7 @@ const userRouter = express.Router();
 userRouter.get("/me", me);
 userRouter.get("/all", users);
 userRouter.get("/profile/:userId", profile);
+userRouter.get("/profile/:userId/post/all", profilePosts);
 userRouter.patch(
   "/profile/:userId",
   profileUpload.fields([{ name: "coverImage" }, { name: "profileImage" }]),

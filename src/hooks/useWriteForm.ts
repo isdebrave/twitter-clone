@@ -26,6 +26,8 @@ const useWriteForm = (
 
   const dispatch = useDispatch();
 
+  const posts = useSelector((state: RootState) => state.posts);
+
   const {
     register,
     watch,
@@ -45,8 +47,6 @@ const useWriteForm = (
     }
 
     if (isEmpty) return;
-
-    console.log(defaultValues);
 
     for (const key in defaultValues) {
       setValue(key, defaultValues[key]);
@@ -77,7 +77,8 @@ const useWriteForm = (
     shouldCommentAlert?: boolean;
     onClose?: () => void;
     post?: PostState;
-    setPageIndex?: React.Dispatch<React.SetStateAction<number>>;
+    onPageIndexPlus?: () => void;
+    errorMessage?: string;
   }) => {
     const {
       data,
@@ -86,8 +87,13 @@ const useWriteForm = (
       shouldCommentAlert = false,
       onClose,
       post,
-      setPageIndex,
+      onPageIndexPlus,
+      errorMessage,
     } = props;
+
+    if (data.body.length === 0 && errorMessage) {
+      return toast.error(errorMessage);
+    }
 
     const formData = new FormData();
     for (const file of imageFiles) {
@@ -102,7 +108,7 @@ const useWriteForm = (
       if (method === "POST") {
         // 더미 데이터
         actionArray.forEach((action) => dispatch(action()));
-        setPageIndex && setPageIndex((prev) => prev + 1);
+        onPageIndexPlus && onPageIndexPlus();
 
         resetAll();
         onClose && onClose();

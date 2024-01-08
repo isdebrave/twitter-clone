@@ -11,14 +11,13 @@ import { addImageHandler, removeImageHandler, src } from "../helpers/image";
 import { bgBlue, hoverDarkBlue, textWhite } from "../helpers/colors";
 
 import Button from "./Button";
+
 import useWriteForm from "../hooks/useWriteForm";
+import useHomePageIndex from "../hooks/useHomePageIndex";
 
-interface WritePostProps {
-  setPageIndex: React.Dispatch<React.SetStateAction<number>>;
-}
-
-const WritePost: React.FC<WritePostProps> = ({ setPageIndex }) => {
+const WritePost = () => {
   const me = useSelector((state: RootState) => state.me);
+  const homePageIndex = useHomePageIndex();
 
   const defaultValues = useMemo(() => {
     return { body: "" };
@@ -49,7 +48,7 @@ const WritePost: React.FC<WritePostProps> = ({ setPageIndex }) => {
         </div>
         <textarea
           placeholder="What is happening?!"
-          {...register("body", { required: true })}
+          {...register("body")}
           rows={2}
           className="
             flex-auto 
@@ -123,7 +122,8 @@ const WritePost: React.FC<WritePostProps> = ({ setPageIndex }) => {
               data,
               fetchUrl: "/post",
               actionArray,
-              setPageIndex,
+              onPageIndexPlus: homePageIndex.onPlus,
+              errorMessage: "포스트를 작성해주세요.",
             })
           )}
           bgColor={bgBlue}

@@ -35,7 +35,10 @@ export const profileSlice = createSlice({
   initialState,
   reducers: {
     onProfile: (state, action) => {
-      return action.payload;
+      return { ...action.payload, posts: [] };
+    },
+    onProfilePosts: (state, action) => {
+      state.posts.push(...action.payload);
     },
     onProfileRemove: () => {
       return initialState;
@@ -139,6 +142,7 @@ export const profileSlice = createSlice({
 
 export const {
   onProfile,
+  onProfilePosts,
   onProfileRemove,
   onProfilePostsLiked,
   onProfilePostsAdd,
