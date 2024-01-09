@@ -14,6 +14,11 @@ const usePost = () => {
     {
       onError: (error) => {
         toast.error(error.response.data);
+
+        if (error.response.status === 500) {
+          return alert(error.response.data);
+        }
+
         navigate("/home");
       },
     }

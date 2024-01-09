@@ -33,7 +33,13 @@ const Notifications = () => {
       axios
         .get(`/notification/all?userId=${me.id}`)
         .then((response) => mutate(response.data))
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+
+          if (error.response.status === 500) {
+            return alert(error.response.data);
+          }
+        });
     };
   }, [data, dispatch, mutate, me.id]);
 

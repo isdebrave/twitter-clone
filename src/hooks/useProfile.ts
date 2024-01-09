@@ -14,7 +14,12 @@ const useProfile = (profileId: string | undefined) => {
       onError: (error) => {
         console.log(error);
         toast.error(error.response.data);
-        return navigate("/home");
+
+        if (error.response.status === 500) {
+          return alert(error.response.data);
+        }
+
+        navigate("/home");
       },
     }
   );

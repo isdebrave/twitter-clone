@@ -10,7 +10,12 @@ const useMe = () => {
     onError: (error) => {
       console.log(error);
       localStorage.removeItem("auth");
-      return navigate("/auth");
+
+      if (error.response.status === 500) {
+        return alert(error.response.data);
+      }
+
+      navigate("/auth");
     },
   });
 

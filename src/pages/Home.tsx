@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ClipLoader } from "react-spinners";
 
 import WritePost from "../components/WritePost";
 import Lists from "../components/Lists";
+import Loader from "../components/Loader";
 
 import useLists from "../hooks/useLists";
 import useHomePageIndex from "../hooks/useHomePageIndex";
@@ -55,10 +55,7 @@ const Home = () => {
       </div>
       <hr className="sm:hidden" />
       {hasMoreData && posts.length === 0 ? (
-        <div className="w-full flex flex-col items-center justify-center">
-          <ClipLoader color="lightblue" size={80} />
-          <span>Loading...</span>
-        </div>
+        <Loader size={80} text />
       ) : (
         <Lists
           lists={posts}

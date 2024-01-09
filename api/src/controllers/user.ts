@@ -1,4 +1,3 @@
-import { Post, User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import path from "path";
 
@@ -26,8 +25,7 @@ export const me = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// FollowList
-export const users = async (
+export const followLists = async (
   req: Request,
   res: Response,
   next: NextFunction

@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { BiHeart, BiMessageRounded, BiSolidHeart } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { ClipLoader } from "react-spinners";
 
 import ListsItem from "./ListsItem";
 import Icon from "./Icon";
@@ -17,6 +16,7 @@ import useCommentModal from "../hooks/useCommentModal";
 
 import { RootState } from "../redux/store";
 import { PostCommentState, PostState } from "../redux/reducers/post";
+import Loader from "./Loader";
 
 interface ListsProps {
   lists: PostState[] | PostCommentState[];
@@ -193,11 +193,7 @@ const Lists: React.FC<ListsProps> = ({
         </div>
       ))}
 
-      {isValidating && (
-        <div className="w-full text-center">
-          <ClipLoader color="lightblue" size={50} />
-        </div>
-      )}
+      {isValidating && <Loader size={50} />}
     </>
   );
 };

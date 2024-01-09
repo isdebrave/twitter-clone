@@ -16,10 +16,12 @@ import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
 import Feed from "./pages/Feed";
 import Carousel from "./pages/Carousel";
+import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
   {
     element: <Root />,
+    errorElement: <NotFound />,
     children: [
       {
         element: <PrivateRoute />,

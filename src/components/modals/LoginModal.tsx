@@ -7,12 +7,12 @@ import { IoClose } from "react-icons/io5";
 import { BsTwitterX } from "react-icons/bs";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { ClipLoader } from "react-spinners";
 
 import Modal from "./Modal";
 import Heading from "../Heading";
 import Button from "../Button";
 import Input from "../Input";
+import Loader from "../Loader";
 
 import {
   bgBlack,
@@ -168,24 +168,7 @@ const LoginModal = () => {
 
   return (
     <>
-      {isLoading && (
-        <div
-          className=" 
-            fixed 
-            z-20 
-            inset-0 
-            flex
-            justify-center 
-            items-center 
-            bg-neutral-800/70
-          "
-        >
-          <div className="flex flex-col items-center">
-            <ClipLoader color="lightblue" size={80} />
-            <span className="text-white">Loading...</span>
-          </div>
-        </div>
-      )}
+      {isLoading && <Loader size={80} fixed text />}
       <Modal
         isOpen={loginModal.isOpen}
         onClose={loginModal.onClose}

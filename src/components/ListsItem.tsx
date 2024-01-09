@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNowStrict } from "date-fns";
 import { IoEllipsisHorizontal, IoTrashSharp } from "react-icons/io5";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
 
 import ImageCard from "./ImageCard";
@@ -61,17 +61,27 @@ const ListsItem: React.FC<ListsItemProps> = ({
   const deleteHandler = async (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    if (isPosts) {
-      axios.delete("/post", { data: { postId } });
+    try {
+      if (isPosts) {
+        axios.delete("/post", { data: { postId } });
 
-      dispatch(onPostsDelete({ postId }));
-      dispatch(onProfilePostsDelete({ postId }));
-    } else {
-      axios.delete(`/post/${postId}/comment`, { data: { commentId } });
+        dispatch(onPostsDelete({ postId }));
+        dispatch(onProfilePostsDelete({ postId }));
+      } else {
+        axios.delete(`/post/${postId}/comment`, { data: { commentId } });
 
-      dispatch(onPostCommentDelete({ commentId }));
-      dispatch(onPostsCommentDelete({ postId, commentId }));
-      dispatch(onProfilePostsCommentDelete({ postId, commentId }));
+        dispatch(onPostCommentDelete({ commentId }));
+        dispatch(onPostsCommentDelete({ postId, commentId }));
+        dispatch(onProfilePostsCommentDelete({ postId, commentId }));
+      }
+    } catch (error) {
+      console.log(error);
+
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 500) {
+          return alert(error.response.data);
+        }
+      }
     }
   };
 

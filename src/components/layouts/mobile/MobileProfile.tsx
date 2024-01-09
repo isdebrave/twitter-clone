@@ -15,12 +15,16 @@ const MobileProfile = () => {
     <div className="relative flex flex-col justify-center">
       {showDrop && <Drop userId={me.id.slice(0, 10)} />}
 
-      <button
+      <div
         onClick={() => setShowDrop((cur) => !cur)}
-        className="w-[36px] h-[36px] rounded-full overflow-hidden"
+        className="w-[36px] h-[36px] flex rounded-full overflow-hidden cursor-pointer"
       >
-        <img src={src(me.profileImage)} alt="ProfileImage" className="w-full" />
-      </button>
+        <img
+          src={src(me.profileImage)}
+          alt="ProfileImage"
+          className="w-full object-cover"
+        />
+      </div>
     </div>
   );
 };

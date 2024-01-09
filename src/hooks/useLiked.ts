@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import { RootState } from "../redux/store";
 import { PostState, onPostLiked } from "../redux/reducers/post";
@@ -66,6 +66,12 @@ const useLiked = () => {
       }
     } catch (error) {
       console.log(error);
+
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 500) {
+          return alert(error.response.data);
+        }
+      }
     }
   };
 

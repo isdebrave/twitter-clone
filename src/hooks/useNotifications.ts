@@ -11,7 +11,15 @@ const useNotifications = () => {
   const { data, mutate } = useSWRImmutable(
     me.id ? `/notification/all?userId=${me.id}` : null,
     fetcher,
-    { onError: (error) => console.log(error) }
+    {
+      onError: (error) => {
+        console.log(error);
+
+        if (error.response.status === 500) {
+          return alert(error.response.data);
+        }
+      },
+    }
   );
 
   return { data, mutate };

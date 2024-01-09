@@ -5,10 +5,10 @@ import { IoClose } from "react-icons/io5";
 import { IoMdArrowBack } from "react-icons/io";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
-import { ClipLoader } from "react-spinners";
 
 import Modal from "./Modal";
 import Button from "../Button";
+import Loader from "../Loader";
 
 import FirstBody from "./RegisterModalBody/FirstBody";
 import SecondBody from "./RegisterModalBody/SecondBody";
@@ -221,24 +221,7 @@ const RegisterModal = () => {
 
   return (
     <>
-      {isLoading && (
-        <div
-          className=" 
-            fixed 
-            z-20 
-            inset-0 
-            flex
-            justify-center 
-            items-center 
-            bg-neutral-800/70
-          "
-        >
-          <div className="flex flex-col items-center">
-            <ClipLoader color="lightblue" size={80} />
-            <span className="text-white">Loading...</span>
-          </div>
-        </div>
-      )}
+      {isLoading && <Loader size={80} fixed text />}
       <Modal
         isOpen={registerModal.isOpen}
         onClose={step === STEPS.FIRST ? registerModal.onClose : onBack}

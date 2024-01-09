@@ -5,7 +5,7 @@ import path from "path";
 
 import {
   me,
-  users,
+  followLists,
   profile,
   profilePosts,
   updateProfile,
@@ -52,7 +52,7 @@ const profileUpload = multer({ storage, fileFilter });
 const userRouter = express.Router();
 
 userRouter.get("/me", me);
-userRouter.get("/all", users);
+userRouter.get("/followLists", followLists);
 userRouter.get("/profile/:userId", profile);
 userRouter.get("/profile/:userId/post/all", profilePosts);
 userRouter.patch(

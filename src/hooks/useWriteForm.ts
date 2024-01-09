@@ -26,8 +26,6 @@ const useWriteForm = (
 
   const dispatch = useDispatch();
 
-  const posts = useSelector((state: RootState) => state.posts);
-
   const {
     register,
     watch,
@@ -139,6 +137,10 @@ const useWriteForm = (
       if (error instanceof AxiosError) {
         console.log(error);
         toast.error(error.response?.data);
+
+        if (error.response?.status === 500) {
+          return alert(error.response.data);
+        }
       }
     }
   };
