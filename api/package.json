@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch": "tsc -w",
-    "start": "nodemon dist/app.js"
+    "deploy": "node dist/app.js",
+    "start": "nodemon dist/app.js",
+    "watch": "tsc -w"
   },
   "keywords": [],
   "author": "",

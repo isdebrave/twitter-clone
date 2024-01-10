@@ -1,22 +1,23 @@
-import React from "react";
+import React, { lazy } from "react";
+
 import {
   createBrowserRouter,
   redirect,
   RouterProvider,
 } from "react-router-dom";
 
-import PrivateRoute from "./utils/PrivateRoute";
-import PublicRoute from "./utils/PublicRoute";
+const PrivateRoute = lazy(() => import("./utils/PrivateRoute"));
+const PublicRoute = lazy(() => import("./utils/PublicRoute"));
 
-import Root from "./pages/Root";
-import Auth from "./pages/Auth";
-import Home from "./pages/Home";
-import Explore from "./pages/Explore";
-import Notifications from "./pages/Notifications";
-import Profile from "./pages/Profile";
-import Feed from "./pages/Feed";
-import Carousel from "./pages/Carousel";
-import NotFound from "./pages/NotFound";
+const Root = lazy(() => import("./pages/Root"));
+const Auth = lazy(() => import("./pages/Auth"));
+const Home = lazy(() => import("./pages/Home"));
+const Explore = lazy(() => import("./pages/Explore"));
+const Notifications = lazy(() => import("./pages/Notifications"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Feed = lazy(() => import("./pages/Feed"));
+const Carousel = lazy(() => import("./pages/Carousel"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const router = createBrowserRouter([
   {

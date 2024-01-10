@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { SyncLoader } from "react-spinners";
 
 import RegisterModal from "../components/modals/RegisterModal";
 import LoginModal from "../components/modals/LoginModal";
@@ -45,7 +46,16 @@ const Root = () => {
       <ProfileModal />
       <WritePostModal />
       <WriteCommentModal />
-      <Outlet />
+      <Suspense
+        fallback={
+          <div className="flex flex-col items-center justify-center w-full h-full gap-5">
+            <SyncLoader />
+            <span className="font-semibold">페이지 가져오는 중...</span>
+          </div>
+        }
+      >
+        <Outlet />
+      </Suspense>
     </>
   );
 };
