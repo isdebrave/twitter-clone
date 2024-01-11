@@ -4,6 +4,9 @@ import session from "express-session";
 import dotenv from "dotenv";
 import MongoStore from "connect-mongo";
 import path from "path";
+import morgan from "morgan";
+import hpp from "hpp";
+import helmet from "helmet";
 
 import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
@@ -13,6 +16,14 @@ import notificationRouter from "./routes/notification";
 const app = express();
 
 dotenv.config();
+
+if (process.env.NODE_ENV === "production") {
+  app.use(morgan("combined"));
+  app.use(hpp());
+  app.use(helmet());
+} else {
+  app.use(morgan("dev"));
+}
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(express.urlencoded({ extended: false }));
