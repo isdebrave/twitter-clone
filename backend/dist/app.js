@@ -16,7 +16,6 @@ var auth_1 = __importDefault(require("./routes/auth"));
 var user_1 = __importDefault(require("./routes/user"));
 var post_1 = __importDefault(require("./routes/post"));
 var notification_1 = __importDefault(require("./routes/notification"));
-var config_1 = require("./config/config");
 var app = (0, express_1.default)();
 dotenv_1.default.config();
 if (process.env.NODE_ENV === "production") {
@@ -32,6 +31,7 @@ else {
     app.use((0, morgan_1.default)("dev"));
     app.use((0, cors_1.default)({ origin: "http://localhost:3000", credentials: true }));
 }
+app.set("port", process.env.PORT || 8080);
 app.use("/uploads", express_1.default.static(path_1.default.join(process.cwd(), "uploads")));
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.json());
@@ -52,5 +52,7 @@ app.use("/notification", notification_1.default);
 app.use(function (err, req, res, next) {
     res.status(500).json("서버 에러: 나중에 다시 시도해주세요.");
 });
-app.listen(config_1.port, function () { return console.log("\u2705 Listening on port ".concat(config_1.port)); });
+app.listen(app.get("port"), function () {
+    return console.log("\u2705 Listening on port ".concat(app.get("port")));
+});
 //# sourceMappingURL=app.js.map
