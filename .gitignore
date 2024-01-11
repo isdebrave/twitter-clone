@@ -7,3 +7,7 @@ node_modules
 # production
 dist
 build
+
+# etc
+uploads
+isdebrave-twitter-clone.pem
