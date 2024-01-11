@@ -53,6 +53,6 @@ app.use(function (err, req, res, next) {
     res.status(500).json("서버 에러: 나중에 다시 시도해주세요.");
 });
 app.listen(app.get("port"), function () {
-    return console.log("\u2705 Listening on port ".concat(app.get("port")));
+    return console.log("\u2705 backend: Listening on port ".concat(app.get("port")));
 });
 //# sourceMappingURL=app.js.map

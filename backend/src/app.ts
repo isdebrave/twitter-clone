@@ -61,5 +61,5 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.listen(app.get("port"), () =>
-  console.log(`✅ Listening on port ${app.get("port")}`)
+  console.log(`✅ backend: Listening on port ${app.get("port")}`)
 );

@@ -12,7 +12,7 @@ module.exports = merge(common, {
   },
   devServer: {
     allowedHosts: "all",
-    port: 80,
+    port: 3000,
     hot: true,
     devMiddleware: {
       index: "index.html",

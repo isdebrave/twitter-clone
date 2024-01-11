@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "analyzer": "cross-env NODE_ENV=production webpack --config webpack/webpack.analyzer.js",
-    "deploy": "npx serve -s dist -l 3000",
+    "deploy": "node src/server.js",
     "build": "cross-env NODE_ENV=production webpack --config webpack/webpack.prod.js",
     "start": "cross-env NODE_ENV=development webpack serve --config webpack/webpack.dev.js",
     "lint": "eslint src"
@@ -59,7 +59,6 @@
     "postcss": "^8.4.31",
     "postcss-loader": "^7.3.3",
     "purgecss-webpack-plugin": "^5.0.0",
-    "serve": "^14.2.1",
     "style-loader": "^3.3.3",
     "tailwindcss": "^3.3.5",
     "ts-loader": "^9.5.1",
