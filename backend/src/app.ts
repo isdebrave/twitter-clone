@@ -12,7 +12,6 @@ import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
 import postRouter from "./routes/post";
 import notificationRouter from "./routes/notification";
-import { port } from "./config/config";
 
 const app = express();
 
@@ -32,6 +31,8 @@ if (process.env.NODE_ENV === "production") {
   app.use(morgan("dev"));
   app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 }
+
+app.set("port", process.env.PORT || 8080);
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(express.urlencoded({ extended: false }));
@@ -59,4 +60,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json("서버 에러: 나중에 다시 시도해주세요.");
 });
 
-app.listen(port, () => console.log(`✅ Listening on port ${port}`));
+app.listen(app.get("port"), () =>
+  console.log(`✅ Listening on port ${app.get("port")}`)
+);
