@@ -29,7 +29,7 @@ app.set("port", process.env.PORT || 8080);
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "isdebrave-twitter-clone.shop"],
+    origin: ["http://localhost:3000", "http://isdebrave-twitter-clone.shop"],
     credentials: true,
   })
 );
@@ -63,6 +63,7 @@ app.use("/post", postRouter);
 app.use("/notification", notificationRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.log(err);
   res.status(500).json("서버 에러: 나중에 다시 시도해주세요.");
 });
 

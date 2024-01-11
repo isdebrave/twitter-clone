@@ -55,6 +55,7 @@ app.use("/user", user_1.default);
 app.use("/post", post_1.default);
 app.use("/notification", notification_1.default);
 app.use(function (err, req, res, next) {
+    console.log(err);
     res.status(500).json("서버 에러: 나중에 다시 시도해주세요.");
 });
 app.listen(app.get("port"), function () {
