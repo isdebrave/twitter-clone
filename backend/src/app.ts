@@ -53,4 +53,4 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // 8080
-app.listen(80, () => console.log("✅ Listening..."));
+app.listen(80, () => console.log("✅ Listening on ..."));
