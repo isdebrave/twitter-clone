@@ -22,16 +22,19 @@ if (process.env.NODE_ENV === "production") {
     app.use((0, morgan_1.default)("combined"));
     app.use((0, hpp_1.default)());
     app.use((0, helmet_1.default)());
-    app.use((0, cors_1.default)({
-        origin: ["isdebrave-twitter-clone.com", "http://13.125.224.129"],
-        credentials: true,
-    }));
 }
 else {
     app.use((0, morgan_1.default)("dev"));
-    app.use((0, cors_1.default)({ origin: "http://localhost:3000", credentials: true }));
 }
 app.set("port", process.env.PORT || 8080);
+app.use((0, cors_1.default)({
+    origin: [
+        "http://localhost:3000",
+        "isdebrave-twitter-clone.com",
+        "http://13.125.224.129",
+    ],
+    credentials: true,
+}));
 app.use("/uploads", express_1.default.static(path_1.default.join(process.cwd(), "uploads")));
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.json());
