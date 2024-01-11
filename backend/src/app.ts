@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import session from "express-session";
 import dotenv from "dotenv";
 import MongoStore from "connect-mongo";
@@ -30,25 +29,27 @@ app.set("port", process.env.PORT || 8080);
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "isdebrave-twitter-clone.com",
-      "http://13.125.224.129",
-    ],
+    origin: ["http://localhost:3000", "isdebrave-twitter-clone.shop"],
     credentials: true,
   })
 );
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cookieParser(process.env.COOKIE_SECRET!));
 app.use(
   session({
-    secret: process.env.COOKIE_SECRET!,
+    secret: process.env.SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
-    // cookie: { httpOnly: true, secure: true },
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      domain:
+        process.env.NODE_ENV === "production"
+          ? ".isdebrave-twitter-clone.shop"
+          : undefined,
+    },
   })
 );
 

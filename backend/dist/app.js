@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
-var cookie_parser_1 = __importDefault(require("cookie-parser"));
 var express_session_1 = __importDefault(require("express-session"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var connect_mongo_1 = __importDefault(require("connect-mongo"));
@@ -29,23 +28,24 @@ else {
 }
 app.set("port", process.env.PORT || 8080);
 app.use((0, cors_1.default)({
-    origin: [
-        "http://localhost:3000",
-        "isdebrave-twitter-clone.com",
-        "http://13.125.224.129",
-    ],
+    origin: ["http://localhost:3000", "isdebrave-twitter-clone.shop"],
     credentials: true,
 }));
 app.use("/uploads", express_1.default.static(path_1.default.join(process.cwd(), "uploads")));
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.json());
-app.use((0, cookie_parser_1.default)(process.env.COOKIE_SECRET));
 app.use((0, express_session_1.default)({
-    secret: process.env.COOKIE_SECRET,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: connect_mongo_1.default.create({ mongoUrl: process.env.DATABASE_URL }),
-    // cookie: { httpOnly: true, secure: true },
+    cookie: {
+        httpOnly: true,
+        secure: false,
+        domain: process.env.NODE_ENV === "production"
+            ? ".isdebrave-twitter-clone.shop"
+            : undefined,
+    },
 }));
 app.get("/", function (req, res) {
     res.send("hello world!");
