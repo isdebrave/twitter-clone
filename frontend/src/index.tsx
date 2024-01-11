@@ -6,8 +6,9 @@ import { Provider } from "react-redux";
 import "./index.css";
 import App from "./App";
 import { store } from "./redux/store";
+import { backendUrl } from "./config/config";
 
-axios.defaults.baseURL = "http://localhost:8080";
+axios.defaults.baseURL = backendUrl;
 axios.defaults.withCredentials = true;
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);

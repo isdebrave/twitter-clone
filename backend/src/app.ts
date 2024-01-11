@@ -12,6 +12,7 @@ import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
 import postRouter from "./routes/post";
 import notificationRouter from "./routes/notification";
+import { port } from "./config/config";
 
 const app = express();
 
@@ -21,14 +22,20 @@ if (process.env.NODE_ENV === "production") {
   app.use(morgan("combined"));
   app.use(hpp());
   app.use(helmet());
+  app.use(
+    cors({
+      origin: ["isdebrave-twitter-clone.com", "http://13.125.224.129"],
+      credentials: true,
+    })
+  );
 } else {
   app.use(morgan("dev"));
+  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 }
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(
   session({
     secret: process.env.SESSION_SECRET!,
@@ -52,5 +59,4 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json("서버 에러: 나중에 다시 시도해주세요.");
 });
 
-// 8080
-app.listen(80, () => console.log("✅ Listening..."));
+app.listen(port, () => console.log(`✅ Listening on port ${port}`));

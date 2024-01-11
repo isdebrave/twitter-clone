@@ -16,20 +16,25 @@ var auth_1 = __importDefault(require("./routes/auth"));
 var user_1 = __importDefault(require("./routes/user"));
 var post_1 = __importDefault(require("./routes/post"));
 var notification_1 = __importDefault(require("./routes/notification"));
+var config_1 = require("./config/config");
 var app = (0, express_1.default)();
 dotenv_1.default.config();
 if (process.env.NODE_ENV === "production") {
     app.use((0, morgan_1.default)("combined"));
     app.use((0, hpp_1.default)());
     app.use((0, helmet_1.default)());
+    app.use((0, cors_1.default)({
+        origin: ["isdebrave-twitter-clone.com", "http://13.125.224.129"],
+        credentials: true,
+    }));
 }
 else {
     app.use((0, morgan_1.default)("dev"));
+    app.use((0, cors_1.default)({ origin: "http://localhost:3000", credentials: true }));
 }
 app.use("/uploads", express_1.default.static(path_1.default.join(process.cwd(), "uploads")));
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.json());
-app.use((0, cors_1.default)({ origin: "http://localhost:3000", credentials: true }));
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -47,6 +52,5 @@ app.use("/notification", notification_1.default);
 app.use(function (err, req, res, next) {
     res.status(500).json("서버 에러: 나중에 다시 시도해주세요.");
 });
-// 8080
-app.listen(80, function () { return console.log("✅ Listening..."); });
+app.listen(config_1.port, function () { return console.log("\u2705 Listening on port ".concat(config_1.port)); });
 //# sourceMappingURL=app.js.map
