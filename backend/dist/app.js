@@ -37,6 +37,9 @@ app.use((0, express_session_1.default)({
     store: connect_mongo_1.default.create({ mongoUrl: process.env.DATABASE_URL }),
     // cookie: { httpOnly: true, secure: true },
 }));
+app.get("/", function (req, res) {
+    res.send("hello world!");
+});
 app.use("/auth", auth_1.default);
 app.use("/user", user_1.default);
 app.use("/post", post_1.default);
@@ -44,5 +47,6 @@ app.use("/notification", notification_1.default);
 app.use(function (err, req, res, next) {
     res.status(500).json("서버 에러: 나중에 다시 시도해주세요.");
 });
-app.listen(8080, function () { return console.log("✅ Listening..."); });
+// 8080
+app.listen(80, function () { return console.log("✅ Listening..."); });
 //# sourceMappingURL=app.js.map
