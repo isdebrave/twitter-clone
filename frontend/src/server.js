@@ -8,7 +8,7 @@ dotenv.config();
 
 app.set("port", process.env.PORT || 3000);
 
-app.use(express.static(path.join(process.cwd(), "/dist")));
+app.use("/", express.static(path.join(process.cwd(), "/dist")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(process.cwd(), "/dist/index.html"));
