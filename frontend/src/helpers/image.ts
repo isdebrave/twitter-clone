@@ -29,6 +29,8 @@ export const addImageHandler = (
     return toast.error("최대 4개까지 선택 가능합니다.");
   }
 
+  console.log("hi");
+
   for (let i = 0; i < files.length; i++) {
     imageCallback(files[i]);
 
