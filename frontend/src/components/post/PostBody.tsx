@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import ImageCard from "../ImageCard";
 import { RootState } from "../../redux/store";
 import useCommentModal from "../../hooks/useCommentModal";
+import { src } from "../../helpers/image";
 
 interface PostBodyProps {
   body: string;
@@ -43,9 +44,9 @@ const PostBody: React.FC<PostBodyProps> = ({
       <p className="text-gray-600 mb-3">{body}</p>
       {images.length > 0 && (
         <ImageCard onClick={carouselHandler} imagesCount={imagesCount}>
-          {images.map((src, idx) => (
+          {images.map((image, idx) => (
             <div
-              key={src + idx}
+              key={image + idx}
               className={`
                 w-full 
                 ${imagesHeight.length > 0 ? imagesHeight : "h-full"}
@@ -54,7 +55,7 @@ const PostBody: React.FC<PostBodyProps> = ({
               `}
             >
               <img
-                src={`${axios.defaults.baseURL}/${src}`}
+                src={src(image)}
                 alt="BodyImage"
                 className="w-full object-cover"
               />
