@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.set("port", process.env.PORT || 8080);
-app.set("frontendUrl", "http://isdebrave-twitter-clone.shop");
+app.set("frontendUrl", "https://isdebrave-twitter-clone.shop");
 
 app.use(
   cors({
@@ -45,7 +45,7 @@ app.use(
     store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: true,
       domain:
         process.env.NODE_ENV === "production"
           ? ".isdebrave-twitter-clone.shop"

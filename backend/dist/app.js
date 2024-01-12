@@ -27,7 +27,7 @@ else {
     app.use((0, morgan_1.default)("dev"));
 }
 app.set("port", process.env.PORT || 8080);
-app.set("frontendUrl", "http://isdebrave-twitter-clone.shop");
+app.set("frontendUrl", "https://isdebrave-twitter-clone.shop");
 app.use((0, cors_1.default)({
     origin: app.get("frontendUrl"),
     credentials: true,
@@ -42,7 +42,7 @@ app.use((0, express_session_1.default)({
     store: connect_mongo_1.default.create({ mongoUrl: process.env.DATABASE_URL }),
     cookie: {
         httpOnly: true,
-        secure: false,
+        secure: true,
         domain: process.env.NODE_ENV === "production"
             ? ".isdebrave-twitter-clone.shop"
             : undefined,
