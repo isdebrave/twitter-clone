@@ -13,6 +13,8 @@ export const src = (image: string) => {
 
   // return `${axios.defaults.baseURL}/${image}`;
 
+  console.log(image);
+
   return image;
 };
 
