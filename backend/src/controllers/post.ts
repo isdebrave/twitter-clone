@@ -62,11 +62,18 @@ export const registerPost = async (
   if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
   try {
-    const files = req.files as Express.Multer.File[];
+    // const files = req.files as Express.Multer.File[];
+
+    // const images = [];
+    // for (let i = 0; i < files.length; i++) {
+    //   images.push(path.join(files[i].path));
+    // }
+
+    const files = req.files as Express.MulterS3.File[];
 
     const images = [];
     for (let i = 0; i < files.length; i++) {
-      images.push(path.join(files[i].path));
+      images.push(path.join(files[i].location));
     }
 
     const post = await prisma.post.create({

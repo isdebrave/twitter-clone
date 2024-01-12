@@ -113,12 +113,20 @@ export const updateProfile = async (
     let coverImage = user.coverImage;
     let profileImage = user.profileImage;
 
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    // const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    // if (files.coverImage) {
+    //   coverImage = path.join(files.coverImage[0].path);
+    // }
+    // if (files.profileImage) {
+    //   profileImage = path.join(files.profileImage[0].path);
+    // }
+
+    const files = req.files as { [fieldname: string]: Express.MulterS3.File[] };
     if (files.coverImage) {
-      coverImage = path.join(files.coverImage[0].path);
+      coverImage = path.join(files.coverImage[0].location);
     }
     if (files.profileImage) {
-      profileImage = path.join(files.profileImage[0].path);
+      profileImage = path.join(files.profileImage[0].location);
     }
 
     await prisma.user.update({

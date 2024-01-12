@@ -188,10 +188,10 @@ var updateProfile = function (req, res, next) { return __awaiter(void 0, void 0,
                 profileImage = user.profileImage;
                 files = req.files;
                 if (files.coverImage) {
-                    coverImage = path_1.default.join(files.coverImage[0].path);
+                    coverImage = path_1.default.join(files.coverImage[0].location);
                 }
                 if (files.profileImage) {
-                    profileImage = path_1.default.join(files.profileImage[0].path);
+                    profileImage = path_1.default.join(files.profileImage[0].location);
                 }
                 return [4 /*yield*/, prisma.user.update({
                         where: { id: userId },

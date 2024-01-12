@@ -120,7 +120,7 @@ var registerPost = function (req, res, next) { return __awaiter(void 0, void 0, 
                 files = req.files;
                 images = [];
                 for (i = 0; i < files.length; i++) {
-                    images.push(path_1.default.join(files[i].path));
+                    images.push(path_1.default.join(files[i].location));
                 }
                 return [4 /*yield*/, prismadb_1.default.post.create({
                         data: {
