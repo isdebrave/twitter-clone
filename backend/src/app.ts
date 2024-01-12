@@ -26,10 +26,11 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.set("port", process.env.PORT || 8080);
+app.set("frontendUrl", "isdebrave-twitter-clone.shop");
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://isdebrave-twitter-clone.shop"],
+    origin: app.get("frontendUrl"),
     credentials: true,
   })
 );
