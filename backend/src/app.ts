@@ -13,6 +13,8 @@ import userRouter from "./routes/user";
 import postRouter from "./routes/post";
 import notificationRouter from "./routes/notification";
 
+import "./types/expressSession";
+
 const app = express();
 
 dotenv.config();
@@ -25,15 +27,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(morgan("dev"));
 }
 
-app.set("port", process.env.PORT || 8080);
-app.set("frontendUrl", "https://isdebrave-twitter-clone.shop");
-
-app.use(
-  cors({
-    origin: app.get("frontendUrl"),
-    credentials: true,
-  })
-);
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -45,17 +39,13 @@ app.use(
     store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
     cookie: {
       httpOnly: true,
-      secure: true,
-      domain:
-        process.env.NODE_ENV === "production"
-          ? ".isdebrave-twitter-clone.shop"
-          : undefined,
+      secure: false,
     },
   })
 );
 
 app.get("/", (req, res) => {
-  res.send("hello world!");
+  res.send("Hello World!");
 });
 
 app.use("/auth", authRouter);
@@ -68,6 +58,4 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json("서버 에러: 나중에 다시 시도해주세요.");
 });
 
-app.listen(app.get("port"), () =>
-  console.log(`✅ backend: Listening on port ${app.get("port")}`)
-);
+app.listen(8080, () => console.log("✅ backend: Listening on port 8080"));

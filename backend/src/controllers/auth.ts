@@ -206,9 +206,9 @@ export const googleCallback = async (
 
       req.session.meId = user.id;
 
-      return res.redirect(`${req.app.get("frontendUrl")}/home`);
+      return res.redirect("http://localhost:3000/home");
     } else {
-      return res.redirect(`${req.app.get("frontendUrl")}/auth`);
+      return res.redirect("http://localhost:3000/auth");
     }
   } catch (err) {
     console.log(err);
@@ -283,9 +283,9 @@ export const githubCallback = async (req: Request, res: Response) => {
 
     req.session.meId = user.id;
 
-    return res.redirect(`${req.app.get("frontendUrl")}/home`);
+    return res.redirect("http://localhost:3000/home");
   } else {
-    return res.redirect(`${req.app.get("frontendUrl")}/auth`);
+    return res.redirect("http://localhost:3000/auth");
   }
 };
 
@@ -323,5 +323,5 @@ export const login = async (
 
 export const logout = async (req: Request, res: Response) => {
   req.session.meId = null;
-  return res.redirect(`${req.app.get("frontendUrl")}/auth`);
+  return res.redirect("http://localhost:3000/auth");
 };

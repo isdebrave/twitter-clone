@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "analyzer": "cross-env NODE_ENV=production webpack --config webpack/webpack.analyzer.js",
     "deploy": "node src/server.js",
+    "analyzer": "cross-env NODE_ENV=production webpack --config webpack/webpack.analyzer.js",
     "build": "cross-env NODE_ENV=production webpack --config webpack/webpack.prod.js",
     "start": "cross-env NODE_ENV=development webpack serve --config webpack/webpack.dev.js",
     "lint": "eslint src"

@@ -6,14 +6,10 @@ const app = express();
 
 dotenv.config();
 
-app.set("port", process.env.PORT || 3000);
-
 app.use("/", express.static(path.join(process.cwd(), "/dist")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(process.cwd(), "/dist/index.html"));
 });
 
-app.listen(app.get("port"), () =>
-  console.log(`✅ frontend: Listening on port ${app.get("port")}`)
-);
+app.listen(3000, () => console.log("✅ frontend: Listening on port 3000"));

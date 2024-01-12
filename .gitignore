@@ -4,6 +4,9 @@ node_modules
 # local env files
 .env
 
+# production
+dist 
+
 # etc
 uploads
 isdebrave-twitter-clone.pem

@@ -2,8 +2,6 @@ import express, { Request } from "express";
 import multer, { FileFilterCallback } from "multer";
 import fs from "fs";
 import path from "path";
-import multerS3 from "multer-s3";
-import { S3Client } from "@aws-sdk/client-s3";
 
 import {
   posts,
@@ -21,30 +19,16 @@ if (!fs.existsSync("uploads/bodyImages")) {
   fs.mkdirSync("uploads/bodyImages", { recursive: true });
 }
 
-const storage = multerS3({
-  s3: new S3Client({
-    credentials: {
-      accessKeyId: process.env.S3_ACCESS_KEY_ID as string,
-      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
-    },
-    region: "ap-northeast-2",
-  }),
-  bucket: "isdebrave-twitter-clone",
-  key: function (req, file, cb) {
-    cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`);
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, "uploads/bodyImages");
+  },
+  filename(req, file, cb) {
+    const ext = path.extname(file.originalname);
+    const basename = path.basename(file.originalname, ext);
+    cb(null, basename + "_" + Date.now() + ext);
   },
 });
-
-// const storage = multer.diskStorage({
-//   destination(req, file, cb) {
-//     cb(null, "uploads/bodyImages");
-//   },
-//   filename(req, file, cb) {
-//     const ext = path.extname(file.originalname);
-//     const basename = path.basename(file.originalname, ext);
-//     cb(null, basename + "_" + Date.now() + ext);
-//   },
-// });
 
 const fileFilter = (
   req: Request,
