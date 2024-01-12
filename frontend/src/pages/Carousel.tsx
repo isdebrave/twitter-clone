@@ -37,6 +37,8 @@ const Carousel = () => {
       data = profile.posts.find((post) => post.id === postId);
     }
 
+    console.log(data);
+
     if (data) {
       setImages(data.images);
     }
