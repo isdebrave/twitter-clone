@@ -3,10 +3,11 @@ import Slider from "react-slick";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { IoClose, IoArrowBack, IoArrowForward } from "react-icons/io5";
-import axios from "axios";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
+import { src } from "../helpers/image";
 
 import { RootState } from "../redux/store";
 import { PostState } from "../redux/reducers/post";
@@ -68,9 +69,9 @@ const Carousel = () => {
       )}
 
       <Slider ref={sliderRef} {...settings}>
-        {images.map((src, idx) => (
-          <li key={src + idx}>
-            <img src={`${axios.defaults.baseURL}/${src}`} alt="postImage" />
+        {images.map((image, idx) => (
+          <li key={image + idx}>
+            <img src={src(image)} alt="postImage" />
           </li>
         ))}
       </Slider>
