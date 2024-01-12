@@ -8,19 +8,19 @@ var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
 var multer_s3_1 = __importDefault(require("multer-s3"));
-var aws_sdk_1 = __importDefault(require("aws-sdk"));
 var client_s3_1 = require("@aws-sdk/client-s3");
 var user_1 = require("../controllers/user");
 if (!fs_1.default.existsSync("uploads/profile")) {
     fs_1.default.mkdirSync("uploads/profile", { recursive: true });
 }
-aws_sdk_1.default.config.update({
-    accessKeyId: process.env.S3_ACCESS_KEY_ID,
-    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-    region: "ap-northeast-2",
-});
 var storage = (0, multer_s3_1.default)({
-    s3: new client_s3_1.S3Client(),
+    s3: new client_s3_1.S3Client({
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY_ID,
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        },
+        region: "ap-northeast-2",
+    }),
     bucket: "isdebrave-twitter-clone",
     key: function (req, file, cb) {
         cb(null, "original/".concat(Date.now(), "_").concat(path_1.default.basename(file.originalname)));
