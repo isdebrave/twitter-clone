@@ -27,8 +27,7 @@ else {
     app.use((0, morgan_1.default)("dev"));
 }
 app.set("port", process.env.PORT || 8080);
-app.set("frontendUrl", "isdebrave-twitter-clone.shop");
-console.log(app.get("frontendUrl"));
+app.set("frontendUrl", "http://isdebrave-twitter-clone.shop");
 app.use((0, cors_1.default)({
     origin: app.get("frontendUrl"),
     credentials: true,
