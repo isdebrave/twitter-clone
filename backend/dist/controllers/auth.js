@@ -233,8 +233,8 @@ var googleCallback = function (req, res, next) { return __awaiter(void 0, void 0
                 _a.label = 5;
             case 5:
                 req.session.meId = user.id;
-                return [2 /*return*/, res.redirect("http://localhost:3000/home")];
-            case 6: return [2 /*return*/, res.redirect("http://localhost:3000/auth")];
+                return [2 /*return*/, res.redirect("".concat(req.app.get("frontendUrl"), "/home"))];
+            case 6: return [2 /*return*/, res.redirect("".concat(req.app.get("frontendUrl"), "/auth"))];
             case 7: return [3 /*break*/, 9];
             case 8:
                 err_1 = _a.sent();
@@ -312,8 +312,8 @@ var githubCallback = function (req, res) { return __awaiter(void 0, void 0, void
                 _a.label = 5;
             case 5:
                 req.session.meId = user.id;
-                return [2 /*return*/, res.redirect("http://localhost:3000/home")];
-            case 6: return [2 /*return*/, res.redirect("http://localhost:3000/auth")];
+                return [2 /*return*/, res.redirect("".concat(req.app.get("frontendUrl"), "/home"))];
+            case 6: return [2 /*return*/, res.redirect("".concat(req.app.get("frontendUrl"), "/auth"))];
         }
     });
 }); };
@@ -358,7 +358,7 @@ exports.login = login;
 var logout = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         req.session.meId = null;
-        return [2 /*return*/, res.redirect("http://localhost:3000/auth")];
+        return [2 /*return*/, res.redirect("".concat(req.app.get("frontendUrl"), "/auth"))];
     });
 }); };
 exports.logout = logout;

@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.set("port", process.env.PORT || 8080);
-app.set("frontendUrl", "isdebrave-twitter-clone.shop");
+app.set("frontendUrl", "http://isdebrave-twitter-clone.shop");
 
 app.use(
   cors({
