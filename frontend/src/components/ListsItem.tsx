@@ -166,9 +166,13 @@ const ListsItem: React.FC<ListsItemProps> = ({
 
       {images.length > 0 && (
         <ImageCard
-          onClick={stopPropagationHandler(() =>
-            navigate(`/${userId.slice(0, 10)}/status/${postId}/photo`)
-          )}
+          onClick={stopPropagationHandler(() => {
+            if (isPosts && isDummy(postId)) {
+              return toast.error("포스트 등록 중입니다.");
+            }
+
+            navigate(`/${userId.slice(0, 10)}/status/${postId}/photo`);
+          })}
           imagesCount={images.length}
         >
           {images.map((image, idx) => (
