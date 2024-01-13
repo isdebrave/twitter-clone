@@ -5,7 +5,7 @@ node_modules
 .env
 
 # production
-dist 
+backend/dist 
 
 # etc
 uploads
