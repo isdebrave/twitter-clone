@@ -89,8 +89,10 @@ const useWriteForm = (
       errorMessage,
     } = props;
 
-    if (data.body.length === 0 && errorMessage) {
-      return toast.error(errorMessage);
+    if ("body" in data) {
+      if (data.body.length === 0 && errorMessage) {
+        return toast.error(errorMessage);
+      }
     }
 
     const formData = new FormData();
