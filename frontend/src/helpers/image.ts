@@ -7,11 +7,12 @@ export const src = (image: string) => {
     return "/images/anonymous.jpg";
   }
 
-  if (image.includes("http") || image.includes("data")) {
-    return image;
-  }
+  return image;
+  // if (image.includes("http") || image.includes("data")) {
+  //   return image;
+  // }
 
-  return `${axios.defaults.baseURL}/${image}`;
+  // return `${axios.defaults.baseURL}/${image}`;
 };
 
 export const addImageHandler = (
