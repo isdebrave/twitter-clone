@@ -47,19 +47,19 @@ const LoginModal = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
-      loginModal.onClose();
-
       setIsLoading(true);
       await axios.post("/auth/login", data);
       await mutate();
       setIsLoading(false);
 
+      loginModal.onClose();
       localStorage.setItem("auth", "true");
       navigate("/home");
     } catch (error) {
       if (error instanceof AxiosError) {
         console.log(error);
         toast.error(error.response?.data);
+        setIsLoading(false);
       }
     }
   };
