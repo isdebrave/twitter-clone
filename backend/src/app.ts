@@ -61,4 +61,5 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json("서버 에러: 나중에 다시 시도해주세요.");
 });
 
-app.listen(80, () => console.log("✅ backend: Listening on port 80"));
+// nginx가 80번 사용중
+app.listen(8080, () => console.log("✅ backend: Listening on port 8080"));
