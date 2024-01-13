@@ -2,7 +2,6 @@ const { merge } = require("webpack-merge");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
 
 const common = require("./webpack.common");
 
@@ -70,9 +69,6 @@ module.exports = merge(common, {
     new CompressionPlugin({
       test: /\.(js|css)$/,
       algorithm: "gzip",
-    }),
-    new CopyPlugin({
-      patterns: [{ from: "./public/images", to: "images" }],
     }),
   ],
 });
