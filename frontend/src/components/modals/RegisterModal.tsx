@@ -100,19 +100,19 @@ const RegisterModal = () => {
     }
 
     try {
-      registerModal.onClose();
-
       setIsLoading(true);
       await axios.post("/auth/register", data);
       await mutate();
       setIsLoading(false);
 
+      registerModal.onClose();
       localStorage.setItem("auth", "true");
       navigate("/home");
     } catch (error) {
       if (error instanceof AxiosError) {
         console.log(error);
         toast.error(error?.response?.data);
+        setIsLoading(false);
       }
     }
   };
