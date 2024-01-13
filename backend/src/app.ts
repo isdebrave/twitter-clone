@@ -28,7 +28,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use(
-  cors({ origin: "http://isdebrave-twitter-clone.shop", credentials: true })
+  cors({ origin: "https://isdebrave-twitter-clone.shop", credentials: true })
 );
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(express.urlencoded({ extended: false }));
@@ -41,7 +41,7 @@ app.use(
     store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: true,
       domain: ".isdebrave-twitter-clone.shop",
     },
   })
