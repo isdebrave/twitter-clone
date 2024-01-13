@@ -19,8 +19,8 @@ import {
 const storage = multerS3({
   s3: new S3Client({
     credentials: {
-      accessKeyId: process.env.S3_ACCESS_KEY as string,
-      secretAccessKey: process.env.S3_SECRET_KEY as string,
+      accessKeyId: process.env.S3_ACCESS_KEY_ID as string,
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
     },
     region: "ap-northeast-2",
   }),
