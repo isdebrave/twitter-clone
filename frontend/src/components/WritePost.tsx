@@ -13,15 +13,11 @@ import { bgBlue, hoverDarkBlue, textWhite } from "../helpers/colors";
 import Button from "./Button";
 
 import useWriteForm from "../hooks/useWriteForm";
-import useHomePageIndex from "../hooks/useHomePageIndex";
 
 const WritePost = () => {
   const me = useSelector((state: RootState) => state.me);
-  const homePageIndex = useHomePageIndex();
 
-  const defaultValues = useMemo(() => {
-    return { body: "" };
-  }, []);
+  const defaultValues = useMemo(() => ({ body: "" }), []);
 
   const {
     handleSubmit,
@@ -122,7 +118,6 @@ const WritePost = () => {
               data,
               fetchUrl: "/post",
               actionArray,
-              onPageIndexPlus: homePageIndex.onPlus,
               errorMessage: "포스트를 작성해주세요.",
             })
           )}

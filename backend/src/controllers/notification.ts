@@ -31,17 +31,12 @@ export const registerNotification = async (
 
   try {
     await prisma.notification.create({
-      data: {
-        body,
-        userId,
-      },
+      data: { body, userId },
     });
 
     await prisma.user.update({
       where: { id: userId },
-      data: {
-        hasNotification: true,
-      },
+      data: { hasNotification: true },
     });
 
     return res.status(201).json();

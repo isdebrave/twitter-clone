@@ -112,13 +112,7 @@ export const register = async (
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const user = await prisma.user.create({
-      data: {
-        name,
-        username: name,
-        email,
-        birth,
-        hashedPassword,
-      },
+      data: { name, username: name, email, birth, hashedPassword },
     });
 
     req.session.meId = user.id;

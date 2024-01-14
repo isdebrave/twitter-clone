@@ -60,26 +60,26 @@ export const profilePosts = async (
   next: NextFunction
 ) => {
   const { userId } = req.params;
-  const { page, limit } = req.query;
+  const { lastId, limit } = req.query;
 
-  if (!page || !limit) return;
+  const where = { userId } as { userId: string; id?: object };
+  if (parseInt(lastId as string, 10)) {
+    where.id = { lt: lastId as string };
+  }
+
+  const limitNumber = parseInt(limit as string, 0);
 
   try {
     const profilePosts = await prisma.post.findMany({
-      where: { userId },
+      where,
       include: {
         user: {
-          select: {
-            id: true,
-            username: true,
-            profileImage: true,
-          },
+          select: { id: true, username: true, profileImage: true },
         },
         comments: { select: { id: true } },
       },
       orderBy: { createdAt: "desc" },
-      skip: +page * +limit,
-      take: +limit,
+      take: limitNumber,
     });
 
     return res.status(200).json(profilePosts);
@@ -123,12 +123,7 @@ export const updateProfile = async (
 
     await prisma.user.update({
       where: { id: userId },
-      data: {
-        username,
-        bio,
-        coverImage,
-        profileImage,
-      },
+      data: { username, bio, coverImage, profileImage },
     });
 
     return res.status(200).json();
@@ -150,16 +145,12 @@ export const addFollow = async (
   try {
     await prisma.user.update({
       where: { id: req.session.meId },
-      data: {
-        followingIds: { push: followerId },
-      },
+      data: { followingIds: { push: followerId } },
     });
 
     await prisma.user.update({
       where: { id: followerId },
-      data: {
-        followerIds: { push: req.session.meId },
-      },
+      data: { followerIds: { push: req.session.meId } },
     });
 
     return res.status(200).json();
@@ -240,9 +231,7 @@ export const deleteAlert = async (
   try {
     await prisma.user.update({
       where: { id: userId },
-      data: {
-        hasNotification: false,
-      },
+      data: { hasNotification: false },
     });
 
     return res.status(200).json();
@@ -261,11 +250,7 @@ export const search = async (
     const { value } = req.body;
 
     const users = await prisma.user.findMany({
-      where: {
-        username: {
-          contains: value,
-        },
-      },
+      where: { username: { contains: value } },
     });
 
     return res.status(200).json(users);

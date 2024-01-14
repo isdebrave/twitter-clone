@@ -82,7 +82,7 @@ const Lists: React.FC<ListsProps> = ({
     <>
       {lists.map((list, idx) => (
         <div
-          ref={idx === lists.length - 2 ? ref : null}
+          // ref={idx === lists.length - 2 ? ref : null}
           key={list.id}
           onClick={
             isPosts
@@ -193,6 +193,7 @@ const Lists: React.FC<ListsProps> = ({
         </div>
       ))}
 
+      <div ref={ref} style={{ height: "20px", backgroundColor: "red" }}></div>
       {isValidating && <Loader size={50} />}
     </>
   );

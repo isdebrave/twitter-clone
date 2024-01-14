@@ -20,9 +20,7 @@ import { onProfilePostsAdd } from "../../redux/reducers/profile";
 const WritePostModal = () => {
   const me = useSelector((state: RootState) => state.me);
 
-  const defaultValues = useMemo(() => {
-    return { body: "" };
-  }, []);
+  const defaultValues = useMemo(() => ({ body: "" }), []);
 
   const {
     handleSubmit,

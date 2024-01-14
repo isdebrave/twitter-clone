@@ -20,7 +20,6 @@ import usePost from "../hooks/usePost";
 import useLiked from "../hooks/useLiked";
 import useCommentModal from "../hooks/useCommentModal";
 import useLists from "../hooks/useLists";
-import useCommentPageIndex from "../hooks/useCommentPageIndex";
 
 import { isHeartFill } from "../helpers/post";
 
@@ -35,8 +34,9 @@ const Feed = () => {
   const me = useSelector((state: RootState) => state.me);
   const post = useSelector((state: RootState) => state.post);
 
-  const commentPageIndex = useCommentPageIndex();
-  const pageIndexPlus = commentPageIndex.onPlus;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const {
     data: listsData,
     isValidating,
@@ -44,11 +44,9 @@ const Feed = () => {
     hasMoreData,
   } = useLists({
     pathname: `/post/${postId}/comment/all`,
-    category: "COMMENT",
+    savedData: post.comments,
+    isSameUrl: post.id === postId,
   });
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!data) return;
@@ -80,13 +78,12 @@ const Feed = () => {
         .then((data) => {
           dispatch(onPostComments(data));
           setIsEnter(false);
-          pageIndexPlus();
         })
         .catch((error) => {
           console.log(error);
         });
     }
-  }, [isEnter, mutate, listsData, dispatch, hasMoreData, pageIndexPlus]);
+  }, [isEnter, mutate, listsData, dispatch, hasMoreData]);
 
   if (data && data.user.id !== userId) {
     return <Navigate to={`/${data.user.id}/status/${postId}`} />;
