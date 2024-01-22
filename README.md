@@ -1,4 +1,5 @@
 # Twitter-Clone
 
-로컬에서 동작하도록 구현
-(development & production)
+test 계정
+email: test@example.com
+password: qwer1234
