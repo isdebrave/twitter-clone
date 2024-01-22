@@ -6,7 +6,9 @@ export const src = (image: string) => {
     return "/images/anonymous.jpg";
   }
 
-  return image;
+  return "https://source.unsplash.com/random/300×300";
+
+  // return image;
 };
 
 export const addImageHandler = (
