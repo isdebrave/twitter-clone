@@ -200,15 +200,9 @@ export const googleCallback = async (
 
       req.session.meId = user.id;
 
-<<<<<<< HEAD
-      return res.redirect("https://isdebrave-twitter-clone/home");
+      return res.redirect("http://isdebrave-twitter-clone/home");
     } else {
-      return res.redirect("https://isdebrave-twitter-clone/auth");
-=======
-      return res.redirect("http://localhost:3001/home");
-    } else {
-      return res.redirect("http://localhost:3001/auth");
->>>>>>> test
+      return res.redirect("http://isdebrave-twitter-clone/auth");
     }
   } catch (err) {
     console.log(err);
@@ -283,15 +277,9 @@ export const githubCallback = async (req: Request, res: Response) => {
 
     req.session.meId = user.id;
 
-<<<<<<< HEAD
-    return res.redirect("https://isdebrave-twitter-clone/home");
+    return res.redirect("http://isdebrave-twitter-clone/home");
   } else {
-    return res.redirect("https//isdebrave-twitter-clone/auth");
-=======
-    return res.redirect("http://localhost:3001/home");
-  } else {
-    return res.redirect("http://localhost:3001/auth");
->>>>>>> test
+    return res.redirect("http//isdebrave-twitter-clone/auth");
   }
 };
 
@@ -329,9 +317,5 @@ export const login = async (
 
 export const logout = async (req: Request, res: Response) => {
   req.session.meId = null;
-<<<<<<< HEAD
-  return res.redirect("https://isdebrave-twitter-clone/auth");
-=======
-  return res.redirect("http://localhost:3001/auth");
->>>>>>> test
+  return res.redirect("http://isdebrave-twitter-clone/auth");
 };
