@@ -78,6 +78,7 @@ const WritePost = () => {
       username: me.username,
     },
     comments: [],
+    totalCommentsCount: 0,
   };
 
   actionArray.push((data) => onPostsAdd({ options, data }));

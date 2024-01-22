@@ -27,16 +27,15 @@ const Feed = () => {
   const [isEnter, setIsEnter] = useState(false);
   const { userId, postId } = useParams();
 
-  const { data } = usePost();
-  const { likedHandler } = useLiked();
-  const commentModal = useCommentModal();
-
   const me = useSelector((state: RootState) => state.me);
   const post = useSelector((state: RootState) => state.post);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { likedHandler } = useLiked();
+  const commentModal = useCommentModal();
+  const { data } = usePost();
   const {
     data: listsData,
     isValidating,
@@ -118,7 +117,7 @@ const Feed = () => {
               <Icon
                 onClick={commentModal.onOpen}
                 icon={BiMessageRounded}
-                length={post.comments.length}
+                length={post.totalCommentsCount}
                 textHover="group-hover:text-sky-500"
                 bgHover="group-hover:bg-sky-200/40"
                 textColor="text-gray-500"

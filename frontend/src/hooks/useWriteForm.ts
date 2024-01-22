@@ -75,10 +75,6 @@ const useWriteForm = (
     shouldCommentAlert?: boolean;
     onClose?: () => void;
     post?: PostState;
-    count?: number;
-    plusCount?: () => void;
-    resetCount?: () => void;
-    onPageIndexPlus?: () => void;
     errorMessage?: string;
   }) => {
     const {
@@ -88,10 +84,6 @@ const useWriteForm = (
       shouldCommentAlert = false,
       onClose,
       post,
-      count,
-      plusCount,
-      resetCount,
-      onPageIndexPlus,
       errorMessage,
     } = props;
 
@@ -114,15 +106,6 @@ const useWriteForm = (
       if (method === "POST") {
         // 더미 데이터
         actionArray.forEach((action) => dispatch(action()));
-        if (onPageIndexPlus && resetCount && plusCount) {
-          console.log(count);
-          if (count === 2) {
-            onPageIndexPlus();
-            resetCount();
-          } else {
-            plusCount();
-          }
-        }
 
         resetAll();
         onClose && onClose();

@@ -82,7 +82,7 @@ const Lists: React.FC<ListsProps> = ({
     <>
       {lists.map((list, idx) => (
         <div
-          // ref={idx === lists.length - 2 ? ref : null}
+          ref={idx === lists.length - 2 ? ref : null}
           key={list.id}
           onClick={
             isPosts
@@ -158,7 +158,7 @@ const Lists: React.FC<ListsProps> = ({
                         commentModal.onOpen();
                       })}
                       icon={BiMessageRounded}
-                      length={(list as PostState).comments.length}
+                      length={(list as PostState).totalCommentsCount}
                       textHover="group-hover:text-sky-500"
                       bgHover="group-hover:bg-sky-200/40"
                       textColor="text-gray-500"
@@ -193,7 +193,6 @@ const Lists: React.FC<ListsProps> = ({
         </div>
       ))}
 
-      <div ref={ref} style={{ height: "20px", backgroundColor: "red" }}></div>
       {isValidating && <Loader size={50} />}
     </>
   );

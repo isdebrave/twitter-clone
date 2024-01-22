@@ -46,8 +46,17 @@ export const profile = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {
-    const profile = await prisma.user.findUnique({ where: { id: userId } });
-    return res.status(200).json(profile);
+    const profile = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { posts: { select: { id: true } } },
+    });
+
+    const profileWithCount = {
+      ...profile,
+      totalPostsCount: profile?.posts.length,
+    };
+
+    return res.status(200).json(profileWithCount);
   } catch (error) {
     console.log(error);
     return res.status(400).json("해당 계정이 존재하지 않습니다.");
@@ -82,7 +91,12 @@ export const profilePosts = async (
       take: limitNumber,
     });
 
-    return res.status(200).json(profilePosts);
+    const profilePostsWithCount = profilePosts.map((post) => ({
+      ...post,
+      totalCommentsCount: post.comments.length,
+    }));
+
+    return res.status(200).json(profilePostsWithCount);
   } catch (error) {
     console.log(error);
     next(error);

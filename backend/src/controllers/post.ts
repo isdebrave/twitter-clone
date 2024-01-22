@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import path from "path";
+import { Post } from "@prisma/client";
 
 import prisma from "../libs/prismadb";
 
@@ -28,7 +29,12 @@ export const posts = async (
       take: limitNumber,
     });
 
-    return res.status(200).json(posts);
+    const postsWithCount = posts.map((post) => ({
+      ...post,
+      totalCommentsCount: post.comments.length,
+    }));
+
+    return res.status(200).json(postsWithCount);
   } catch (error) {
     console.log(error);
     next(error);
@@ -43,10 +49,16 @@ export const post = async (req: Request, res: Response) => {
       where: { id: postId },
       include: {
         user: { select: { id: true, username: true, profileImage: true } },
+        comments: { select: { id: true } },
       },
     });
 
-    return res.status(200).json(post);
+    const postWithCount = {
+      ...post,
+      totalCommentsCount: post?.comments.length,
+    };
+
+    return res.status(200).json(postWithCount);
   } catch (error) {
     console.log(error);
     return res.status(400).json("해당 게시물이 존재하지 않습니다.");
@@ -78,7 +90,12 @@ export const registerPost = async (
       },
     });
 
-    return res.status(201).json(post);
+    const postWithCount = {
+      ...post,
+      totalCommentsCount: post?.comments.length,
+    };
+
+    return res.status(201).json(postWithCount);
   } catch (error) {
     console.log(error);
     next(error);

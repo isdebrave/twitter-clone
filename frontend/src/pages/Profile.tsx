@@ -80,7 +80,7 @@ const Profile = () => {
         <>
           <MainHeading
             title={profile.username}
-            length={profile.posts.length}
+            length={profile.totalPostsCount}
             onClick={() => navigate(-1)}
             backdropBlur
           />

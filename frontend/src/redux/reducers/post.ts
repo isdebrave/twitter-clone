@@ -25,6 +25,7 @@ export interface PostState {
   likedIds: string[];
   user: PostUserState;
   comments: PostCommentState[];
+  totalCommentsCount: number;
 }
 
 const initialState: PostState = {
@@ -42,6 +43,7 @@ const initialState: PostState = {
     profileImage: "",
   },
   comments: [],
+  totalCommentsCount: 0,
 };
 
 export const postSlice = createSlice({
@@ -76,6 +78,7 @@ export const postSlice = createSlice({
 
       if (!data) {
         state.comments.unshift(options);
+        state.totalCommentsCount++;
       } else {
         state.comments[0] = data;
       }
@@ -86,6 +89,7 @@ export const postSlice = createSlice({
       state.comments = state.comments.filter(
         (comment) => comment.id !== commentId
       );
+      state.totalCommentsCount--;
     },
   },
 });
