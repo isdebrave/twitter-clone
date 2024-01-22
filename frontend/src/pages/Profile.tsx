@@ -10,7 +10,6 @@ import ProfileBio from "../components/profile/ProfileBio";
 import ProfileButton from "../components/profile/ProfileButton";
 
 import useProfile from "../hooks/useProfile";
-import useProfilePageIndex from "../hooks/useProfilePageIndex";
 import useLists from "../hooks/useLists";
 
 import { RootState } from "../redux/store";
@@ -21,12 +20,9 @@ const Profile = () => {
   const [isLocked, setIsLocked] = useState(false);
   const { userId: profileId } = useParams();
 
-  const { data, mutate } = useProfile(profileId);
-
   const profile = useSelector((state: RootState) => state.profile);
 
-  const profilePageIndex = useProfilePageIndex();
-  const pageIndexPlus = profilePageIndex.onPlus;
+  const { data, mutate } = useProfile(profileId);
   const {
     data: listsData,
     isValidating,
@@ -34,7 +30,8 @@ const Profile = () => {
     hasMoreData,
   } = useLists({
     pathname: `/user/profile/${profileId}/post/all`,
-    category: "PROFILE",
+    savedData: profile.posts,
+    isSameUrl: profile.id === profileId,
   });
 
   const navigate = useNavigate();
@@ -68,13 +65,12 @@ const Profile = () => {
         .then((data) => {
           dispatch(onProfilePosts(data));
           setIsEnter(false);
-          pageIndexPlus();
         })
         .catch((error) => {
           console.log(error);
         });
     }
-  }, [isEnter, listsMutate, listsData, dispatch, hasMoreData, pageIndexPlus]);
+  }, [isEnter, listsMutate, listsData, dispatch, hasMoreData]);
 
   return (
     <div className="relative h-full">
@@ -84,7 +80,7 @@ const Profile = () => {
         <>
           <MainHeading
             title={profile.username}
-            length={profile.posts.length}
+            length={profile.totalPostsCount}
             onClick={() => navigate(-1)}
             backdropBlur
           />

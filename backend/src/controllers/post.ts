@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import path from "path";
+import { Post } from "@prisma/client";
 
 import prisma from "../libs/prismadb";
 
@@ -8,24 +9,32 @@ export const posts = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { page, limit } = req.query;
+  const { lastId, limit } = req.query;
 
-  if (!page || !limit) return;
+  const where = {} as { id?: object };
+  if (parseInt(lastId as string, 10)) {
+    where.id = { lt: lastId as string };
+  }
+
+  const limitNumber = parseInt(limit as string, 0);
 
   try {
     const posts = await prisma.post.findMany({
+      where,
       include: {
-        user: {
-          select: { id: true, username: true, profileImage: true },
-        },
+        user: { select: { id: true, username: true, profileImage: true } },
         comments: { select: { id: true } },
       },
       orderBy: { createdAt: "desc" },
-      skip: +page * +limit,
-      take: +limit,
+      take: limitNumber,
     });
 
-    return res.status(200).json(posts);
+    const postsWithCount = posts.map((post) => ({
+      ...post,
+      totalCommentsCount: post.comments.length,
+    }));
+
+    return res.status(200).json(postsWithCount);
   } catch (error) {
     console.log(error);
     next(error);
@@ -37,15 +46,19 @@ export const post = async (req: Request, res: Response) => {
 
   try {
     const post = await prisma.post.findUnique({
-      where: {
-        id: postId,
-      },
+      where: { id: postId },
       include: {
         user: { select: { id: true, username: true, profileImage: true } },
+        comments: { select: { id: true } },
       },
     });
 
-    return res.status(200).json(post);
+    const postWithCount = {
+      ...post,
+      totalCommentsCount: post?.comments.length,
+    };
+
+    return res.status(200).json(postWithCount);
   } catch (error) {
     console.log(error);
     return res.status(400).json("해당 게시물이 존재하지 않습니다.");
@@ -70,18 +83,19 @@ export const registerPost = async (
     }
 
     const post = await prisma.post.create({
-      data: {
-        body,
-        images,
-        userId: req.session.meId,
-      },
+      data: { body, images, userId: req.session.meId },
       include: {
         user: { select: { id: true, username: true, profileImage: true } },
         comments: { select: { id: true } },
       },
     });
 
-    return res.status(201).json(post);
+    const postWithCount = {
+      ...post,
+      totalCommentsCount: post?.comments.length,
+    };
+
+    return res.status(201).json(postWithCount);
   } catch (error) {
     console.log(error);
     next(error);
@@ -143,9 +157,7 @@ export const liked = async (
 
     await prisma.post.update({
       where: { id: postId },
-      data: {
-        likedIds: post.likedIds,
-      },
+      data: { likedIds: post.likedIds },
     });
 
     return res.status(200).json();
@@ -165,9 +177,7 @@ export const views = async (
   try {
     await prisma.post.update({
       where: { id: postId },
-      data: {
-        views: { increment: 1 },
-      },
+      data: { views: { increment: 1 } },
     });
 
     return res.status(200).json();
@@ -179,23 +189,27 @@ export const views = async (
 
 export const comments = async (req: Request, res: Response) => {
   const { postId } = req.params;
-  const { page, limit } = req.query;
 
-  if (!page || !limit) return;
+  const { lastId, limit } = req.query;
+
+  const commentsWhere = {} as { id?: object };
+  if (parseInt(lastId as string, 10)) {
+    commentsWhere.id = { lt: lastId as string };
+  }
+
+  const limitNumber = parseInt(limit as string, 0);
 
   try {
     const post = await prisma.post.findUnique({
-      where: {
-        id: postId,
-      },
+      where: { id: postId },
       include: {
         comments: {
+          where: commentsWhere,
           include: {
             user: { select: { id: true, username: true, profileImage: true } },
           },
           orderBy: { createdAt: "desc" },
-          skip: +page * +limit,
-          take: +limit,
+          take: limitNumber,
         },
       },
     });
@@ -221,11 +235,7 @@ export const registerComment = async (
 
   try {
     const comment = await prisma.comment.create({
-      data: {
-        body,
-        userId: req.session.meId,
-        postId,
-      },
+      data: { body, userId: req.session.meId, postId },
       include: {
         user: { select: { id: true, username: true, profileImage: true } },
       },

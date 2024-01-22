@@ -158,7 +158,7 @@ const Lists: React.FC<ListsProps> = ({
                         commentModal.onOpen();
                       })}
                       icon={BiMessageRounded}
-                      length={(list as PostState).comments.length}
+                      length={(list as PostState).totalCommentsCount}
                       textHover="group-hover:text-sky-500"
                       bgHover="group-hover:bg-sky-200/40"
                       textColor="text-gray-500"

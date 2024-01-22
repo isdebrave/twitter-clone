@@ -20,9 +20,7 @@ import { onProfilePostsAdd } from "../../redux/reducers/profile";
 const WritePostModal = () => {
   const me = useSelector((state: RootState) => state.me);
 
-  const defaultValues = useMemo(() => {
-    return { body: "" };
-  }, []);
+  const defaultValues = useMemo(() => ({ body: "" }), []);
 
   const {
     handleSubmit,
@@ -86,6 +84,7 @@ const WritePostModal = () => {
       username: me.username,
     },
     comments: [],
+    totalCommentsCount: 0,
   };
 
   actionArray.push((data) => onPostsAdd({ options, data }));

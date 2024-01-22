@@ -46,8 +46,17 @@ export const profile = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {
-    const profile = await prisma.user.findUnique({ where: { id: userId } });
-    return res.status(200).json(profile);
+    const profile = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { posts: { select: { id: true } } },
+    });
+
+    const profileWithCount = {
+      ...profile,
+      totalPostsCount: profile?.posts.length,
+    };
+
+    return res.status(200).json(profileWithCount);
   } catch (error) {
     console.log(error);
     return res.status(400).json("해당 계정이 존재하지 않습니다.");
@@ -60,29 +69,34 @@ export const profilePosts = async (
   next: NextFunction
 ) => {
   const { userId } = req.params;
-  const { page, limit } = req.query;
+  const { lastId, limit } = req.query;
 
-  if (!page || !limit) return;
+  const where = { userId } as { userId: string; id?: object };
+  if (parseInt(lastId as string, 10)) {
+    where.id = { lt: lastId as string };
+  }
+
+  const limitNumber = parseInt(limit as string, 0);
 
   try {
     const profilePosts = await prisma.post.findMany({
-      where: { userId },
+      where,
       include: {
         user: {
-          select: {
-            id: true,
-            username: true,
-            profileImage: true,
-          },
+          select: { id: true, username: true, profileImage: true },
         },
         comments: { select: { id: true } },
       },
       orderBy: { createdAt: "desc" },
-      skip: +page * +limit,
-      take: +limit,
+      take: limitNumber,
     });
 
-    return res.status(200).json(profilePosts);
+    const profilePostsWithCount = profilePosts.map((post) => ({
+      ...post,
+      totalCommentsCount: post.comments.length,
+    }));
+
+    return res.status(200).json(profilePostsWithCount);
   } catch (error) {
     console.log(error);
     next(error);
@@ -123,12 +137,7 @@ export const updateProfile = async (
 
     await prisma.user.update({
       where: { id: userId },
-      data: {
-        username,
-        bio,
-        coverImage,
-        profileImage,
-      },
+      data: { username, bio, coverImage, profileImage },
     });
 
     return res.status(200).json();
@@ -150,16 +159,12 @@ export const addFollow = async (
   try {
     await prisma.user.update({
       where: { id: req.session.meId },
-      data: {
-        followingIds: { push: followerId },
-      },
+      data: { followingIds: { push: followerId } },
     });
 
     await prisma.user.update({
       where: { id: followerId },
-      data: {
-        followerIds: { push: req.session.meId },
-      },
+      data: { followerIds: { push: req.session.meId } },
     });
 
     return res.status(200).json();
@@ -240,9 +245,7 @@ export const deleteAlert = async (
   try {
     await prisma.user.update({
       where: { id: userId },
-      data: {
-        hasNotification: false,
-      },
+      data: { hasNotification: false },
     });
 
     return res.status(200).json();
@@ -261,11 +264,7 @@ export const search = async (
     const { value } = req.body;
 
     const users = await prisma.user.findMany({
-      where: {
-        username: {
-          contains: value,
-        },
-      },
+      where: { username: { contains: value } },
     });
 
     return res.status(200).json(users);

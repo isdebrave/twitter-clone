@@ -112,13 +112,7 @@ export const register = async (
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const user = await prisma.user.create({
-      data: {
-        name,
-        username: name,
-        email,
-        birth,
-        hashedPassword,
-      },
+      data: { name, username: name, email, birth, hashedPassword },
     });
 
     req.session.meId = user.id;
@@ -206,9 +200,15 @@ export const googleCallback = async (
 
       req.session.meId = user.id;
 
+<<<<<<< HEAD
       return res.redirect("https://isdebrave-twitter-clone/home");
     } else {
       return res.redirect("https://isdebrave-twitter-clone/auth");
+=======
+      return res.redirect("http://localhost:3001/home");
+    } else {
+      return res.redirect("http://localhost:3001/auth");
+>>>>>>> test
     }
   } catch (err) {
     console.log(err);
@@ -283,9 +283,15 @@ export const githubCallback = async (req: Request, res: Response) => {
 
     req.session.meId = user.id;
 
+<<<<<<< HEAD
     return res.redirect("https://isdebrave-twitter-clone/home");
   } else {
     return res.redirect("https//isdebrave-twitter-clone/auth");
+=======
+    return res.redirect("http://localhost:3001/home");
+  } else {
+    return res.redirect("http://localhost:3001/auth");
+>>>>>>> test
   }
 };
 
@@ -323,5 +329,9 @@ export const login = async (
 
 export const logout = async (req: Request, res: Response) => {
   req.session.meId = null;
+<<<<<<< HEAD
   return res.redirect("https://isdebrave-twitter-clone/auth");
+=======
+  return res.redirect("http://localhost:3001/auth");
+>>>>>>> test
 };

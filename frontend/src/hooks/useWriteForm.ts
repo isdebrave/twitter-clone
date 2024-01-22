@@ -75,7 +75,6 @@ const useWriteForm = (
     shouldCommentAlert?: boolean;
     onClose?: () => void;
     post?: PostState;
-    onPageIndexPlus?: () => void;
     errorMessage?: string;
   }) => {
     const {
@@ -85,7 +84,6 @@ const useWriteForm = (
       shouldCommentAlert = false,
       onClose,
       post,
-      onPageIndexPlus,
       errorMessage,
     } = props;
 
@@ -108,7 +106,6 @@ const useWriteForm = (
       if (method === "POST") {
         // 더미 데이터
         actionArray.forEach((action) => dispatch(action()));
-        onPageIndexPlus && onPageIndexPlus();
 
         resetAll();
         onClose && onClose();

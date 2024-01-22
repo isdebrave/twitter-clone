@@ -7,7 +7,11 @@ import "./index.css";
 import App from "./App";
 import { store } from "./redux/store";
 
+<<<<<<< HEAD
 axios.defaults.baseURL = "https://api.isdebrave-twitter-clone.shop";
+=======
+axios.defaults.baseURL = "http://localhost:8081";
+>>>>>>> test
 axios.defaults.withCredentials = true;
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);

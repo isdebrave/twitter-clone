@@ -6,7 +6,6 @@ import Lists from "../components/Lists";
 import Loader from "../components/Loader";
 
 import useLists from "../hooks/useLists";
-import useHomePageIndex from "../hooks/useHomePageIndex";
 
 import { RootState } from "../redux/store";
 import { onPosts } from "../redux/reducers/posts";
@@ -15,12 +14,11 @@ const Home = () => {
   const [isEnter, setIsEnter] = useState(false);
 
   const posts = useSelector((state: RootState) => state.posts);
-  const homePageIndex = useHomePageIndex();
-  const pageIndexPlus = homePageIndex.onPlus;
 
   const { data, isValidating, mutate, hasMoreData } = useLists({
     pathname: "/post/all",
-    category: "HOME",
+    savedData: posts,
+    isSameUrl: true,
   });
 
   const dispatch = useDispatch();
@@ -39,13 +37,12 @@ const Home = () => {
         .then((data) => {
           dispatch(onPosts(data));
           setIsEnter(false);
-          pageIndexPlus();
         })
         .catch((error) => {
           console.log(error);
         });
     }
-  }, [isEnter, mutate, data, dispatch, hasMoreData, pageIndexPlus]);
+  }, [isEnter, mutate, data, dispatch, hasMoreData]);
 
   return (
     <>

@@ -14,6 +14,7 @@ export interface ProfileState {
   followingIds: string[];
   followerIds: string[];
   posts: PostState[];
+  totalPostsCount: number;
 }
 
 const initialState: ProfileState = {
@@ -28,6 +29,7 @@ const initialState: ProfileState = {
   followingIds: [],
   followerIds: [],
   posts: [],
+  totalPostsCount: 0,
 };
 
 export const profileSlice = createSlice({
@@ -60,6 +62,7 @@ export const profileSlice = createSlice({
 
       if (!data) {
         state.posts.unshift(options);
+        state.totalPostsCount++;
       } else {
         state.posts[0] = data;
       }
@@ -68,6 +71,7 @@ export const profileSlice = createSlice({
       const { postId } = action.payload;
 
       state.posts = state.posts.filter((post) => post.id !== postId);
+      state.totalPostsCount--;
     },
     onProfileUpdate: (state, action) => {
       const { coverImage, profileImage, username, bio } = action.payload;
@@ -116,6 +120,7 @@ export const profileSlice = createSlice({
         if (!post) return;
 
         post.comments.unshift(options);
+        post.totalCommentsCount++;
       } else {
         const { postId } = data;
 
@@ -136,6 +141,7 @@ export const profileSlice = createSlice({
       post.comments = post.comments.filter(
         (comment) => comment.id !== commentId
       );
+      post.totalCommentsCount--;
     },
   },
 });

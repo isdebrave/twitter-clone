@@ -1,71 +1,29 @@
 import { useEffect, useState } from "react";
 import useSWRImmutable from "swr/immutable";
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 import fetcher from "../libs/fetcher";
-
-import useHomePageIndex from "./useHomePageIndex";
-import useProfilePageIndex from "./useProfilePageIndex";
-
-import { RootState } from "../redux/store";
-import useCommentPageIndex from "./useCommentPageIndex";
+import { PostCommentState, PostState } from "../redux/reducers/post";
 
 interface ListsProps {
   pathname: string;
-  category: "HOME" | "PROFILE" | "COMMENT";
+  savedData: PostState[] | PostCommentState[];
+  isSameUrl: boolean;
 }
 
-const useLists = ({ pathname, category }: ListsProps) => {
+const useLists = ({ pathname, savedData, isSameUrl }: ListsProps) => {
   const [hasMoreData, setHasMoreData] = useState(true);
-  const [pageIndex, setPageIndex] = useState(0);
-
-  const homePageIndex = useHomePageIndex();
-
-  const profilePageIndex = useProfilePageIndex();
-  const profileIndexReset = profilePageIndex.onReset;
-  const profile = useSelector((state: RootState) => state.profile);
-  const { userId: profileId, postId } = useParams();
-
-  const commentPageIndex = useCommentPageIndex();
-  const commentIndexReset = commentPageIndex.onReset;
-  const post = useSelector((state: RootState) => state.post);
+  const [lastId, setLastId] = useState("0");
 
   useEffect(() => {
-    if (category === "HOME") {
-      setPageIndex(homePageIndex.page);
-    }
-
-    if (category === "PROFILE") {
-      if (profile.id !== profileId) {
-        profileIndexReset();
-        setHasMoreData(true);
+    if (isSameUrl) {
+      if (savedData.length > 0) {
+        setLastId(savedData[savedData.length - 1].id);
       }
-      setPageIndex(profilePageIndex.page);
     }
-
-    if (category === "COMMENT") {
-      if (post.id !== postId) {
-        commentIndexReset();
-        setHasMoreData(true);
-      }
-      setPageIndex(commentPageIndex.page);
-    }
-  }, [
-    category,
-    homePageIndex.page,
-    profilePageIndex.page,
-    commentPageIndex.page,
-    profile.id,
-    post.id,
-    profileId,
-    postId,
-    profileIndexReset,
-    commentIndexReset,
-  ]);
+  }, [savedData, isSameUrl]);
 
   const { data, isValidating, mutate } = useSWRImmutable(
-    `${pathname}?page=${pageIndex}&limit=3`,
+    `${pathname}?lastId=${lastId}&limit=3`,
     fetcher,
     { onError: (error) => console.log(error) }
   );
@@ -76,13 +34,14 @@ const useLists = ({ pathname, category }: ListsProps) => {
     if (data.length === 0) {
       setHasMoreData(false);
     }
-  }, [data, pageIndex]);
+  }, [data]);
 
   return {
     data,
     isValidating,
     mutate,
     hasMoreData,
+    setLastId,
   };
 };
 

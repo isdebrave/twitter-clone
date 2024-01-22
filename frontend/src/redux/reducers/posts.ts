@@ -57,6 +57,7 @@ export const postsSlice = createSlice({
         if (!post) return;
 
         post.comments.unshift(options);
+        post.totalCommentsCount++;
       } else {
         const { postId } = data;
 
@@ -77,6 +78,7 @@ export const postsSlice = createSlice({
       post.comments = post.comments.filter(
         (comment) => comment.id !== commentId
       );
+      post.totalCommentsCount--;
     },
   },
 });
