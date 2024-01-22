@@ -79,6 +79,8 @@ export const registerPost = async (
     const images = [];
     for (let i = 0; i < files.length; i++) {
       images.push(path.join(files[i].location));
+      console.log(path.join(files[i].location));
+      console.log(files[i].location);
     }
 
     const post = await prisma.post.create({
