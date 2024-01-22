@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import path from "path";
-import { Post } from "@prisma/client";
 
 import prisma from "../libs/prismadb";
 

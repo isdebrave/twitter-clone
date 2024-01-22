@@ -12,4 +12,4 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(process.cwd(), "/dist/index.html"));
 });
 
-app.listen(80, () => console.log("✅ frontend: Listening on port 80"));
+app.listen(3000, () => console.log("✅ frontend: Listening on port 3000"));

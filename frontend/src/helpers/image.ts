@@ -1,4 +1,3 @@
-import axios from "axios";
 import toast from "react-hot-toast";
 
 export const src = (image: string) => {
@@ -7,14 +6,7 @@ export const src = (image: string) => {
     return "/images/anonymous.jpg";
   }
 
-  console.log(image);
-
   return image;
-  // if (image.includes("http") || image.includes("data")) {
-  //   return image;
-  // }
-
-  // return `${axios.defaults.baseURL}/${image}`;
 };
 
 export const addImageHandler = (
