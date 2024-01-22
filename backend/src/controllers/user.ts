@@ -133,6 +133,7 @@ export const updateProfile = async (
     }
     if (files.profileImage) {
       profileImage = path.join(files.profileImage[0].location);
+      console.log(profileImage);
     }
 
     await prisma.user.update({
