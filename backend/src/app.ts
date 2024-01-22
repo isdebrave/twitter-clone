@@ -41,7 +41,7 @@ app.use(
     store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
     cookie: {
       httpOnly: true,
-      secure: true,
+      secure: false,
       domain: ".isdebrave-twitter-clone.shop",
     },
   })
