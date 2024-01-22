@@ -200,9 +200,9 @@ export const googleCallback = async (
 
       req.session.meId = user.id;
 
-      return res.redirect("https://isdebrave-twitter-clone/home");
+      return res.redirect("https://isdebrave-twitter-clone.shop/home");
     } else {
-      return res.redirect("https://isdebrave-twitter-clone/auth");
+      return res.redirect("https://isdebrave-twitter-clone.shop/auth");
     }
   } catch (err) {
     console.log(err);
@@ -277,9 +277,9 @@ export const githubCallback = async (req: Request, res: Response) => {
 
     req.session.meId = user.id;
 
-    return res.redirect("https://isdebrave-twitter-clone/home");
+    return res.redirect("https://isdebrave-twitter-clone.shop/home");
   } else {
-    return res.redirect("https//isdebrave-twitter-clone/auth");
+    return res.redirect("https//isdebrave-twitter-clone.shop/auth");
   }
 };
 
@@ -317,5 +317,5 @@ export const login = async (
 
 export const logout = async (req: Request, res: Response) => {
   req.session.meId = null;
-  return res.redirect("https://isdebrave-twitter-clone/auth");
+  return res.redirect("https://isdebrave-twitter-clone.shop/auth");
 };
