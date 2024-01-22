@@ -16,7 +16,7 @@ const useLists = ({ pathname, savedData, isSameUrl }: ListsProps) => {
 
   useEffect(() => {
     if (isSameUrl) {
-      if (savedData.length > 0) {
+      if (savedData.length > 1) {
         setLastId(savedData[savedData.length - 1].id);
       }
     }
