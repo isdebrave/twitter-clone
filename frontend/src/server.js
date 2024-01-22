@@ -12,5 +12,4 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(process.cwd(), "/dist/index.html"));
 });
 
-// nginx가 80번 사용중
-app.listen(3000, () => console.log("✅ frontend: Listening on port 3000"));
+app.listen(80, () => console.log("✅ frontend: Listening on port 80"));
