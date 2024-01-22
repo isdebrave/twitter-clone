@@ -24,7 +24,7 @@ const storage = multerS3({
     },
     region: "ap-northeast-2",
   }),
-  bucket: "isdebrave-twitter-clone",
+  bucket: "isdebrave-twitter-clone.shop",
   key(req, file, cb) {
     cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`);
   },
