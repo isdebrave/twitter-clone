@@ -59,8 +59,8 @@ const WriteComment = () => {
   const options = {
     id: Date.now(),
     body: watchAllFields.body,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
     userId: me.id,
     postId: post.id,
     user: {

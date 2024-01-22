@@ -68,8 +68,8 @@ const WritePost = () => {
     body: watchAllFields.body,
     images: imagesPreview,
     views: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
     userId: me.id,
     likedIds: [],
     user: {
