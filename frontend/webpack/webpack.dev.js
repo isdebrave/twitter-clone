@@ -8,7 +8,6 @@ module.exports = merge(common, {
   mode: "development",
   output: {
     filename: "bundle.js",
-    publicPath: "/",
   },
   devServer: {
     allowedHosts: "all",

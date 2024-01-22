@@ -36,6 +36,7 @@ const Feed = () => {
   const { likedHandler } = useLiked();
   const commentModal = useCommentModal();
   const { data } = usePost();
+
   const {
     data: listsData,
     isValidating,
