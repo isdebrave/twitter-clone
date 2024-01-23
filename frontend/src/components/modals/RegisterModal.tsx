@@ -45,7 +45,6 @@ const RegisterModal = () => {
   const [step, setStep] = useState(STEPS.FIRST);
 
   const { mutate } = useMe();
-  // const registerModal = useRegisterModal();
   const registerModal = useSelector((state: RootState) => state.registerModal);
 
   const navigate = useNavigate();

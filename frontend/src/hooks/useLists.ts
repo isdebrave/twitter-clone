@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
-import useSWRImmutable from "swr/immutable";
+import { AxiosError } from "axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import fetcher from "../libs/fetcher";
+
 import { PostCommentState, PostState } from "../redux/reducers/post";
+
+const errorHandler = (error: AxiosError) => {
+  console.log(error.response?.data);
+};
 
 interface ListsProps {
   pathname: string;
@@ -22,11 +28,27 @@ const useLists = ({ pathname, savedData, isSameUrl }: ListsProps) => {
     }
   }, [savedData, isSameUrl]);
 
-  const { data, isValidating, mutate } = useSWRImmutable(
-    `${pathname}?lastId=${lastId}&limit=3`,
-    fetcher,
-    { onError: (error) => console.log(error) }
-  );
+  const url = `${pathname}?lastId=${lastId}&limit=3`;
+  const queryClient = useQueryClient();
+
+  const { data, error, isError, isFetching } = useQuery({
+    queryKey: ["useLists", url],
+    queryFn: () => fetcher(url),
+  });
+
+  useEffect(() => {
+    if (isError) {
+      errorHandler(error as AxiosError);
+    }
+  }, [error, isError]);
+
+  const { mutateAsync } = useMutation({
+    mutationFn: () => fetcher(url),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useLists"] });
+    },
+    onError: (error) => errorHandler(error as AxiosError),
+  });
 
   useEffect(() => {
     if (!data) return;
@@ -38,8 +60,8 @@ const useLists = ({ pathname, savedData, isSameUrl }: ListsProps) => {
 
   return {
     data,
-    isValidating,
-    mutate,
+    isValidating: isFetching,
+    mutate: mutateAsync,
     hasMoreData,
     setLastId,
   };

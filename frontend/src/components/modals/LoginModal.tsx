@@ -32,6 +32,7 @@ import { onRegisterModalOpen } from "../../redux/reducers/registerModal";
 
 const LoginModal = () => {
   const [isLoading, setIsLoading] = useState(false);
+
   const { mutate } = useMe();
 
   const loginModal = useSelector((state: RootState) => state.loginModal);
