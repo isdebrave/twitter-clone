@@ -52,7 +52,6 @@ const Profile = () => {
   }, [profile.id, data, dispatch, mutate, isLocked]);
 
   useEffect(() => {
-    // console.log(hasMoreData, profile.posts);
     if (hasMoreData && profile.posts.length === 0) {
       setIsEnter(true);
     }

@@ -1,4 +1,3 @@
-import useSWRImmutable from "swr/immutable";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -42,23 +41,6 @@ const useProfile = (profileId: string) => {
       errorHandler(error as AxiosError, navigate);
     }
   }, [error, isError, navigate]);
-
-  // const { data, mutate } = useSWRImmutable(
-  //   profileId ? `/user/profile/${profileId}` : null,
-  //   fetcher,
-  //   {
-  //     onError: (error) => {
-  //       console.log(error);
-  //       toast.error(error.response.data);
-
-  //       if (error.response.status === 500) {
-  //         return alert(error.response.data);
-  //       }
-
-  //       navigate("/home");
-  //     },
-  //   }
-  // );
 
   return { data, mutate: mutateAsync };
 };

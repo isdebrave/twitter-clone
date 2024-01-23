@@ -25,6 +25,8 @@ const useLists = ({ pathname, savedData, isSameUrl }: ListsProps) => {
       if (savedData.length > 1) {
         setLastId(savedData[savedData.length - 1].id);
       }
+    } else {
+      setLastId("0");
     }
   }, [savedData, isSameUrl]);
 
@@ -51,12 +53,16 @@ const useLists = ({ pathname, savedData, isSameUrl }: ListsProps) => {
   });
 
   useEffect(() => {
+    if (!isSameUrl) {
+      return setHasMoreData(true);
+    }
+
     if (!data) return;
 
     if (data.length === 0) {
       setHasMoreData(false);
     }
-  }, [data]);
+  }, [data, isSameUrl]);
 
   return {
     data,
