@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { IoClose } from "react-icons/io5";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import { AxiosResponse } from "axios";
 
@@ -10,15 +10,20 @@ import Button from "../Button";
 import { bgBlue, hoverDarkBlue, textWhite } from "../../helpers/colors";
 import { addImageHandler, removeImageHandler, src } from "../../helpers/image";
 
-import useWritePostModal from "../../hooks/useWritePostModal";
 import useWriteForm from "../../hooks/useWriteForm";
 
 import { RootState } from "../../redux/store";
 import { onPostsAdd } from "../../redux/reducers/posts";
 import { onProfilePostsAdd } from "../../redux/reducers/profile";
+import { onWriteModalClose } from "../../redux/reducers/writePostModal";
 
 const WritePostModal = () => {
   const me = useSelector((state: RootState) => state.me);
+  const writePostModal = useSelector(
+    (state: RootState) => state.writePostModal
+  );
+
+  const dispatch = useDispatch();
 
   const defaultValues = useMemo(() => ({ body: "" }), []);
 
@@ -35,7 +40,7 @@ const WritePostModal = () => {
     resetAll,
     watchAllFields,
   } = useWriteForm(defaultValues);
-  const writePostModal = useWritePostModal();
+  // const writePostModal = useWritePostModal();
 
   const bodyContent = (
     <div className="px-6">
@@ -125,7 +130,7 @@ const WritePostModal = () => {
               data,
               fetchUrl: "/post",
               actionArray,
-              onClose: writePostModal.onClose,
+              onClose: () => dispatch(onWriteModalClose()),
               errorMessage: "포스트를 작성해주세요.",
             })
           )}
@@ -174,7 +179,7 @@ const WritePostModal = () => {
   return (
     <Modal
       isOpen={writePostModal.isOpen}
-      onClose={writePostModal.onClose}
+      onClose={() => dispatch(onWriteModalClose())}
       icon={IoClose}
       body={bodyContent}
       footer={footerContent}

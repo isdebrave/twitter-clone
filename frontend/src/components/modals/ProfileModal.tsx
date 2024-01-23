@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IoClose, IoCameraOutline } from "react-icons/io5";
 
 import Modal from "./Modal";
@@ -10,7 +10,6 @@ import { bgBlack, hoverLightWhite, textWhite } from "../../helpers/colors";
 import { addImageHandler, removeImageHandler, src } from "../../helpers/image";
 import { namePattern } from "../../helpers/pattern";
 
-import useProfileModal from "../../hooks/useProfileModal";
 import useWriteForm from "../../hooks/useWriteForm";
 
 import { RootState } from "../../redux/store";
@@ -18,9 +17,11 @@ import { onProfileUpdate } from "../../redux/reducers/profile";
 import { onMeProfileUpdate } from "../../redux/reducers/me";
 import { onPostsProfileUpdate } from "../../redux/reducers/posts";
 import { onPostProfileUpdate } from "../../redux/reducers/post";
+import { onProfileModalClose } from "../../redux/reducers/profileModal";
 
 const ProfileModal = () => {
   const profile = useSelector((state: RootState) => state.profile);
+  const profileModal = useSelector((state: RootState) => state.profileModal);
 
   const defaultValues = useMemo(() => {
     return { username: profile.username, bio: profile.bio };
@@ -42,7 +43,8 @@ const ProfileModal = () => {
     resetAll,
     watchAllFields,
   } = useWriteForm(defaultValues, "PATCH");
-  const profileModal = useProfileModal();
+
+  const dispatch = useDispatch();
 
   const extendedSrc = (imagePreview: string, image: string) => {
     if (imagePreview.length > 0) return imagePreview;
@@ -248,7 +250,7 @@ const ProfileModal = () => {
               data,
               fetchUrl: `/user/profile/${profile.id}`,
               actionArray,
-              onClose: profileModal.onClose,
+              onClose: () => dispatch(onProfileModalClose()),
             })
           )}
           bgColor={bgBlack}
@@ -265,7 +267,7 @@ const ProfileModal = () => {
   return (
     <Modal
       isOpen={profileModal.isOpen}
-      onClose={profileModal.onClose}
+      onClose={() => dispatch(onProfileModalClose())}
       icon={IoClose}
       title="Edit profile"
       body={bodyContent}

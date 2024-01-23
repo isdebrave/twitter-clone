@@ -18,10 +18,13 @@ import { onPost, onPostComments, onPostViews } from "../redux/reducers/post";
 
 import usePost from "../hooks/usePost";
 import useLiked from "../hooks/useLiked";
-import useCommentModal from "../hooks/useCommentModal";
 import useLists from "../hooks/useLists";
 
 import { isHeartFill } from "../helpers/post";
+import {
+  onCommentBelongsToPost,
+  onCommentModalOpen,
+} from "../redux/reducers/commentModal";
 
 const Feed = () => {
   const [isEnter, setIsEnter] = useState(false);
@@ -34,7 +37,6 @@ const Feed = () => {
   const dispatch = useDispatch();
 
   const { likedHandler } = useLiked();
-  const commentModal = useCommentModal();
   const { data } = usePost();
   const {
     data: listsData,
@@ -52,9 +54,9 @@ const Feed = () => {
 
     if (post.id !== data.id) {
       dispatch(onPost(data));
-      commentModal.onPost(data);
+      dispatch(onCommentBelongsToPost(data));
     }
-  }, [post, data, dispatch, commentModal]);
+  }, [post, data, dispatch]);
 
   useEffect(() => {
     if (!data) return;
@@ -115,7 +117,7 @@ const Feed = () => {
             <hr className="mt-3 mb-1" />
             <div className="flex justify-around">
               <Icon
-                onClick={commentModal.onOpen}
+                onClick={() => dispatch(onCommentModalOpen())}
                 icon={BiMessageRounded}
                 length={post.totalCommentsCount}
                 textHover="group-hover:text-sky-500"

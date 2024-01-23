@@ -7,6 +7,7 @@ import { IoClose } from "react-icons/io5";
 import { BsTwitterX } from "react-icons/bs";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
 import Modal from "./Modal";
 import Heading from "../Heading";
@@ -23,17 +24,20 @@ import {
   textWhite,
 } from "../../helpers/colors";
 
-import useLoginModal from "../../hooks/useLoginModal";
-import useRegisterModal from "../../hooks/useRegisterModal";
 import useMe from "../../hooks/useMe";
+
+import { RootState } from "../../redux/store";
+import { onLoginModalClose } from "../../redux/reducers/loginModal";
+import { onRegisterModalOpen } from "../../redux/reducers/registerModal";
 
 const LoginModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { mutate } = useMe();
-  const loginModal = useLoginModal();
-  const registerModal = useRegisterModal();
+
+  const loginModal = useSelector((state: RootState) => state.loginModal);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -52,7 +56,7 @@ const LoginModal = () => {
       await mutate();
       setIsLoading(false);
 
-      loginModal.onClose();
+      dispatch(onLoginModalClose());
       localStorage.setItem("auth", "true");
       navigate("/home");
     } catch (error) {
@@ -132,8 +136,8 @@ const LoginModal = () => {
   );
 
   const clickHandler = () => {
-    loginModal.onClose();
-    registerModal.onOpen();
+    dispatch(onLoginModalClose());
+    dispatch(onRegisterModalOpen());
     reset();
   };
 
@@ -171,7 +175,7 @@ const LoginModal = () => {
       {isLoading && <Loader size={80} fixed text />}
       <Modal
         isOpen={loginModal.isOpen}
-        onClose={loginModal.onClose}
+        onClose={() => dispatch(onLoginModalClose())}
         title={BsTwitterX}
         body={bodyContent}
         footer={footerContent}

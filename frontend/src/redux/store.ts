@@ -6,6 +6,11 @@ import posts from "./reducers/posts";
 import notifications from "./reducers/notifications";
 import profile from "./reducers/profile";
 import post from "./reducers/post";
+import loginModal from "./reducers/loginModal";
+import registerModal from "./reducers/registerModal";
+import profileModal from "./reducers/profileModal";
+import writePostModal from "./reducers/writePostModal";
+import commentModal from "./reducers/commentModal";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +20,11 @@ export const store = configureStore({
     notifications,
     profile,
     post,
+    loginModal,
+    registerModal,
+    profileModal,
+    writePostModal,
+    commentModal,
   },
   devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>
