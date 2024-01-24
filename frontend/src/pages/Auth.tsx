@@ -4,6 +4,7 @@ import { BsTwitterX } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import { AiOutlineGithub } from "react-icons/ai";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 
 import {
   bgBlue,
@@ -18,12 +19,11 @@ import {
 
 import Button from "../components/Button";
 
-import useLoginModal from "../hooks/useLoginModal";
-import useRegisterModal from "../hooks/useRegisterModal";
+import { onLoginModalOpen } from "../redux/reducers/loginModal";
+import { onRegisterModalOpen } from "../redux/reducers/registerModal";
 
 const Auth = () => {
-  const loginModal = useLoginModal();
-  const registerModal = useRegisterModal();
+  const dispatch = useDispatch();
 
   return (
     <div
@@ -114,7 +114,7 @@ const Auth = () => {
 
           <div className="mb-3">
             <Button
-              onClick={registerModal.onOpen}
+              onClick={() => dispatch(onRegisterModalOpen())}
               bgColor={bgBlue}
               textColor={textWhite}
               hoverColor={hoverDarkBlue}
@@ -143,7 +143,7 @@ const Auth = () => {
             이미 트위터에 가입하셨나요?
           </h4>
           <Button
-            onClick={loginModal.onOpen}
+            onClick={() => dispatch(onLoginModalOpen())}
             bgColor={bgWhite}
             textColor={textBlue}
             hoverColor={hoverLightBlue}

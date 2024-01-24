@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import ImageCard from "../ImageCard";
-import { RootState } from "../../redux/store";
-import useCommentModal from "../../hooks/useCommentModal";
+
 import { src } from "../../helpers/image";
+
+import { RootState } from "../../redux/store";
 
 interface PostBodyProps {
   body: string;
@@ -20,9 +21,10 @@ const PostBody: React.FC<PostBodyProps> = ({
   images,
   imagesHeight = "",
 }) => {
-  const navigate = useNavigate();
   const post = useSelector((state: RootState) => state.post);
-  const commentModal = useCommentModal();
+  const commentModal = useSelector((state: RootState) => state.commentModal);
+
+  const navigate = useNavigate();
 
   const carouselHandler = (e: React.MouseEvent) => {
     e.stopPropagation();

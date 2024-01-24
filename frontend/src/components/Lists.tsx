@@ -1,22 +1,25 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BiHeart, BiMessageRounded, BiSolidHeart } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import ListsItem from "./ListsItem";
 import Icon from "./Icon";
+import Loader from "./Loader";
 
 import { stopPropagationHandler } from "../helpers/event";
 import { src } from "../helpers/image";
 import { isDummy, isHeartFill } from "../helpers/post";
 
 import useLiked from "../hooks/useLiked";
-import useCommentModal from "../hooks/useCommentModal";
 
 import { RootState } from "../redux/store";
 import { PostCommentState, PostState } from "../redux/reducers/post";
-import Loader from "./Loader";
+import {
+  onCommentBelongsToPost,
+  onCommentModalOpen,
+} from "../redux/reducers/commentModal";
 
 interface ListsProps {
   lists: PostState[] | PostCommentState[];
@@ -38,11 +41,11 @@ const Lists: React.FC<ListsProps> = ({
   const ref = useCallback((node: HTMLDivElement) => setNode(node), []);
 
   const { likedHandler } = useLiked();
-  const commentModal = useCommentModal();
 
   const me = useSelector((state: RootState) => state.me);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!lists || !lists[0]) return;
@@ -154,8 +157,8 @@ const Lists: React.FC<ListsProps> = ({
                           return toast.error("포스트 등록 중입니다.");
                         }
 
-                        commentModal.onPost(list as PostState);
-                        commentModal.onOpen();
+                        dispatch(onCommentBelongsToPost(list as PostState));
+                        dispatch(onCommentModalOpen());
                       })}
                       icon={BiMessageRounded}
                       length={(list as PostState).totalCommentsCount}

@@ -1,14 +1,14 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { mouseEnterHandler, mouseLeaveHandler } from "../../helpers/mouse";
 import { bgWhite, hoverGray, textBlack } from "../../helpers/colors";
 
-import useProfileModal from "../../hooks/useProfileModal";
 import useFollow from "../../hooks/useFollow";
 
 import { RootState } from "../../redux/store";
 import { ProfileState } from "../../redux/reducers/profile";
+import { onProfileModalOpen } from "../../redux/reducers/profileModal";
 
 interface ProfileButtonProps {
   profile: ProfileState;
@@ -19,10 +19,11 @@ const ProfileButton: React.FC<ProfileButtonProps> = ({
   profile,
   profileId,
 }) => {
-  const profileModal = useProfileModal();
   const { isFollowing, followHandler } = useFollow();
 
   const me = useSelector((state: RootState) => state.me);
+
+  const dispatch = useDispatch();
 
   const buttonLabel = () => {
     if (profile.id === me.id) {
@@ -38,7 +39,7 @@ const ProfileButton: React.FC<ProfileButtonProps> = ({
 
   const clickHandler = () => {
     if (profile.id === me.id) {
-      return profileModal.onOpen();
+      return dispatch(onProfileModalOpen());
     }
 
     return profileId && followHandler({ followerId: profile.id, profileId });

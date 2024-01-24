@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IoClose } from "react-icons/io5";
+import { AxiosResponse } from "axios";
 
 import Modal from "./Modal";
 import Button from "../Button";
@@ -11,17 +12,19 @@ import { src } from "../../helpers/image";
 import PostBody from "../post/PostBody";
 import PostProfile from "../post/PostProfile";
 
-import useCommentModal from "../../hooks/useCommentModal";
 import useWriteForm from "../../hooks/useWriteForm";
 
 import { RootState } from "../../redux/store";
 import { onPostCommentAdd } from "../../redux/reducers/post";
 import { onPostsCommentAdd } from "../../redux/reducers/posts";
 import { onProfilePostsCommentAdd } from "../../redux/reducers/profile";
-import { AxiosResponse } from "axios";
+import { onCommentModalClose } from "../../redux/reducers/commentModal";
 
 const WriteCommentModal = () => {
   const me = useSelector((state: RootState) => state.me);
+  const commentModal = useSelector((state: RootState) => state.commentModal);
+
+  const dispatch = useDispatch();
 
   const defaultValues = useMemo(() => {
     return { body: "" };
@@ -35,7 +38,7 @@ const WriteCommentModal = () => {
     resetAll,
     watchAllFields,
   } = useWriteForm(defaultValues);
-  const commentModal = useCommentModal();
+
   const post = commentModal.post;
 
   if (!post) return;
@@ -124,7 +127,7 @@ const WriteCommentModal = () => {
               fetchUrl: `/post/${post.id}/comment`,
               actionArray,
               shouldCommentAlert: post.user.id !== me.id,
-              onClose: commentModal.onClose,
+              onClose: () => dispatch(onCommentModalClose()),
               post,
               errorMessage: "댓글을 작성해주세요.",
             })
@@ -143,7 +146,7 @@ const WriteCommentModal = () => {
   return (
     <Modal
       isOpen={commentModal.isOpen}
-      onClose={commentModal.onClose}
+      onClose={() => dispatch(onCommentModalClose())}
       icon={IoClose}
       body={bodyContent}
       footer={footerContent}

@@ -22,7 +22,7 @@ const Profile = () => {
 
   const profile = useSelector((state: RootState) => state.profile);
 
-  const { data, mutate } = useProfile(profileId);
+  const { data, mutate } = useProfile(profileId!);
   const {
     data: listsData,
     isValidating,
@@ -55,7 +55,7 @@ const Profile = () => {
     if (hasMoreData && profile.posts.length === 0) {
       setIsEnter(true);
     }
-  }, [profile.posts.length, hasMoreData]);
+  }, [profile.posts, hasMoreData]);
 
   useEffect(() => {
     if (!listsData) return;

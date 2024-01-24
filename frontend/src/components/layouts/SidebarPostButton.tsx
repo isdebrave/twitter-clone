@@ -1,19 +1,20 @@
 import React from "react";
 import { FiFeather } from "react-icons/fi";
+import { useDispatch } from "react-redux";
 
 import { bgBlue, hoverDarkBlue, textWhite } from "../../helpers/colors";
 
 import Button from "../Button";
 
-import useWritePostModal from "../../hooks/useWritePostModal";
+import { onWriteModalOpen } from "../../redux/reducers/writePostModal";
 
 const SidebarPostButton = () => {
-  const writePostModal = useWritePostModal();
+  const dispatch = useDispatch();
 
   return (
     <>
       <button
-        onClick={writePostModal.onOpen}
+        onClick={() => dispatch(onWriteModalOpen())}
         className={`
             p-3 
             rounded-full 
@@ -35,7 +36,7 @@ const SidebarPostButton = () => {
 
       <div className="hidden lg:block">
         <Button
-          onClick={writePostModal.onOpen}
+          onClick={() => dispatch(onWriteModalOpen())}
           bgColor={bgBlue}
           textColor={textWhite}
           hoverColor={hoverDarkBlue}

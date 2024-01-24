@@ -1,9 +1,8 @@
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AxiosResponse } from "axios";
 
 import useWriteForm from "../hooks/useWriteForm";
-import useCommentModal from "../hooks/useCommentModal";
 
 import { src } from "../helpers/image";
 import { bgBlue, hoverDarkBlue, textWhite } from "../helpers/colors";
@@ -14,11 +13,13 @@ import { RootState } from "../redux/store";
 import { onPostCommentAdd } from "../redux/reducers/post";
 import { onPostsCommentAdd } from "../redux/reducers/posts";
 import { onProfilePostsCommentAdd } from "../redux/reducers/profile";
+import { onCommentModalClose } from "../redux/reducers/commentModal";
 
 const WriteComment = () => {
   const me = useSelector((state: RootState) => state.me);
   const post = useSelector((state: RootState) => state.post);
-  const commentModal = useCommentModal();
+
+  const dispatch = useDispatch();
 
   const defaultValues = useMemo(() => {
     return { body: "" };
@@ -87,7 +88,7 @@ const WriteComment = () => {
               fetchUrl: `/post/${post.id}/comment`,
               actionArray,
               shouldCommentAlert: post.user.id !== me.id,
-              onClose: commentModal.onClose,
+              onClose: () => dispatch(onCommentModalClose()),
               post,
               errorMessage: "댓글을 작성해주세요.",
             })

@@ -7,10 +7,9 @@ import axios from "axios";
 import { stopPropagationHandler } from "../../helpers/event";
 import { src } from "../../helpers/image";
 
-import useCommentModal from "../../hooks/useCommentModal";
-
 import { AppDispatch, RootState } from "../../redux/store";
 import { onPostsDelete } from "../../redux/reducers/posts";
+import { onCommentModalClose } from "../../redux/reducers/commentModal";
 
 interface PostProfile {
   href: string;
@@ -28,13 +27,12 @@ const PostProfile: React.FC<PostProfile> = ({
   noEllipsis,
 }) => {
   const [showBox, setShowBox] = useState(false);
-  const commentModal = useCommentModal();
 
   const me = useSelector((state: RootState) => state.me);
   const post = useSelector((state: RootState) => state.post);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const onCloseBox = () => setShowBox(false);
@@ -67,7 +65,7 @@ const PostProfile: React.FC<PostProfile> = ({
             hover:brightness-90 
             transition
           "
-          onClick={commentModal.onClose}
+          onClick={() => dispatch(onCommentModalClose())}
         >
           <img
             src={src(profileImage)}
@@ -78,7 +76,11 @@ const PostProfile: React.FC<PostProfile> = ({
       </Link>
 
       <div className="flex flex-col flex-auto relative">
-        <Link to={href} className="w-fit" onClick={commentModal.onClose}>
+        <Link
+          to={href}
+          className="w-fit"
+          onClick={() => dispatch(onCommentModalClose())}
+        >
           <span className="font-bold hover:underline">{username}</span>
         </Link>
         <span className="text-gray-500">@{userId.slice(0, 10)}</span>

@@ -7,11 +7,12 @@ import { onPostsLiked } from "../redux/reducers/posts";
 import { onProfilePostsLiked } from "../redux/reducers/profile";
 
 const useLiked = () => {
-  const dispatch = useDispatch();
   const me = useSelector((state: RootState) => state.me);
   const post = useSelector((state: RootState) => state.post);
   const posts = useSelector((state: RootState) => state.posts);
   const profile = useSelector((state: RootState) => state.profile);
+
+  const dispatch = useDispatch();
 
   const isExists = (likedIds: string[], userId: string) => {
     return likedIds.find((id) => id === userId);

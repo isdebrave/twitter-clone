@@ -5,6 +5,7 @@ import { IoClose } from "react-icons/io5";
 import { IoMdArrowBack } from "react-icons/io";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
 import Modal from "./Modal";
 import Button from "../Button";
@@ -24,9 +25,11 @@ import {
   textWhite,
 } from "../../helpers/colors";
 
-import useRegisterModal from "../../hooks/useRegisterModal";
-import useLoginModal from "../../hooks/useLoginModal";
 import useMe from "../../hooks/useMe";
+
+import { onLoginModalOpen } from "../../redux/reducers/loginModal";
+import { onRegisterModalClose } from "../../redux/reducers/registerModal";
+import { RootState } from "../../redux/store";
 
 enum STEPS {
   FIRST = 1,
@@ -42,10 +45,10 @@ const RegisterModal = () => {
   const [step, setStep] = useState(STEPS.FIRST);
 
   const { mutate } = useMe();
-  const registerModal = useRegisterModal();
-  const loginModal = useLoginModal();
+  const registerModal = useSelector((state: RootState) => state.registerModal);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -105,7 +108,7 @@ const RegisterModal = () => {
       await mutate();
       setIsLoading(false);
 
-      registerModal.onClose();
+      dispatch(onRegisterModalClose());
       localStorage.setItem("auth", "true");
       navigate("/home");
     } catch (error) {
@@ -193,8 +196,8 @@ const RegisterModal = () => {
   }
 
   const clickHandler = () => {
-    registerModal.onClose();
-    loginModal.onOpen();
+    dispatch(onRegisterModalClose());
+    dispatch(onLoginModalOpen());
     setStep(STEPS.FIRST);
     reset();
   };
@@ -224,7 +227,9 @@ const RegisterModal = () => {
       {isLoading && <Loader size={80} fixed text />}
       <Modal
         isOpen={registerModal.isOpen}
-        onClose={step === STEPS.FIRST ? registerModal.onClose : onBack}
+        onClose={
+          step === STEPS.FIRST ? () => dispatch(onRegisterModalClose()) : onBack
+        }
         icon={step === STEPS.FIRST ? IoClose : IoMdArrowBack}
         step={step}
         title={`5단계 중 ${step}단계`}
