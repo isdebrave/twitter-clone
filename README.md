@@ -1,51 +1,55 @@
 # Twitter-Clone
 
+<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+<img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
+<img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black">
+<img src="https://img.shields.io/badge/redux toolkit-764ABC?style=for-the-badge&logo=redux&logoColor=white">
+<img src="https://img.shields.io/badge/react query-FF4154?style=for-the-badge&logo=react query&logoColor=white">
+<img src="https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white">
+<img src="https://img.shields.io/badge/prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white">
+<img src="https://img.shields.io/badge/mongodb-47A248?style=for-the-badge&logo=mongodb&logoColor=white">
+<img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
+<img src="https://img.shields.io/badge/amazon ec2-FF9900?style=for-the-badge&logo=amazon ec2&logoColor=white">
+<img src="https://img.shields.io/badge/tailwind css-06B6D4?style=for-the-badge&logo=tailwind css&logoColor=white">
+<img src="https://img.shields.io/badge/webpack-8DD6F9?style=for-the-badge&logo=webpack&logoColor=black">
+
 ## 📌 Twitter-Clone
 
 - ### 프로젝트 개요
 
   - https://isdebrave-twitter-clone.shop/
-  - 테스트 계정  
-    email : test@example.com  
-    password : qwer1234
-  - 실제 트위터를 모델로 구현한 프로젝트입니다.  
-    게시글 작성, 팔로우/팔로잉, 이미지 삽입 등 다양한 기능을 추가하였습니다.
+
+  - 실제 트위터를 모델로 구현한 프로젝트  
+    게시글 작성, 팔로우/팔로잉, 이미지 삽입 등 다양한 기능을 추가했다.
 
 - ### 주요 기능
 
-  - **로그인/회원가입**
+  - **로그인**
 
-    > a. **토큰**이 있어야 홈에 접속할 수 있다.  
-    > b. 회원가입의 경우, **이메일 인증**까지 통과해야 한다.  
-    > c. 로컬 로그인 말고, **sns 로그인**으로도 접속할 수 있다.
+    > 쿠키와 세션을 사용해 인증을 진행하고, 인증이 완료되면 로컬 스토리지에 auth 키를 저장한다.
+
+  - **이메일 회원가입**
+
+    > 양식 작성 후, 유효한 이메일인지 확인하기 위해 이메일 인증 -> 통과하면 db에 저장한다.
 
   - **게시글 작성**
 
-    > a. db에 게시글을 저장하는 동안, **게시글 더미 데이터**를 보여준다.  
-    > &ensp;&ensp;저장이 완료되면 더미 데이터를 실제 데이터와 바꾼다.  
-    > b. 이미지는 등록하기 전에 **미리볼 수 있다.**  
-    > c. **게시글 작성 modal**이 있어서 어디서든 추가할 수 있다.
+    > backend의 저장 결과를 기다린 후 반영하는 것이 아니라, backend에서 데이터를 저장하는 도중에 redux state에 작성한 게시글 결과를 반영한다.
 
   - **무한 스크롤**
 
-    > a. 게시글은 3개씩 보여주고, 더 필요할 때마다 http request를 보낸다.  
-    > b. **lastId 기법**과 **Intersection Observer**로 구현했다.
+    > Intersection Observer, redux, react-query로 구현한다.
 
   - **이미지 삽입**
 
-    > a. 이미지는 4개까지 등록할 수 있다.  
-    > &ensp;&ensp;1개, 2개, 3개, 4개일 때의 모습은 실제 트위터와 똑같이 구현했다.  
-    > b. 이미지를 클릭하면 **carousel**이 되도록 만들었다.
+    > 이미지는 4개까지 등록할 수 있고, carousel로 볼 수 있다.
 
   - **팔로우/팔로잉**
 
-    > a. 팔로우를 누르면 팔로우 또는 팔로잉이 증가한다.  
-    > &ensp;&ensp;**redux + 유저 더미 데이터**로 불필요한 http request를 막았다.  
-    > &ensp;&ensp;새로고침을 하면 http request로 저장한 유저 정보를 가져온다.  
-    > b. profile 대상이 바뀔 때마다 http request로 유저 정보를 받아오도록 만들었다.
+    > backend의 저장 결과를 기다린 후 반영하는 것이 아니라, backend에서 데이터를 저장하는 도중에 redux state에 팔로우/팔로잉 결과를 반영한다.
 
   - **알림**
-    > a. 댓글 작성 또는 게시글 좋아요를 누르면 게시글을 작성한 유저에게 알림이 간다.
+    > 댓글 작성 또는 게시글 좋아요를 누르면 게시글을 작성한 유저에게 알림이 간다.
 
 - ### 향후 계획
   - 팔로우/팔로잉 리스트 구현
@@ -60,7 +64,26 @@
 
 ## 📌 시스템 아키텍쳐
 
-![시스템 다이어그램](https://github.com/isdebrave/twitter-clone/assets/148482966/f123267e-4703-4019-a8ba-74d86db80a64)
+- ### Frontend
+
+  ![시스템 아키텍쳐](https://github.com/isdebrave/twitter-clone/assets/148482966/72c3fc95-39d7-461f-ba77-d91cf91e098a)
+
+- ### Backend
+  ![시스템 아키텍쳐2](https://github.com/isdebrave/twitter-clone/assets/148482966/350ae025-1f61-43a4-847d-5cac9e367316)
+
+## 📌 시퀀스 다이어그램
+
+### 1. 로컬 로그인
+
+![image](https://github.com/isdebrave/twitter-clone/assets/148482966/a4b06188-94cc-4019-a5b7-5da5c3847a6c)
+
+### 2. 이메일 회원가입
+
+![image](https://github.com/isdebrave/twitter-clone/assets/148482966/a74ce5a6-f79c-4c27-a533-3d3d644b0de4)
+
+### 3. 무한 스크롤
+
+![image](https://github.com/isdebrave/twitter-clone/assets/148482966/5b65deff-c920-4ad3-b45f-9cf139f57435)
 
 ## 📌 서비스 소개
 
