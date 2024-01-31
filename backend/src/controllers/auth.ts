@@ -307,7 +307,7 @@ export const login = async (
     }
 
     req.session.meId = user.id;
-    console.log("login", req.session);
+    console.log(req.session);
 
     return res.status(200).json();
   } catch (error) {
