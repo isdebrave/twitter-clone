@@ -30,13 +30,13 @@ const Root = () => {
     }
   }, [data, dispatch, me.id.length]);
 
-  if (data === undefined) return;
-
-  if (data) {
-    localStorage.setItem("auth", "true");
-  } else {
-    localStorage.removeItem("auth");
-  }
+  useEffect(() => {
+    if (data === undefined || data === "") {
+      localStorage.removeItem("auth");
+    } else {
+      localStorage.setItem("auth", "true");
+    }
+  }, [data]);
 
   return (
     <>

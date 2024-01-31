@@ -8,10 +8,7 @@ import "./index.css";
 import App from "./App";
 import { store } from "./redux/store";
 
-axios.defaults.baseURL =
-  process.env.NODE_ENV === "production"
-    ? "https://api.isdebrave-twitter-clone.shop"
-    : "http://localhost:8080";
+axios.defaults.baseURL = "https://api.isdebrave-twitter-clone.shop";
 axios.defaults.withCredentials = true;
 
 const queryClient = new QueryClient();
