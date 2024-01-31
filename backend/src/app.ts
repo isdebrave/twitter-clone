@@ -44,10 +44,13 @@ app.use(helmet());
 
 app.get("/apple", (req, res) => {
   (req.session as any).apple = "apple";
+  console.log("apple", req.session);
+  res.send("apple");
 });
 
 app.get("/banana", (req, res) => {
-  console.log(req.session);
+  console.log("banana", req.session);
+  res.send("banana");
 });
 
 // if (process.env.NODE_ENV === "production") {
