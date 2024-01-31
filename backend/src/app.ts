@@ -19,8 +19,6 @@ const app = express();
 
 dotenv.config();
 
-app.set("trust proxy", 1);
-
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -44,14 +42,19 @@ app.use(
       httpOnly: true,
       secure: true,
       domain: ".isdebrave-twitter-clone.shop",
-      sameSite: "none",
     },
   })
 );
 app.use(hpp());
 app.use(helmet());
 
-console.log((req: any, res: any, next: any) => {
+app.use((req: any, res: any, next: any) => {
+  req.session.test = "test";
+  console.log(req.session);
+  next();
+});
+
+app.use((req: any, res: any, next: any) => {
   console.log(req.session);
   next();
 });
