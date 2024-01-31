@@ -37,10 +37,11 @@ app.use(
       secure: true,
       domain: ".isdebrave-twitter-clone.shop",
     },
+    proxy: true,
   })
 );
-// app.use(hpp());
-// app.use(helmet());
+app.use(hpp());
+app.use(helmet());
 
 // if (process.env.NODE_ENV === "production") {
 //   app.use(morgan("combined"));
