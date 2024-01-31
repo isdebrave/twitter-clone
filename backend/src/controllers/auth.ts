@@ -307,6 +307,7 @@ export const login = async (
     }
 
     req.session.meId = user.id;
+    req.app.set("meId", user.id);
     // console.log("login", req.session);
 
     return res.status(200).json();
