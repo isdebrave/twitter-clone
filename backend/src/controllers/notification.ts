@@ -27,6 +27,8 @@ export const registerNotification = async (
 ) => {
   const { body, userId } = req.body;
 
+  req.session.meId = req.app.get("meId");
+
   if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
   try {
@@ -52,6 +54,8 @@ export const deleteNotification = async (
   next: NextFunction
 ) => {
   const { notificationId } = req.body;
+
+  req.session.meId = req.app.get("meId");
 
   if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 

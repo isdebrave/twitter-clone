@@ -71,6 +71,8 @@ export const registerPost = async (
 ) => {
   const { body } = JSON.parse(req.body.data);
 
+  req.session.meId = req.app.get("meId");
+
   if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
   try {
@@ -108,6 +110,8 @@ export const deletePost = async (
 ) => {
   const { postId } = req.body;
 
+  req.session.meId = req.app.get("meId");
+
   if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
   try {
@@ -128,6 +132,8 @@ export const liked = async (
   next: NextFunction
 ) => {
   const { postId } = req.body;
+
+  req.session.meId = req.app.get("meId");
 
   if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
@@ -230,6 +236,8 @@ export const registerComment = async (
   const { postId } = req.body;
   const { body } = JSON.parse(req.body.data);
 
+  req.session.meId = req.app.get("meId");
+
   if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
   try {
@@ -253,6 +261,8 @@ export const deleteComment = async (
   next: NextFunction
 ) => {
   const { commentId } = req.body;
+
+  req.session.meId = req.app.get("meId");
 
   if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 

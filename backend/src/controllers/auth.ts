@@ -19,8 +19,10 @@ export const email = async (
   const max = 999999;
   const code = (Math.floor(Math.random() * (max - min + 1)) + min).toString();
   const expiration = Date.now() + 1000 * 60 * 60 * 2; // 2시간
-  req.session.code = code;
-  req.session.expiration = expiration;
+  // req.session.code = code;
+  // req.session.expiration = expiration;
+  req.app.set("code", code);
+  req.app.set("expiration", expiration);
 
   try {
     const transporter = nodemailer.createTransport({
@@ -67,13 +69,21 @@ export const email = async (
 export const code = (req: Request, res: Response) => {
   const { code } = req.body;
 
-  if (code !== req.session.code) {
+  if (code !== req.app.get("code")) {
     return res.status(401).json("코드가 틀렸습니다. 다시 시도해주세요.");
   }
 
-  if (Date.now() > req.session.expiration!) {
+  if (Date.now() > req.app.get("code")) {
     return res.status(401).json("코드가 만료되었습니다. 다시 시도해주세요.");
   }
+
+  // if (code !== req.session.code) {
+  //   return res.status(401).json("코드가 틀렸습니다. 다시 시도해주세요.");
+  // }
+
+  // if (Date.now() > req.session.expiration!) {
+  //   return res.status(401).json("코드가 만료되었습니다. 다시 시도해주세요.");
+  // }
 
   return res.status(200).json();
 };
@@ -115,7 +125,8 @@ export const register = async (
       data: { name, username: name, email, birth, hashedPassword },
     });
 
-    req.session.meId = user.id;
+    // req.session.meId = user.id;
+    req.app.set("meId", user.id);
 
     return res.status(201).json();
   } catch (error) {
@@ -198,7 +209,8 @@ export const googleCallback = async (
         });
       }
 
-      req.session.meId = user.id;
+      // req.session.meId = user.id;
+      req.app.set("meId", user.id);
 
       return res.redirect("https://isdebrave-twitter-clone.shop/home");
     } else {
@@ -275,7 +287,8 @@ export const githubCallback = async (req: Request, res: Response) => {
       });
     }
 
-    req.session.meId = user.id;
+    // req.session.meId = user.id;
+    req.app.set("meId", user.id);
 
     return res.redirect("https://isdebrave-twitter-clone.shop/home");
   } else {
@@ -306,9 +319,8 @@ export const login = async (
       return res.status(401).json("잘못된 비밀번호입니다.");
     }
 
-    req.session.meId = user.id;
+    // req.session.meId = user.id;
     req.app.set("meId", user.id);
-    // console.log("login", req.session);
 
     return res.status(200).json();
   } catch (error) {
@@ -318,6 +330,7 @@ export const login = async (
 };
 
 export const logout = async (req: Request, res: Response) => {
-  req.session.meId = null;
+  // req.session.meId = null;
+  req.app.set("meId", null);
   return res.redirect("https://isdebrave-twitter-clone.shop/auth");
 };

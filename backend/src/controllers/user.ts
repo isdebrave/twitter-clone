@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
 export const me = async (req: Request, res: Response, next: NextFunction) => {
-  // console.log("me", req.session);
-  console.log(req.app.get("meId"));
+  req.session.meId = req.app.get("meId");
+
   if (!req.session.meId) return res.status(200).json();
 
   try {
@@ -31,6 +31,8 @@ export const followLists = async (
   res: Response,
   next: NextFunction
 ) => {
+  req.session.meId = req.app.get("meId");
+
   try {
     const users = await prisma.user.findMany();
 
@@ -112,6 +114,8 @@ export const updateProfile = async (
   const { username, bio } = JSON.parse(req.body.data);
   const { userId } = req.params;
 
+  req.session.meId = req.app.get("meId");
+
   if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
   let user;
@@ -154,6 +158,8 @@ export const addFollow = async (
   next: NextFunction
 ) => {
   const { followerId } = req.body;
+
+  req.session.meId = req.app.get("meId");
 
   if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
@@ -240,6 +246,8 @@ export const deleteAlert = async (
   next: NextFunction
 ) => {
   const { userId } = req.body;
+
+  req.session.meId = req.app.get("meId");
 
   if (!req.session.meId) return res.status(401).json("로그인이 필요합니다.");
 
