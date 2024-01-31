@@ -48,16 +48,16 @@ app.use(
 app.use(hpp());
 app.use(helmet());
 
-app.use((req: any, res: any, next: any) => {
-  req.session.test = "test";
-  console.log(req.session);
-  next();
-});
+// app.use((req: any, res: any, next: any) => {
+//   req.session.test = "test";
+//   console.log(req.session);
+//   next();
+// });
 
-app.use((req: any, res: any, next: any) => {
-  console.log(req.session);
-  next();
-});
+// app.use((req: any, res: any, next: any) => {
+//   console.log(req.session);
+//   next();
+// });
 
 // if (process.env.NODE_ENV === "production") {
 //   app.use(morgan("combined"));
