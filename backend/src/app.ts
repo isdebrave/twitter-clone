@@ -53,11 +53,6 @@ app.use((req: any, res: any, next: any) => {
   next();
 });
 
-// app.use((req: any, res: any, next: any) => {
-//   console.log(req.session);
-//   next();
-// });
-
 // if (process.env.NODE_ENV === "production") {
 //   app.use(morgan("combined"));
 //   app.use(hpp());
