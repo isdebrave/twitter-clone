@@ -24,7 +24,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan("combined"));
 app.use(
-  cors({ origin: "https://isdebrave-twitter-clone.shop", credentials: true })
+  cors({
+    origin: [
+      "https://cloud.mongodb.com/",
+      "https://isdebrave-twitter-clone.shop",
+    ],
+    credentials: true,
+  })
 );
 app.use(
   session({
@@ -37,11 +43,15 @@ app.use(
       secure: true,
       domain: ".isdebrave-twitter-clone.shop",
     },
-    proxy: true,
   })
 );
 app.use(hpp());
 app.use(helmet());
+
+console.log((req: any, res: any, next: any) => {
+  console.log(req.session);
+  next();
+});
 
 // if (process.env.NODE_ENV === "production") {
 //   app.use(morgan("combined"));
