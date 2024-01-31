@@ -8,7 +8,8 @@ import "./index.css";
 import App from "./App";
 import { store } from "./redux/store";
 
-axios.defaults.baseURL = "https://api.isdebrave-twitter-clone.shop";
+// axios.defaults.baseURL = "https://api.isdebrave-twitter-clone.shop";
+axios.defaults.baseURL = "http://localhost:8080";
 axios.defaults.withCredentials = true;
 
 const queryClient = new QueryClient();

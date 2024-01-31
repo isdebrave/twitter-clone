@@ -53,10 +53,8 @@ const LoginModal = () => {
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
       setIsLoading(true);
-      if (data.email !== "test@example.com") {
-        await axios.post("/auth/login", data);
-        await mutate();
-      }
+      await axios.post("/auth/login", data);
+      await mutate();
       setIsLoading(false);
 
       dispatch(onLoginModalClose());
