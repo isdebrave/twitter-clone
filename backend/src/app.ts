@@ -32,15 +32,11 @@ app.use(
     credentials: true,
   })
 );
-app.use((req: any, res: any, next: any) => {
-  console.log("app", req.session);
-  next();
-});
 app.use(
   session({
     secret: process.env.SESSION_SECRET!,
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
     cookie: {
       httpOnly: true,
@@ -51,11 +47,6 @@ app.use(
 );
 app.use(hpp());
 app.use(helmet());
-
-app.use((req: any, res: any, next: any) => {
-  console.log("app", req.session);
-  next();
-});
 
 // if (process.env.NODE_ENV === "production") {
 //   app.use(morgan("combined"));
