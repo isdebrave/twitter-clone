@@ -19,6 +19,8 @@ const app = express();
 
 dotenv.config();
 
+app.set("trust proxy", 1);
+
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -42,6 +44,7 @@ app.use(
       httpOnly: true,
       secure: true,
       domain: ".isdebrave-twitter-clone.shop",
+      sameSite: "none",
     },
   })
 );
