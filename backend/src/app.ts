@@ -42,6 +42,14 @@ app.use(
 app.use(hpp());
 app.use(helmet());
 
+app.get("/apple", (req, res) => {
+  (req.session as any).apple = "apple";
+});
+
+app.get("/banana", (req, res) => {
+  console.log(req.session);
+});
+
 // if (process.env.NODE_ENV === "production") {
 //   app.use(morgan("combined"));
 //   app.use(hpp());

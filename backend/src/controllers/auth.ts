@@ -306,11 +306,10 @@ export const login = async (
       return res.status(401).json("잘못된 비밀번호입니다.");
     }
 
-    req.session.save(() => {
-      req.session.meId = user.id;
-      console.log("login", req.session);
-      return res.status(200).json();
-    });
+    req.session.meId = user.id;
+    // console.log("login", req.session);
+
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
     next(error);
