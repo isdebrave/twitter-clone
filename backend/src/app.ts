@@ -32,7 +32,7 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET!,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
     cookie: {
       httpOnly: true,
@@ -65,18 +65,18 @@ app.use(
 // } else {
 //   app.use(morgan("dev"));
 //   app.use(cors({ origin: "http://localhost:3000", credentials: true }));
-//   app.use(
-//     session({
-//       secret: process.env.SESSION_SECRET!,
-//       resave: false,
-//       saveUninitialized: false,
-//       store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
-//       cookie: {
-//         httpOnly: true,
-//         secure: false,
-//       },
-//     })
-//   );
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET!,
+//     resave: false,
+//     saveUninitialized: false,
+//     store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
+//     cookie: {
+//       httpOnly: true,
+//       secure: false,
+//     },
+//   })
+// );
 // }
 
 app.get("/", (req, res) => {
