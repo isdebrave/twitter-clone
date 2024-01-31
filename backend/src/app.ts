@@ -32,6 +32,10 @@ app.use(
     credentials: true,
   })
 );
+app.use((req: any, res: any, next: any) => {
+  console.log("app", req.session);
+  next();
+});
 app.use(
   session({
     secret: process.env.SESSION_SECRET!,
