@@ -7,8 +7,6 @@ export const notifications = async (
 ) => {
   const { userId } = req.query;
 
-  console.log("notification", req.session);
-
   try {
     const notifications = await prisma.notification.findMany({
       where: { userId: userId as string },

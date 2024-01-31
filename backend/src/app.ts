@@ -24,13 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan("combined"));
 app.use(
-  cors({
-    origin: [
-      "https://cloud.mongodb.com/",
-      "https://isdebrave-twitter-clone.shop",
-    ],
-    credentials: true,
-  })
+  cors({ origin: "https://isdebrave-twitter-clone.shop", credentials: true })
 );
 app.use(
   session({
