@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import path from "path";
 
 export const me = async (req: Request, res: Response, next: NextFunction) => {
+  console.log(req.session.meId);
   if (!req.session.meId) return res.status(200).json();
 
   try {
