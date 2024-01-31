@@ -39,8 +39,8 @@ app.use(
     },
   })
 );
-app.use(hpp());
-app.use(helmet());
+// app.use(hpp());
+// app.use(helmet());
 
 // if (process.env.NODE_ENV === "production") {
 //   app.use(morgan("combined"));
