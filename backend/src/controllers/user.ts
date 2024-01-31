@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 export const me = async (req: Request, res: Response, next: NextFunction) => {
   console.log("me", req.session);
-  console.log(localStorage.getItem("auth"));
   if (!req.session.meId) return res.status(200).json();
 
   try {
