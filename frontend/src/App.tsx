@@ -27,7 +27,7 @@ const router = createBrowserRouter([
       {
         element: <PrivateRoute />,
         children: [
-          { path: "/", loader: () => redirect("/home") },
+          { path: "/", loader: () => redirect("/auth") },
           { path: "/home", element: <Home /> },
           { path: "/explore", element: <Explore /> },
           { path: "/notifications", element: <Notifications /> },
