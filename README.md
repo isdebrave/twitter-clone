@@ -5,13 +5,10 @@
   <img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
   <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black">
   <img src="https://img.shields.io/badge/redux toolkit-764ABC?style=for-the-badge&logo=redux&logoColor=white">
-  <img src="https://img.shields.io/badge/react query-FF4154?style=for-the-badge&logo=react query&logoColor=white">
   <img src="https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white">
   <img src="https://img.shields.io/badge/prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white">
   <img src="https://img.shields.io/badge/mongodb-47A248?style=for-the-badge&logo=mongodb&logoColor=white">
   <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
-  <img src="https://img.shields.io/badge/amazon ec2-FF9900?style=for-the-badge&logo=amazon ec2&logoColor=white">
-  <img src="https://img.shields.io/badge/tailwind css-06B6D4?style=for-the-badge&logo=tailwind css&logoColor=white">
   <img src="https://img.shields.io/badge/webpack-8DD6F9?style=for-the-badge&logo=webpack&logoColor=black">
 </div>
 
@@ -50,17 +47,6 @@
 
   - **알림**
     > 댓글 작성 또는 게시글 좋아요를 누르면 게시글을 작성한 유저에게 알림이 간다.
-
-- ### 향후 계획
-  - 팔로우/팔로잉 리스트 구현
-  - 게시글 공유(카카오톡)
-  - 게시글 북마크
-  - 이미지 리사이징
-  - GIF 삽입
-  - 대댓글
-  - 다크 모드
-  - PWA
-  - 코드 리팩토링
 
 ## 📌 시스템 아키텍쳐
 
